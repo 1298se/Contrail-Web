@@ -1,0 +1,9 @@
+body{
+    background-color:#00A6F1;
+    background-position: center;
+}
+.login_page {
+    width: 360px;
+    padding: 10% 0 0;
+    margin:auto;
+}
