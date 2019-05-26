@@ -1,21 +1,6 @@
 body{
-    font-family: "Nunito", sans-serif;
-    color: white;
     background-color:#00A6F1;
     background-position: center;
-}
-
-.header{
-    text-align: center;
-}
-
-.authentication_page{
-    position:relative;
-    margin: auto;
-    width: 50%;
-    height: 50%;
-}
-
-.authentication_page input {
-    border-radius: 100%;
+    color: white;
+    font-family: "Nunito", sans-serif;
 }
