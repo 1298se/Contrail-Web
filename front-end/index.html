@@ -1,35 +1,59 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Contrail Authentication Service</title>
-        <link rel="stylesheet" href = "loginStyle.css">
-        <body>
-            <div class="header">
-                <h1 id="app title">Contrail</h1>
-            </div>
-            <div class="authentication_page">
-                <form class="registration_form">
-                    <h2 id="form_title">LOGIN</h2>
-                    <label for="register_name_input">Name: </label>
-                    <input id="register_name_input" name="register_name" type="text" placeholder="Name"/>
-                    <label for="register_email_input">Email: </label>
-                    <input id="register_email_input" name="register_email" type="text" placeholder="Email"/>
-                    <label for="register_password_input">Password: </label>
-                    <input id="register_password_input" name="register_password" type="password" placeholder="Password"/>
-                    <button id="register_user_button" type="button">SIGN UP</button>
-                </form>
-                <form class="login_form">
-                    <label for="login_email_input">Email: </label>
-                    <input id="login_email_input" name= "login_email" type="text" placeholder="Email"/>
-                    <label for="login_password_input">Password: </label>
-                    <input id="login_password_input" name="login_password" type="password" placeholder="Password"/>
-                    <a name="forgot_password" href="#">Forgot password?</a>
-                    <button id="login_user_button" type="button">LOG IN</button>
-                    <a name="create_account" href="#">Don't have an account? Sign up</a>
-                </form>
-            </div>
-        </body>
-    </head>
+
+<head>
+    <meta charset="utf-8">
+    <title>Contrail Authentication Service</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap" rel="stylesheet">
+    <link href="css/loginStyle.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="authentication_page">
+        <div class="header">
+            <h1 id="app title">Contrail</h1>
+        </div>
+        <form class="registration_form">
+            <h2 id="form_title">LOGIN</h2>
+            <label for="register_name_input">Name: </label>
+            <input id="register_name_input" name="register_name" type="text" placeholder="Name" />
+            <label for="register_email_input">Email: </label>
+            <input id="register_email_input" name="register_email" type="text" placeholder="Email" />
+            <label for="register_password_input">Password: </label>
+            <input id="register_password_input" name="register_password" type="password" placeholder="Password" />
+            <button id="register_user_button" type="button">SIGN UP</button>
+        </form>
+        <form class="login_form">
+            <label for="login_email_input">Email: </label>
+            <input id="login_email_input" name="login_email" type="text" placeholder="Email" />
+            <label for="login_password_input">Password: </label>
+            <input id="login_password_input" name="login_password" type="password" placeholder="Password" />
+            <a name="forgot_password" href="#">Forgot password?</a>
+            <button id="login_user_button" type="button">LOG IN</button>
+            <a name="create_account" href="#">Don't have an account? Sign up</a>
+        </form>
+    </div>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+                https://firebase.google.com/docs/web/setup#config-web-app -->
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyB9tiUIhIC_R9mAibHA71A8WM1Mt9euL0w",
+            authDomain: "contrail-db.firebaseapp.com",
+            databaseURL: "https://contrail-db.firebaseio.com",
+            projectId: "contrail-db",
+            storageBucket: "contrail-db.appspot.com",
+            messagingSenderId: "342081308461",
+            appId: "1:342081308461:web:7b8de20f963649bc"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+</body>
+
 </html>
