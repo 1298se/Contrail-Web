@@ -5,6 +5,9 @@ const app = express()
 
 const port = 3000
 
+var firebase = require('firebase')
+var firebaseui = require('firebaseui')
+
 // parsing middleware
 app.use(bodyParser.urlencoded({ extended:true}))
 app.use(bodyParser.json())
@@ -15,15 +18,16 @@ app.post('/register', (req, res) => {
 	var register_email = req.body.register_email
 	var register_password = req.body.register_password
 
-	// do firebase database queries
+	// do firebase auth queries
+
+
 })
 
 app.post('/login', (req, res) => {
-	var login_name = req.body.register_name
 	var login_email = req.body.login_email
 	var login_password = req.body.login_password
 
-	// do firebase database queries
+	// do firebase auth queries
 })
 
 
