@@ -23,9 +23,8 @@ button:hover {
     color: #00A6F1;
 }
 
-.form-container a {
-    color: #00A6F1;
-    text-decoration: none;
+form {
+    padding-bottom: 20px;
 }
 
 .form-container{
@@ -33,7 +32,6 @@ button:hover {
     background-color: white;
     box-sizing: border-box;
     border-radius: 25px;
-    height:420px;
     left: 50%;
     padding: 10px 40px 10px;
     position: absolute;
@@ -52,12 +50,19 @@ button:hover {
     width: 100%;
 }
 
+.form-container a {
+    color: #00A6F1;
+    text-decoration: none;
+}
+
 .form-container label {
     font-weight: bold;
 }
 
 #form_title {
     text-align: center;
+    padding: 20px;
+    margin: 20px 0;
 }
 
 .page-header {
