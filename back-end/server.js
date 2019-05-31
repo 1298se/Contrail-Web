@@ -1,10 +1,11 @@
 // server.js is the backend script for the server
 
 const express = require('express')
+const bodyParser = require('body-parser');
+
 const app = express()
 
 var firebase = require('firebase')
-var firebaseui = require('firebaseui')
 require('firebase/auth')
 var admin = require('firebase-admin')
 
@@ -17,18 +18,6 @@ admin.initializeApp({
 	databaseURL: "https://contrail-db.firebaseio.com"
 })
 
-admin.auth().createUser({
-	email: 'cr8zyboy127@gmail.com',
-	emailVerified: false,
-	password: 'password'
-	displayName: 'David Sang'
-})
-	.then(function(userRecord) {
-		console.log('Successfully created new user: ', userRecord.uid)
-	})
-	.catch(function(error) {
-		console.log('Error creating new user: ', error)
-	})
 
 
 // // Initialize Firebase
@@ -45,9 +34,9 @@ admin.auth().createUser({
 // firebase.initializeApp(firebaseConfig);
 
 
-// parsing middleware
-app.use(bodyParser.urlencoded({ extended:true}))
-app.use(bodyParser.json())
+// // parsing middleware
+// app.use(bodyParser.urlencoded({ extended:true}))
+// app.use(bodyParser.json())
 
 
 app.post('/register', (req, res) => {
@@ -56,7 +45,29 @@ app.post('/register', (req, res) => {
 	var register_password = req.body.register_password
 
 	// do firebase auth queries
+	admin.auth().createUser ({
+		email: register_email,
+		password: register_password,
+		displayName: register_name
+	})
+	.then(function(userRecord) {
+		console.log('Successfully created new user: ', userRecord.uid)
 
+		res.send({
+			"status" : "registration_success",
+			"name" : userRecord.displayName,
+			"email" : userRecord.email,
+			"password" : userRecord.password,
+			"UID" : userRecord.uid
+		})
+	})
+	.catch(function(error) {
+		console.log('Error creating new user: ', error)
+		res.send({
+			"status" : "registration_fail",
+			"erro" : error
+		})
+	})
 
 })
 
@@ -65,6 +76,9 @@ app.post('/login', (req, res) => {
 	var login_password = req.body.login_password
 
 	// do firebase auth queries
+	admin.auth().getUserByEmail(login_email).then(function(userRecord)) {
+		if(userRecord.password == )
+	}
 })
 
 
