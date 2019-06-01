@@ -65,6 +65,9 @@ form {
     margin: 20px 0;
 }
 
+.hidden {
+    display: none;
+}
 .page-header {
     background-color: #00A6F1;
     border-bottom-left-radius: 25px;
@@ -78,10 +81,6 @@ form {
 
 ::placeholder {
     color: #00A6F1;
-}
-
-.register-form {
-    display: None;
 }
 
 span {
