@@ -15,19 +15,18 @@
         <h1>CONTRAIL</h1>
     </div>
     <div class="form-container">
-        <h1 id="form_title">LOGIN</h1>
-
-        <form class="login-form">
+        <form class="login-form" action="/login" method="POST">
+            <h1 id="login_title">LOGIN</h1>
             <label for="login_email_input">Email:</label>
             <input id="login_email_input" name="login_email" type="text" placeholder="Enter Email"/>
             <label for="login_password_input">Password:</label>
             <input id="login_password_input" name="login_password" type="password" placeholder="Enter Password"/>
-            <a name="forgot_password" href="#">Forgot password?</a>
             <button id="login_user_button" type="button">LOG IN</button>
-            <a name="create_account" href="#">Don't have an account? <span>Sign up</span></a>
+            <a id="register" href="#">Don't have an account? <span>Sign up</span></a>
         </form>
 
-        <form class="register-form">
+        <form class="register-form hidden" action="/register" method="POST">
+            <h1 id="register_title">REGISTER</h1>
             <label for="register_name_input">Name:</label>
             <input id="register_name_input" name="register_name" type="text" placeholder="Enter Name"/>
             <label for="register_email_input">Email:</label>
@@ -35,9 +34,10 @@
             <label for="register_password_input">Password:</label>
             <input id="register_password_input" name="register_password" type="password" placeholder="Enter Password"/>
             <button id="register_user_button" type="button">SIGN UP</button>
-            <a name="login" href="#">Already have an account? <span>Log in</span></a>
+            <a id="login" href="#">Already have an account? <span>Log in</span></a>
         </form>
     </div>
+    <script src="index.js" charset="utf-8"></script>
 </body>
 
 </html>
