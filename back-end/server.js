@@ -37,35 +37,10 @@ firebase.initializeApp(firebaseConfig);
 app.use(bodyParser.urlencoded({ extended:true}))
 app.use(bodyParser.json())
 
-
 app.post('/register', (req, res) => {
 	var register_name = req.body.register_name
 	var register_email = req.body.register_email
 	var register_password = req.body.register_password
-
-	// admin.auth().createUser ({
-	// 	email: register_email,
-	// 	password: register_password,
-	// 	displayName: register_name
-	// })
-	// .then(function(userRecord) {
-	// 	console.log('Successfully created new user: ', userRecord.uid)
-
-	// 	res.send({
-	// 		"status" : "registration_success",
-	// 		"name" : userRecord.displayName,
-	// 		"email" : userRecord.email,
-	// 		"password" : userRecord.password,
-	// 		"UID" : userRecord.uid
-	// 	})
-	// })
-	// .catch(function(error) {
-	// 	console.log('Error creating new user: ', error)
-	// 	res.send({
-	// 		"status" : "registration_fail",
-	// 		"error" : error
-	// 	})
-	// })
 
 	// create user using Firebase Auth SDK
 	firebase.auth().createUserWithEmailAndPassword(register_email, register_password).catch(functino(error) {
@@ -88,10 +63,16 @@ app.post('/login', (req, res) => {
 	})
 
 
-
 })
 
-// signout ?
+app.get('/logout' (req, res) => {
+	firebase.auth().signOut().then(function() {
+	  // successful.
+	}).catch(function(error) {
+	  // error
+	  console.log("logout failed with error error.message")
+	});
+})
 
 
 app.listen(port, () => console.log(`Express running on port ${port}`))
