@@ -11,12 +11,12 @@ var admin = require('firebase-admin')
 
 
 const port = 3000
+const host = '127.0.0.1'
 
-
-admin.initializeApp({
-	credential: admin.credential.applicationDefault(),
-	databaseURL: "https://contrail-db.firebaseio.com"
-})
+// admin.initializeApp({
+// 	credential: admin.credential.applicationDefault(),
+// 	databaseURL: "https://contrail-db.firebaseio.com"
+// })
 
 
 // Initialize Firebase
@@ -32,10 +32,27 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-
 // parsing middleware
 app.use(bodyParser.urlencoded({ extended:true}))
 app.use(bodyParser.json())
+
+// // allow CORS to communicate between different domains
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
+
+app.use('/', express.static('public'), (req, res, next) => {
+	console.log("static files sent")
+	next()
+})
+
+app.get('/', (req, res) => {
+	console.log("root received")
+	res.sendFile(__dirname + "/" + "../public/index.html")
+	next()
+})
 
 app.post('/register', (req, res) => {
 	var register_name = req.body.register_name
@@ -73,6 +90,6 @@ app.get('/logout', (req, res) => {
 })
 
 
-app.listen(port, () => console.log(`Express running on port ${port}`))
+app.listen(port, host, () => console.log(`Express running on port ${port}`))
 
 
