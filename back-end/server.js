@@ -43,7 +43,7 @@ app.post('/register', (req, res) => {
 	var register_password = req.body.register_password
 
 	// create user using Firebase Auth SDK
-	firebase.auth().createUserWithEmailAndPassword(register_email, register_password).catch(functino(error) {
+	firebase.auth().createUserWithEmailAndPassword(register_email, register_password).catch(function(error) {
 		var errorCode = error.code
 		var errorMessage = error.message
 		// handle error
@@ -61,11 +61,9 @@ app.post('/login', (req, res) => {
 		// handle error
 		console.log("login failed with error: ", errorMessage)
 	})
-
-
 })
 
-app.get('/logout' (req, res) => {
+app.get('/logout', (req, res) => {
 	firebase.auth().signOut().then(function() {
 	  // successful.
 	}).catch(function(error) {
