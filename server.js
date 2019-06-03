@@ -9,7 +9,6 @@ var firebase = require('firebase')
 require('firebase/auth')
 var admin = require('firebase-admin')
 
-
 const port = 3000
 const host = '127.0.0.1'
 
@@ -55,12 +54,12 @@ app.get('/', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-	var register_name = req.body.register_name
-	var register_email = req.body.register_email
-	var register_password = req.body.register_password
+	var registerName = req.body.register_name
+	var registerEmail = req.body.register_email
+	var registerPassword = req.body.register_password
 
 	// create user using Firebase Auth SDK
-	firebase.auth().createUserWithEmailAndPassword(register_email, register_password).catch(function(error) {
+	firebase.auth().createUserWithEmailAndPassword(registerEmail, registerPassword).catch(function(error) {
 		var errorCode = error.code
 		var errorMessage = error.message
 		// handle error
@@ -69,10 +68,10 @@ app.post('/register', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-	var login_email = req.body.login_email
-	var login_password = req.body.login_password
+	var loginEmail = req.body.login_email
+	var loginPassword = req.body.login_password
 
-	firebase.auth().signInWithEmailAndPassword(login_email, login_password).catch(function(error) {
+	firebase.auth().signInWithEmailAndPassword(loginEmail, loginPassword).catch(function(error) {
 		var errorCode = error.code
 		var errorMessage = error.message
 		// handle error
@@ -89,7 +88,4 @@ app.get('/logout', (req, res) => {
 	});
 })
 
-
 app.listen(port, host, () => console.log(`Express running on port ${port}`))
-
-
