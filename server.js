@@ -88,5 +88,4 @@ app.get('/logout', (req, res) => {
 	});
 })
 
-
 app.listen(port, host, () => console.log(`Express running on port ${port}`))
