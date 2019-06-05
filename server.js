@@ -1,22 +1,16 @@
 // server.js is the backend script for the server
 
 const express = require('express')
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser')
 
 const app = express()
 
-var firebase = require('firebase')
+const firebase = require('firebase')
 require('firebase/auth')
-var admin = require('firebase-admin')
+require('firebase/firestore')
 
 const port = 3000
 const host = '127.0.0.1'
-
-// admin.initializeApp({
-// 	credential: admin.credential.applicationDefault(),
-// 	databaseURL: "https://contrail-db.firebaseio.com"
-// })
-
 
 // Initialize Firebase
 var firebaseConfig = {
@@ -27,65 +21,42 @@ var firebaseConfig = {
 	storageBucket: "contrail-db.appspot.com",
 	messagingSenderId: "342081308461",
 	appId: "1:342081308461:web:7b8de20f963649bc"
-};
+}
+firebase.initializeApp(firebaseConfig)
 
-firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore()
 
 // parsing middleware
 app.use(bodyParser.urlencoded({ extended:true}))
 app.use(bodyParser.json())
-
-// // allow CORS to communicate between different domains
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
 
 app.use('/', express.static('public'), (req, res, next) => {
 	console.log("static files sent")
 	next()
 })
 
-app.get('/', (req, res) => {
-	console.log("root received")
-	res.sendFile(__dirname + "/" + "../public/index.html")
-	next()
-})
-
 app.post('/register', (req, res) => {
-	var registerName = req.body.register_name
-	var registerEmail = req.body.register_email
-	var registerPassword = req.body.register_password
+	var name = req.body.register_name
+	var email = req.body.register_email
+	//var userId = req.body.userId
 
-	// create user using Firebase Auth SDK
-	firebase.auth().createUserWithEmailAndPassword(registerEmail, registerPassword).catch(function(error) {
-		var errorCode = error.code
-		var errorMessage = error.message
-		// handle error
-		console.log("create user failed with error: ", errorMessage)
+	// save to db
+	db.collection("users").add({
+		//id: userId,
+		name: name,
+		email: email
 	})
-})
-
-app.post('/login', (req, res) => {
-	var loginEmail = req.body.login_email
-	var loginPassword = req.body.login_password
-
-	firebase.auth().signInWithEmailAndPassword(loginEmail, loginPassword).catch(function(error) {
-		var errorCode = error.code
-		var errorMessage = error.message
-		// handle error
-		console.log("login failed with error: ", errorMessage)
+	.then((docRef) => {
+		console.log("Document written with ID: ", docRef.id)
 	})
-})
+	.catch((error) => {
+		console.error("Error adding document: ", error)
+	})
 
-app.get('/logout', (req, res) => {
-	firebase.auth().signOut().then(function() {
-	  // successful.
-	}).catch(function(error) {
-	  // error
-	  console.log("logout failed with error error.message")
-	});
+
+	res.send("Registration complete")
+	// render app
+	//res.render('app')
 })
 
 app.listen(port, host, () => console.log(`Express running on port ${port}`))
