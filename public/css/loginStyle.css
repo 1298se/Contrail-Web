@@ -29,7 +29,7 @@ body {
     background-color: white;
     border-radius: 20px;
     width: 100%;
-    max-width: 330px;
+    max-width: 400px;
     padding: 20px;
     margin: auto;
 }
@@ -50,10 +50,7 @@ h1 {
     text-align: center;
 }
 
-input[type="email"] {
-    margin-bottom: 10px;
-}
-input[type="password"] {
+input {
     margin-bottom: 10px;
 }
 
