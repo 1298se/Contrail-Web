@@ -1,88 +1,66 @@
-body{
-    background-color: #EEEEEE;
-    background-position: center;
+a {
+    text-decoration: underline;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #00a6f1;
     font-family: "Nunito", sans-serif;
-    margin: 0;
 }
 
-button {
-    background: #00A6F1;
-    border: none;
-    border-radius: 20px;
+.btn-primary {
     color: white;
-    font-size: 18px;
-    height: 40px;
-    margin: 20px 0;
-    outline: none;
-    width: 100%;
+    background-color: #00a6f1;
+    margin-bottom: 10px;
+    border-color: #00a6f1;
 }
 
-button:hover {
-    background: white;
-    border: 2px solid #00A6F1;
-    color: #00A6F1;
-}
-
-form {
-    padding-bottom: 20px;
-}
-
-.form-container{
-    color: #00A6F1;
+.form-login, .form-register {
     background-color: white;
-    box-sizing: border-box;
-    border-radius: 25px;
-    left: 50%;
-    padding: 10px 40px 10px;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    width: 620px;
-}
-
-.form-container input {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #00A6F1;
-    height: 40px;
-    margin-bottom: 20px;
-    outline: none;
+    border-radius: 20px;
     width: 100%;
-}
-
-.form-container a {
-    color: #00A6F1;
-    text-decoration: none;
-}
-
-.form-container label {
-    font-weight: bold;
-}
-
-#form_title {
-    text-align: center;
+    max-width: 330px;
     padding: 20px;
-    margin: 20px 0;
+    margin: auto;
+}
+
+.form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+}
+.form-control:focus {
+    z-index: 2;
+}
+
+h1 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+input[type="email"] {
+    margin-bottom: 10px;
+}
+input[type="password"] {
+    margin-bottom: 10px;
 }
 
 .hidden {
     display: none;
 }
-.page-header {
-    background-color: #00A6F1;
-    border-bottom-left-radius: 25px;
-    border-bottom-right-radius: 25px;
-    color: white;
-    height: 150px;
-    position: absolute;
-    text-align: center;
-    width: 100%;
-}
 
-::placeholder {
-    color: #00A6F1;
-}
-
-span {
-    text-decoration: underline;
+label {
+    margin-bottom: 10px;
 }
