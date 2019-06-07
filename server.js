@@ -30,7 +30,7 @@ var db = firebase.firestore()
 app.use(bodyParser.urlencoded({ extended:true}))
 app.use(bodyParser.json())
 
-app.use('/', express.static('public'), (req, res, next) => {
+app.use(express.static('public'), (req, res, next) => {
 	console.log("static files sent")
 	next()
 })
