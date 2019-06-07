@@ -9,7 +9,6 @@
     <link href="bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap" rel="stylesheet">
-    <link href="signin.css" rel="stylesheet">
 </head>
 
 <body class="form-container">
@@ -19,22 +18,30 @@
         <input type="email" id="loginEmail" class="form-control" placeholder="Email address" required autofocus>
         <label for="loginPassword">Password</label>
         <input type="password" id="loginPassword" class="form-control" placeholder="Password" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">LOG IN</button>
+        <button id="loginButton" class="btn btn-lg btn-primary btn-block" type="button">LOG IN</button>
         <span>Don't have an account? <a id="loginToggle" href="#">Sign up</a></span>
     </form>
 
     <form class="form-register hidden">
         <h1 class="h3 font-weight-normal">REGISTER</h1>
         <label for="registerUsername">Username</label>
-        <input type="text" id="registerUsername" class="form-control" placeholder="Username" required autofocus>
+        <input id="registerUsername" type="text" class="form-control" placeholder="Username" required autofocus>
         <label for="registerEmail">Email address</label>
-        <input type="email" id="registerEmail" class="form-control" placeholder="Email address" required autofocus>
+        <input id="registerEmail" type="email" class="form-control" placeholder="Email address" required autofocus>
         <label for="registerPassword">Password</label>
-        <input type="password" id="registerPassword" class="form-control" placeholder="Password" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">SIGN UP</button>
+        <input id="registerPassword" type="password" class="form-control" placeholder="Password" required>
+        <button id="registerButton" class="btn btn-lg btn-primary btn-block" type="button">SIGN UP</button>
         <span>Already have an account? </span><a id="registerToggle" href="#">Log in</a></span>
     </form>
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
     
+    <script src="js/auth-init.js" charset="utf-8"></script>
     <script src="js/index.js" charset="utf-8"></script>
 </body>
 
