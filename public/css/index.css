@@ -1,0 +1,63 @@
+a {
+    text-decoration: underline;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #00a6f1;
+    font-family: "Nunito", sans-serif;
+}
+
+.btn-primary {
+    color: white;
+    background-color: #00a6f1;
+    margin-bottom: 10px;
+    border-color: #00a6f1;
+}
+
+.form-login, .form-register {
+    background-color: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    margin: auto;
+}
+
+.form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+}
+.form-control:focus {
+    z-index: 2;
+}
+
+h1 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+input {
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+label {
+    margin-bottom: 10px;
+}
