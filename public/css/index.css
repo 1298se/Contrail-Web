@@ -12,10 +12,9 @@ body {
     display: flex;
     -ms-flex-align: center;
     align-items: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
     background-color: #00a6f1;
     font-family: "Nunito", sans-serif;
+    flex-direction: column
 }
 
 .btn-primary {
@@ -54,10 +53,29 @@ input {
     margin-bottom: 10px;
 }
 
+input::placeholder {
+    color: #00a6f1 !important;
+}
+
 .hidden {
     display: none;
 }
 
 label {
     margin-bottom: 10px;
+}
+
+.title {
+    width: 100%;
+    padding: 40px 0 40px 0;
+    color: white;
+    border-radius: 20%;
+}
+
+.form-container {
+    width: 100%;
+    background-color: #f4f8ff;
+    flex: 1 1 auto;
+    padding: 150px 0 0 0;
+    color: #00a6f1;
 }
