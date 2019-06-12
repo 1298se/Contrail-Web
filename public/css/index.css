@@ -8,38 +8,39 @@ body {
 }
 
 body {
+    align-items: center;
     background-color: #f4f8ff;
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-align: center;
-    align-items: center;
+    flex-direction: column;
     font-family: "Nunito", sans-serif;
-    flex-direction: column
+    -ms-flex-align: center;
 }
 
 .btn-primary {
-    color: white;
     background-color: #00a6f1;
-    margin-bottom: 10px;
     border-color: #00a6f1;
+    color: white;
+    margin-bottom: 10px;
 }
 
 .form-login, .form-register {
     background-color: white;
     border-radius: 20px;
-    width: 100%;
+    margin: auto;
     max-width: 400px;
     padding: 20px;
-    margin: auto;
+    width: 100%;
 }
 
 .form-control {
-    position: relative;
     box-sizing: border-box;
+    font-size: 16px;
     height: auto;
     padding: 10px;
-    font-size: 16px;
+    position: relative;
 }
+
 .form-control:focus {
     z-index: 2;
 }
