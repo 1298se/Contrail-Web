@@ -8,11 +8,11 @@ body {
 }
 
 body {
+    background-color: #f4f8ff;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
     align-items: center;
-    background-color: #00a6f1;
     font-family: "Nunito", sans-serif;
     flex-direction: column
 }
@@ -66,16 +66,19 @@ label {
 }
 
 .title {
-    width: 100%;
-    padding: 40px 0 40px 0;
     color: white;
-    border-radius: 20%;
+}
+
+.title-container {
+    background-color: #00a6f1;
+    border-bottom-left-radius: 75px;
+    border-bottom-right-radius: 75px;
+    padding: 40px 0 40px 0;
+    width: 100%;
 }
 
 .form-container {
-    width: 100%;
-    background-color: #f4f8ff;
-    flex: 1 1 auto;
-    padding: 150px 0 0 0;
     color: #00a6f1;
+    padding: 150px 0 0 0;
+    width: 100%;
 }
