@@ -79,13 +79,16 @@ app.post('/login', (req, res) => {
 	})
 })
 
-app.get('/logout', (req, res) => {
-	firebase.auth().signOut().then(function() {
-	  // successful.
-	}).catch(function(error) {
-	  // error
-	  console.log("logout failed with error error.message")
-	});
+// verify token and render app.html
+app.get('/app', (req, res) => {
+	var token = req.body.token
+	admin.auth().verifyIdToken(token)
+		.then(function(decodedToken) {
+			res.render('/public/app')
+		}).catch(function(error) {
+			console.log("error validating user")
+			// send error msg to client
+		})
 })
 
 app.listen(port, host, () => console.log(`Express running on port ${port}`))
