@@ -15,6 +15,7 @@ body {
     display: flex;
     flex-direction: column;
     font-family: "Nunito", sans-serif;
+    height: 100%;
     -ms-flex-align: center;
 }
 
@@ -28,7 +29,7 @@ body {
 .form-login, .form-register {
     background-color: white;
     border-radius: 20px;
-    margin: auto;
+    margin-top: 10px;
     max-width: 400px;
     padding: 20px;
     width: 100%;
@@ -80,7 +81,9 @@ label {
 }
 
 .form-container {
+    align-items: center;
     color: #00a6f1;
-    padding: 150px 0 0 0;
+    display: flex;
+    justify-content: center;
     width: 100%;
 }
