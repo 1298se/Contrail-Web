@@ -77,15 +77,15 @@ function validateUser() {
             }
         }
 
-        xhr.open("POST", __dirname + "/register")
+        xhr.open("POST", "/register")
         xhr.setRequestHeader("Content-Type", "application/json")
         xhr.send(idToken)
     }).catch(function (error) {
-        console.log("validation failed")
+        console.log("validation failed" + error)
     })
 }
 
 function handleServerResponse(serverResponse) {
     // TODO: redirect to /get
-    window.location.replace(__dirname + "/app")
+    window.location.replace("/app")
 }
