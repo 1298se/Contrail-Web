@@ -61,3 +61,24 @@ input {
 label {
     margin-bottom: 10px;
 }
+<<<<<<< Updated upstream
+=======
+
+.title {
+    color: white;
+}
+
+.title-container {
+    background-color: #00a6f1;
+    border-bottom-left-radius: 75px;
+    border-bottom-right-radius: 75px;
+    padding: 40px 0 40px 0;
+    width: 100%;
+}
+
+.form-container {
+    color: #00a6f1;
+    padding: 5% 0 0 0;
+    width: 100%;
+}
+>>>>>>> Stashed changes
