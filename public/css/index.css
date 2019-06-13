@@ -1,5 +1,6 @@
 a {
     text-decoration: underline;
+    color: #00a6f1;
 }
 
 html,
@@ -8,39 +9,39 @@ body {
 }
 
 body {
+    align-items: center;
+    background-color: #f4f8ff;
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-align: center;
-    align-items: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    background-color: #00a6f1;
+    flex-direction: column;
     font-family: "Nunito", sans-serif;
+    -ms-flex-align: center;
 }
 
 .btn-primary {
-    color: white;
     background-color: #00a6f1;
-    margin-bottom: 10px;
     border-color: #00a6f1;
+    color: white;
+    margin-bottom: 10px;
 }
 
 .form-login, .form-register {
     background-color: white;
     border-radius: 20px;
-    width: 100%;
+    margin: auto;
     max-width: 400px;
     padding: 20px;
-    margin: auto;
+    width: 100%;
 }
 
 .form-control {
-    position: relative;
     box-sizing: border-box;
+    font-size: 16px;
     height: auto;
     padding: 10px;
-    font-size: 16px;
+    position: relative;
 }
+
 .form-control:focus {
     z-index: 2;
 }
@@ -54,6 +55,10 @@ input {
     margin-bottom: 10px;
 }
 
+input::placeholder {
+    color: #00a6f1 !important;
+}
+
 .hidden {
     display: none;
 }
@@ -61,8 +66,11 @@ input {
 label {
     margin-bottom: 10px;
 }
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> master
 
 .title {
     color: white;
@@ -78,7 +86,13 @@ label {
 
 .form-container {
     color: #00a6f1;
+<<<<<<< HEAD
     padding: 5% 0 0 0;
     width: 100%;
 }
 >>>>>>> Stashed changes
+=======
+    padding: 150px 0 0 0;
+    width: 100%;
+}
+>>>>>>> master
