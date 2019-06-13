@@ -29,6 +29,7 @@ body {
 .form-login, .form-register {
     background-color: white;
     border-radius: 20px;
+    margin-top: 10px;
     max-width: 400px;
     padding: 20px;
     width: 100%;
