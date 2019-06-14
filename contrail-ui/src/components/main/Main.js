@@ -1,35 +1,41 @@
 import React, { Component } from 'react';
-import Nav from 'react-bootstrap/Nav';
+import { Container, Row, Col, Nav, Dropdown, InputGroup, FormControl, DropdownButton, Button }  from 'react-bootstrap';
 import logo from './logo.svg'
+import '../../css/main.css'
 
 class Main extends Component {
       
 
     render() {
       return (
-        <div>
-          <div>
-            <img src={logo} alt='logo' style={{ height: 100, width: 100 }} />
-          </div>
+        <Container className='main'>
+          <Row className='header'>
+            <Col> <img src={logo} alt='logo' style={{ height: '100px', width: '100px' }} /> </Col>
+            <Col xs={5}>
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Search"
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+              />
+              <InputGroup.Append>
+                <InputGroup.Text id="basic-addon2">Go</InputGroup.Text>
+              </InputGroup.Append>
+            </InputGroup>
+            </Col>
+            <Col xs={{ span: 2, offset: 2}}> <Button variant="outline-danger">Sign Out</Button> </Col>
+          </Row>         
           <div>  
-            <Nav justify variant="tabs" defaultActiveKey="/home">
-              <Nav.Item>
-                <Nav.Link href="/home">Files</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="link-1">Favorites</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="link-2">Shared</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="disabled" disabled>
-                  Trash
-                </Nav.Link>
-              </Nav.Item>
-            </Nav>
+          <Nav defaultActiveKey="/home" className="flex-column">
+            <Nav.Link href="/home">Files</Nav.Link>
+            <Nav.Link eventKey="link-1">Favorites</Nav.Link>
+            <Nav.Link eventKey="link-2">Shared</Nav.Link>
+            <Nav.Link eventKey="disabled" disabled>
+              Trash
+            </Nav.Link>
+          </Nav>
           </div>
-        </div>
+        </Container>
       );
     }
 }
