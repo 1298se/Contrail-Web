@@ -12,10 +12,9 @@ var admin = require('firebase-admin')
 const port = 3000
 const host = '127.0.0.1'
 
-// admin.initializeApp({
-// 	credential: admin.credential.applicationDefault(),
-// 	databaseURL: "https://contrail-db.firebaseio.com"
-// })
+const serviceAccount = require("C:\\Users\\David\\Downloads\\contrail-db-firebase-adminsdk-vg7u5-38482023bf.json")
+
+
 
 
 // Initialize Firebase
@@ -30,6 +29,14 @@ var firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
+
+// Init db
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount)
+})
+
+let db = admin.firestore()
 
 // parsing middleware
 app.use(bodyParser.urlencoded({ extended:true}))
@@ -47,37 +54,43 @@ app.use('/', express.static('public'), (req, res, next) => {
 	next()
 })
 
-app.get('/', (req, res) => {
-	console.log("root received")
-	res.sendFile(__dirname + "/" + "../public/index.html")
-	next()
-})
+// app.get('/', (req, res) => {
+// 	console.log("root received")
+// 	res.sendFile(__dirname + "/" + "../public/index.html")
+// 	next()
+// })
 
-app.post('/register', (req, res) => {
-	var registerName = req.body.register_name
-	var registerEmail = req.body.register_email
-	var registerPassword = req.body.register_password
+app.get('/register', (req, res) => {
+	var name = "dave"
+	var email = "myemail"
+	var userId = "1"
 
-	// create user using Firebase Auth SDK
-	firebase.auth().createUserWithEmailAndPassword(registerEmail, registerPassword).catch(function(error) {
-		var errorCode = error.code
-		var errorMessage = error.message
-		// handle error
-		console.log("create user failed with error: ", errorMessage)
+	let new_user = db.collection('users').doc(userId)
+
+	new_user.set({
+		name: name,
+		email: email,
+		id: userId,
+		owned: [
+			"doc1",
+			"doc2"
+		],
+		shared: {
+			sharedByUser: [
+				"doc1"
+			],
+			sharedToUser: [
+				"doc4",
+				"doc5"
+			]
+		}
 	})
+
+	console.log("register user complete")
+	res.send("register")
+	// res.redirect('/app')
 })
 
-app.post('/login', (req, res) => {
-	var loginEmail = req.body.login_email
-	var loginPassword = req.body.login_password
-
-	firebase.auth().signInWithEmailAndPassword(loginEmail, loginPassword).catch(function(error) {
-		var errorCode = error.code
-		var errorMessage = error.message
-		// handle error
-		console.log("login failed with error: ", errorMessage)
-	})
-})
 
 // verify token and render app.html
 app.get('/app', (req, res) => {
@@ -88,6 +101,7 @@ app.get('/app', (req, res) => {
 		}).catch(function(error) {
 			console.log("error validating user")
 			// send error msg to client
+			res.send("error: token validation failed")
 		})
 })
 
