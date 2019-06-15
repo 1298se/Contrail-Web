@@ -1,9 +1,9 @@
 // server.js is the backend script for the server
-const app = express()
 const express = require('express')
 const bodyParser = require('body-parser');
 var admin = require('firebase-admin')
 
+const app = express()
 const port = 3000
 const host = '127.0.0.1'
 
@@ -25,7 +25,13 @@ app.use('/', express.static('public'), (req, res, next) => {
 	next()
 })
 
-app.get('/register', (req, res) => {
+app.get('/', (req, res, next) => {
+    console.log("root route received")
+    res.sendFile(__dirname + "/" + "public/index.html")
+    next()
+})
+
+app.post('/register', (req, res) => {
 	try {
 	const token = req.body.idToken
 	}
@@ -68,7 +74,7 @@ app.get('/app', (req, res) => {
 			res.render('/public/app')
 		}).catch(function(error) {
 			console.log("error validating user")
-			res.send("error: token validation failed")
+			res.status(403).send("error: token validation failed")
 		})
 })
 
