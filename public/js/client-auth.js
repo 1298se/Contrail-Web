@@ -1,7 +1,7 @@
 var xhr = new XMLHttpRequest();
 
 /**
- * Login and Signup button functionality
+ * Login and Signup button configuration
  */
 var loginButton = document.getElementById("loginButton")
 var registerButton = document.getElementById("registerButton")
@@ -10,7 +10,7 @@ loginButton.addEventListener("click", loginUser)
 registerButton.addEventListener("click", registerUser)
 
 /**
- * Logging in user with Firebase
+ * Logging in user with Firebase Auth.
  */
 function loginUser() {
     console.log("logging in user")
@@ -26,7 +26,7 @@ function loginUser() {
 }
 
 /**
- *  Registering user with Firebase
+ *  Registering user with Firebase Auth. 
  */
 function registerUser() {
     console.log("registering user")
@@ -61,7 +61,8 @@ function initializeUser(registerUsername) {
 }
 
 /**
- * Sends token from Firebase to server using {@Link XMLHttpRequest}
+ * Sends token from Firebase to server using {@Link XMLHttpRequest}.
+ * On server response 200, redirect to main app page
  */
 function validateUser() {
     console.log("validating user")
