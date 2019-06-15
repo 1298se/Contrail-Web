@@ -79,7 +79,7 @@ function validateUser() {
         }
 
         xhr.open("POST", "/register")
-        xhr.setRequestHeader("Content-Type", "application/json")
+        // xhr.setRequestHeader("Content-Type", "application/json")
         xhr.send(idToken)
     }).catch(function (error) {
         console.log("validation failed" + error)
