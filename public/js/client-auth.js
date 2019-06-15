@@ -19,6 +19,7 @@ function loginUser() {
 
     firebase.auth().signInWithEmailAndPassword(loginEmail, loginPassword).then(function () {
         console.log("login successful")
+        validateUser();
     }).catch(function (error) {
         console.log("login failed")
     })
@@ -53,7 +54,6 @@ function initializeUser(registerUsername) {
         displayName: registerUsername
     }).then(function () {
         console.log("initialization successful")
-
         validateUser()
     }).catch(function (error) {
         console.log("initialization failed")
@@ -71,8 +71,8 @@ function validateUser() {
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 console.log("server response received")
-                handleServerResponse(xhr.response)
-            } else {
+                window.location.href = "http://google.com"
+                } else {
                 console.log("request failed")
             }
         }
@@ -83,9 +83,4 @@ function validateUser() {
     }).catch(function (error) {
         console.log("validation failed" + error)
     })
-}
-
-function handleServerResponse(serverResponse) {
-    // TODO: redirect to /get
-    window.location.replace("/app")
 }
