@@ -15,8 +15,6 @@ const host = '127.0.0.1'
 const serviceAccount = require("C:\\Users\\David\\Downloads\\contrail-db-firebase-adminsdk-vg7u5-38482023bf.json")
 
 
-
-
 // Initialize Firebase
 var firebaseConfig = {
 	apiKey: "AIzaSyB9tiUIhIC_R9mAibHA71A8WM1Mt9euL0w",
@@ -61,48 +59,51 @@ app.use('/', express.static('public'), (req, res, next) => {
 // })
 
 app.get('/register', (req, res) => {
-	var name = "dave"
-	var email = "myemail"
-	var userId = "1"
+	try {
+	const token = req.body.idToken
+	}
+	catch(error) {
+		console.log("error getting token ", error)
+	}
+	admin.auth().verifyIdToken(token)
+		.then(function(decodedToken) {
+			const uid = decodedToken.uid
+			return admin.auth().getUser(uid)
+		})
+		.then(function(userRecord) {
+			let new_user = db.collection('users').doc(userId)
+			new_user.set({
+				name: userRecord.displayName,
+				email: userRecord.email,
+				id: userRecord.uid,
+				owned: [],
+				shared: {
+					sharedByUser: [],
+					sharedToUser: []
+				}
+			})
+	  })
+		.catch(function(error) {
+			console.log("error registering user", error)
+			res.send("error: registration")
+		})
 
-	let new_user = db.collection('users').doc(userId)
-
-	new_user.set({
-		name: name,
-		email: email,
-		id: userId,
-		owned: [
-			"doc1",
-			"doc2"
-		],
-		shared: {
-			sharedByUser: [
-				"doc1"
-			],
-			sharedToUser: [
-				"doc4",
-				"doc5"
-			]
-		}
-	})
-
+	res.sendStatus(200)
 	console.log("register user complete")
-	res.send("register")
-	// res.redirect('/app')
 })
 
 
 // verify token and render app.html
 app.get('/app', (req, res) => {
-	var token = req.body.token
+	var token = req.body.idToken
 	admin.auth().verifyIdToken(token)
 		.then(function(decodedToken) {
 			res.render('/public/app')
 		}).catch(function(error) {
 			console.log("error validating user")
-			// send error msg to client
 			res.send("error: token validation failed")
 		})
 })
 
 app.listen(port, host, () => console.log(`Express running on port ${port}`))
+ 
