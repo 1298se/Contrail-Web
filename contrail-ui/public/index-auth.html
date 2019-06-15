@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Contrail Web Authentication</title>
+
+    <link href="bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../src/css/index-auth.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="title-container shadow-lg">    
+        <h1 class="title font-weight-bold">CONTRAIL</h1>
+    </div>
+    <div class="form-container my-auto">    
+        <form class="form-login shadow-lg">
+            <h1 class="h3 font-weight-bold">LOGIN</h1>
+            <label for="loginEmail">Email Address</label>
+            <input type="email" id="loginEmail" class="form-control" placeholder="Email Address" required autofocus>
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-control" placeholder="Password" required>
+            <button id="loginButton" class="btn btn-lg btn-primary btn-block" type="button">LOG IN</button>
+            <span>Don't have an account? <a id="loginToggle" href="#">Sign up</a></span>
+        </form>
+
+        <form class="form-register hidden shadow-lg">
+            <h1 class="h3 font-weight-bold">REGISTER</h1>
+            <label for="registerUsername">Username</label>
+            <input id="registerUsername" type="text" class="form-control" placeholder="Username" required autofocus>
+            <label for="registerEmail">Email Address</label>
+            <input id="registerEmail" type="email" class="form-control" placeholder="Email Address" required autofocus>
+            <label for="registerPassword">Password</label>
+            <input id="registerPassword" type="password" class="form-control" placeholder="Password" required>
+            <button id="registerButton" class="btn btn-lg btn-primary btn-block" type="button">SIGN UP</button>
+            <span>Already have an account? </span><a id="registerToggle" href="#">Log in</a></span>
+        </form>
+    </div>
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
+    
+    <script src="../src/components/login/auth-init.js" charset="utf-8"></script>
+    <script src="../src/components/login/client-auth.js" charset="utf-8"></script>
+    <script src="../src/components/login/index-auth.js" charset="utf-8"></script>
+</body>
+
+</html>

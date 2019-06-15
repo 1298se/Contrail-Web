@@ -1,0 +1,89 @@
+a {
+    text-decoration: underline;
+    color: #00a6f1;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+    align-items: center;
+    background-color: #f4f8ff;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: column;
+    font-family: "Nunito", sans-serif;
+    height: 100%;
+    -ms-flex-align: center;
+}
+
+.btn-primary {
+    background-color: #00a6f1;
+    border-color: #00a6f1;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.form-login, .form-register {
+    background-color: white;
+    border-radius: 20px;
+    margin: 10px 0 10px 0;
+    max-width: 400px;
+    padding: 20px;
+    width: 100%;
+}
+
+.form-control {
+    box-sizing: border-box;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    position: relative;
+}
+
+.form-control:focus {
+    z-index: 2;
+}
+
+h1 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+input {
+    margin-bottom: 10px;
+}
+
+input::placeholder {
+    color: #00a6f1 !important;
+}
+
+.hidden {
+    display: none;
+}
+
+label {
+    margin-bottom: 10px;
+}
+
+.title {
+    color: white;
+}
+
+.title-container {
+    background-color: #00a6f1;
+    border-bottom-left-radius: 75px;
+    border-bottom-right-radius: 75px;
+    padding: 40px 0 40px 0;
+    width: 100%;
+}
+
+.form-container {
+    align-items: center;
+    color: #00a6f1;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
