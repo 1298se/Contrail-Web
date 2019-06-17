@@ -74,12 +74,11 @@ function validateUser() {
                 console.log("server response received")
                 window.location.href = "http://google.com"
                 } else {
-                console.log("request failed")
+                console.log("request loading")
             }
         }
 
         xhr.open("POST", "/register")
-        // xhr.setRequestHeader("Content-Type", "application/json")
         xhr.send(idToken)
     }).catch(function (error) {
         console.log("validation failed" + error)
