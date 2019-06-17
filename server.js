@@ -7,7 +7,7 @@ const app = express()
 const port = 3000
 const host = '127.0.0.1'
 
-const serviceAccount = require("C:\\Users\\David\\Downloads\\contrail-db-firebase-adminsdk-vg7u5-38482023bf.json")
+const serviceAccount = require("./ServiceAccountKey")
 
 // Init db
 admin.initializeApp({
