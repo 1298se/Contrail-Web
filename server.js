@@ -70,7 +70,7 @@ app.get('/app', (req, res) => {
 	var token = req.body.idToken
 	admin.auth().verifyIdToken(token)
 		.then(function(decodedToken) {
-			res.render('/public/app')
+			res.sendFile(path.join(__dirname, 'main', 'build', 'index.html'))
 		}).catch(function(error) {
 			console.log("error validating user")
 			res.status(403).send("error: token validation failed")

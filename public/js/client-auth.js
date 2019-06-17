@@ -19,7 +19,7 @@ function loginUser() {
 
     firebase.auth().signInWithEmailAndPassword(loginEmail, loginPassword).then(function () {
         console.log("login successful")
-        validateUser();
+        validateUserLogin();
     }).catch(function (error) {
         console.log("login failed")
     })
@@ -54,25 +54,47 @@ function initializeUser(registerUsername) {
         displayName: registerUsername
     }).then(function () {
         console.log("initialization successful")
-        validateUser()
+        validateUserRegister()
     }).catch(function (error) {
         console.log("initialization failed")
     })
 }
 
+function validateUserLogin() {
+    console.log("validating user login")
+
+    firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+        console.log("validation successful", idToken)
+        xhr.onreadystatechange = function() {
+            console.log('xhr', xhr)
+
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log("server response received", idToken)
+                window.location.href = '/app'
+                } else {
+                console.log("request loading")
+            }
+        }
+
+        xhr.open("GET", "/app")
+        xhr.send(idToken)
+    }).catch(function (error) {
+        console.log("validation failed" + error)
+    })
+}
 /**
  * Sends token from Firebase to server using {@Link XMLHttpRequest}.
  * On server response 200, redirect to main app page
  */
-function validateUser() {
-    console.log("validating user")
+function validateUserRegister() {
+    console.log("validating user registration")
 
     firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
         console.log("validation successful")
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 console.log("server response received")
-                window.location.href = "http://google.com"
+                window.location.href = '/app'
                 } else {
                 console.log("request loading")
             }
