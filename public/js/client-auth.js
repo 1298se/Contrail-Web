@@ -64,22 +64,20 @@ function validateUserLogin() {
     console.log("validating user login")
 
     firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
-        console.log("validation successful", idToken)
+        console.log("validating user login")
         xhr.onreadystatechange = function() {
-            console.log('xhr', xhr)
-
             if (xhr.readyState == 4 && xhr.status == 200) {
-                console.log("server response received", idToken)
+                console.log("server response received")
                 window.location.href = '/app'
-                } else {
+            } else {
                 console.log("request loading")
             }
         }
 
-        xhr.open("GET", "/app")
+        xhr.open("POST", "/login")
         xhr.send(idToken)
     }).catch(function (error) {
-        console.log("validation failed" + error)
+        console.log("validation failed", error)
     })
 }
 /**
@@ -95,7 +93,7 @@ function validateUserRegister() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 console.log("server response received")
                 window.location.href = '/app'
-                } else {
+            } else {
                 console.log("request loading")
             }
         }
@@ -103,6 +101,6 @@ function validateUserRegister() {
         xhr.open("POST", "/register")
         xhr.send(idToken)
     }).catch(function (error) {
-        console.log("validation failed" + error)
+        console.log("validation failed", error)
     })
 }

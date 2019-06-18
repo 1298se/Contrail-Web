@@ -18,7 +18,7 @@ admin.initializeApp({
 let db = admin.firestore()
 
 // parsing middleware
-app.use(bodyParser.urlencoded({ extended:true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.text())
 app.use(bodyParser.json())
 
@@ -27,55 +27,56 @@ app.use(express.static('public'))
 app.get('/', (req, res) => {
 	const auth_page = path.join(__dirname, 'public', 'login.html')
 	console.log(`Root route received, sending root: ${auth_page}`)
-    res.sendFile(auth_page)
+	res.sendFile(auth_page)
 })
 
-app.post('/register', (req, res) => {
-
+app.post('/login', (req, res) => {
 	const token = req.body
-	if(!token) {
+	if (token == null) {
 		console.log("error getting token")
-		res.status(400).send('Bad Request')
+		res.status(400).send('Bad Request: ID Token is null')
+	} else {
+		admin.auth().verifyIdToken(token).then(function (decodedToken) {
+			res.sendStatus(200)
+		}).catch(function (error) {
+			console.log("error logging in user")
+		})
+	}
+})
+app.post('/register', (req, res) => {
+	const token = req.body
+	if (token == null) {
+		console.log("error getting token")
+		res.status(400).send('Bad Request: ID Token is null')
 	}
 	else {
-		admin.auth().verifyIdToken(token)
-			.then(function(decodedToken) {
-				return admin.auth().getUser(decodedToken.uid)
+		admin.auth().verifyIdToken(token).then(function (decodedToken) {
+			return admin.auth().getUser(decodedToken.uid)
+		}).then(function (userRecord) {
+			let new_user = db.collection('users').doc(userRecord.uid)
+			new_user.set({
+				name: userRecord.displayName,
+				email: userRecord.email,
+				owned: [],
+				shared: {
+					sharedByUser: [],
+					sharedToUser: []
+				}
 			})
-			.then(function(userRecord) {
-				let new_user = db.collection('users').doc(userRecord.uid)
-				new_user.set({
-					name: userRecord.displayName,
-					email: userRecord.email,
-					owned: [],
-					shared: {
-						sharedByUser: [],
-						sharedToUser: []
-					}
-				})
-		  })
-			.catch(function(error) {
-				console.log("error registering user", error)
-				res.send("error: registration")
-			})
+		}).catch(function (error) {
+			console.log("error registering user", error)
+			res.send("error: registration")
+		})
 
 		res.sendStatus(200)
 		console.log("register user complete")
 	}
 })
 
-
 // verify token and render app.html
 app.get('/app', (req, res) => {
-	var token = req.body.idToken
-	admin.auth().verifyIdToken(token)
-		.then(function(decodedToken) {
-			res.sendFile(path.join(__dirname, 'main', 'build', 'index.html'))
-		}).catch(function(error) {
-			console.log("error validating user")
-			res.status(403).send("error: token validation failed")
-		})
+	console.log("app route received:")
+	res.sendFile(path.join(__dirname, 'main', 'public', 'index.html'))
 })
 
 app.listen(port, host, () => console.log(`Express running on port ${port}`))
- 
