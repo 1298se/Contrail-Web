@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
+	console.log("receiving from /login")
 	const token = req.body
 	if (token == null) {
 		console.log("error getting token")
@@ -44,6 +45,7 @@ app.post('/login', (req, res) => {
 	}
 })
 app.post('/register', (req, res) => {
+	console.log("receiving from /register")
 	const token = req.body
 	if (token == null) {
 		console.log("error getting token")
@@ -75,7 +77,7 @@ app.post('/register', (req, res) => {
 
 // verify token and render app.html
 app.get('/app', (req, res) => {
-	console.log("app route received:")
+	console.log("app route received")
 	res.sendFile(path.join(__dirname, 'main', 'public', 'index.html'))
 })
 
