@@ -63,10 +63,7 @@ app.post('/register', (req, res) => {
 				profileImageUri: null,
 				documents: {
 					owned: [],
-					shared: {
-						sharedByUser: [],
-						sharedToUser: []
-					}
+					sharedToUser: []
 				}
 			})
 		}).catch(function (error) {
