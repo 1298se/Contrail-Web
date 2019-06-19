@@ -57,12 +57,16 @@ app.post('/register', (req, res) => {
 		}).then(function (userRecord) {
 			let new_user = db.collection('users').doc(userRecord.uid)
 			new_user.set({
-				name: userRecord.displayName,
+				userId: userRecord.uid,
+				displayName: userRecord.displayName,
 				email: userRecord.email,
-				owned: [],
-				shared: {
-					sharedByUser: [],
-					sharedToUser: []
+				profileImageUri: null,
+				documents: {
+					owned: [],
+					shared: {
+						sharedByUser: [],
+						sharedToUser: []
+					}
 				}
 			})
 		}).catch(function (error) {
