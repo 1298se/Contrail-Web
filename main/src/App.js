@@ -1,25 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Redirect } from 'react-router-dom'
+import Auth from './component/auth'
+import Files from './component/files'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+          <Route path="/auth" exact component={Auth} />
+          <Route path="/app/files" exact component={Files} />
+          <Redirect to='/auth'/>
+    </Router>
   );
 }
 

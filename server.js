@@ -44,6 +44,7 @@ app.post('/login', (req, res) => {
 		})
 	}
 })
+
 app.post('/register', (req, res) => {
 	console.log("receiving from /register")
 	const token = req.body
