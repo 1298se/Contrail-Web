@@ -1,0 +1,22 @@
+{
+  "name": "contrail-web",
+  "version": "1.0.0",
+  "description": "Contrail is a file storage and sharing application.\r Created using\r   - React\r   - Node + Express\r   - Firebase",
+  "main": "index.js",
+  "scripts": {
+    "install": "npm run-script installApi && npm run-script installUi",
+    "installApi": "cd .\\contrail-api && npm install",
+    "installUi": "cd .\\contrail-ui && npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1298se/Contrail-Web.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/1298se/Contrail-Web/issues"
+  },
+  "homepage": "https://github.com/1298se/Contrail-Web#readme"
+}
