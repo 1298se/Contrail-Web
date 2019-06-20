@@ -1,36 +1,19 @@
-import React,  { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Main from './components/main/Main';
-/*
-import Files from './components/files/Files';
-import Favorites from './components/favorites/Favorites';
-import Shared from './components/shared/Shared';
-import Trash from './components/trash/Trash';
-*/
+import React from 'react';
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Redirect } from 'react-router-dom'
+import Auth from './component/auth'
+import Files from './component/files'
 
-class App extends Component {
-  constructor() {
-    super();
-        this.state = {
-            auth: false,
-            user: {
-              name: 'test'
-            },
-            route: 'files'
-        }
-  }
-  
-
-
-
-  render() {
-    return (
-      <div style={{width: '100%'}}>
-      <Main />
-      </div>
-    );
-  }
+function App() {
+  return (
+    <Router>
+          <Route path="/auth" exact component={Auth} />
+          <Route path="/app/files" exact component={Files} />
+          <Redirect to='/auth'/>
+    </Router>
+  );
 }
 
 export default App;
