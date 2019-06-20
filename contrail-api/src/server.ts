@@ -8,7 +8,6 @@ const app = express();
 const port = 5000;
 const host = "127.0.0.1";
 // Init db
-console.log("hello");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
