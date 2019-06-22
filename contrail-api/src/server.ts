@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
   res.sendFile(authPage);
 });
 
-app.post("/login", (req, res) => {
+app.post("/api/login", (req, res) => {
   const token = req.body;
   if (token == null) {
     res.status(400).send("Bad Request: ID Token is null");
@@ -35,15 +35,16 @@ app.post("/login", (req, res) => {
       .auth()
       .verifyIdToken(token)
       .then((decodedToken) => {
-        res.sendStatus(200);
+        res.status(200).send("userLoginSuccessful");
       })
       .catch((error) => {
+        res.status(200).send("userLoginFailed")
         console.error(`/login - ${error}`);
       });
   }
 });
 
-app.post("/register", (req, res) => {
+app.post("/api/register", (req, res) => {
   const token = req.body;
   if (token == null) {
     res.status(400).send("Bad Request: ID Token is null");
@@ -66,14 +67,13 @@ app.post("/register", (req, res) => {
           profileImageUri: null,
           userId: userRecord.uid,
         });
+        console.log("register user complete");
+        res.status(200).send("userRegistrationSuccess");
       })
       .catch((error) => {
         console.log("error registering user", error);
-        res.send("error: registration");
+        res.status(200).send("userRegistrationFailed");
       });
-
-    res.sendStatus(200);
-    console.log("register user complete");
   }
 });
 
