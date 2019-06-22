@@ -68,19 +68,13 @@ app.post("/api/register", (req, res) => {
           userId: userRecord.uid,
         });
         console.log("register user complete");
-        res.status(200).send("userRegistrationSuccess");
+        res.status(200).send("userRegistrationSuccessful");
       })
       .catch((error) => {
         console.log("error registering user", error);
         res.status(200).send("userRegistrationFailed");
       });
   }
-});
-
-// verify token and render app.html
-app.get("/app", (req, res) => {
-  console.log("app route received");
-  res.sendFile(path.join(__dirname, "main", "public", "index.html"));
 });
 
 app.listen(port, host, () => console.log(`Express running on port ${port}`));
