@@ -38,7 +38,7 @@ app.post("/api/login", (req, res) => {
         res.status(200).send("userLoginSuccessful");
       })
       .catch((error) => {
-        res.status(200).send("userLoginFailed")
+        res.status(500).send("userLoginFailed")
         console.error(`/login - ${error}`);
       });
   }
@@ -72,7 +72,7 @@ app.post("/api/register", (req, res) => {
       })
       .catch((error) => {
         console.log("error registering user", error);
-        res.status(200).send("userRegistrationFailed");
+        res.status(500).send("userRegistrationFailed");
       });
   }
 });
