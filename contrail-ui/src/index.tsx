@@ -16,10 +16,10 @@ const store = createStore<StoreState, EnthusiasmAction, any, any>(enthusiasm, {
 });
 
 ReactDOM.render(
-  <Provider store={store}>
+  (<Provider store={store}>
     <ThemeProvider theme={theme}>
         <App />
-    </ThemeProvider >,
-  </Provider>,
+    </ThemeProvider >
+  </Provider>),
   document.getElementById("root") as HTMLElement,
 );
