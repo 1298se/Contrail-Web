@@ -67,7 +67,7 @@ export function getUserToken () {
     if(user == null) {
         return null
     }
-    firebase.auth().currentUser.getIdToken(true).then(function(idToken) {
+    user.getIdToken(true).then(function(idToken) {
         return idToken
       }).catch(function(error) {
         return null
