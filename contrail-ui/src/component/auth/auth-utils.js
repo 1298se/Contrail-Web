@@ -1,9 +1,8 @@
 
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
-import 'firebase/firestore'
 
-
+// TODO: Call initializeFirebase in App component mount
 export function initializeFirebase() {
     var firebaseConfig = {
         apiKey: "AIzaSyB9tiUIhIC_R9mAibHA71A8WM1Mt9euL0w",
