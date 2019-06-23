@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 app.post("/api/login", (req, res) => {
   const token = req.body;
   if (token == null) {
-    res.status(400).send("Bad Request: ID Token is null");
+    res.status(401).send("Bad Request: ID Token is null");
   } else {
     admin
       .auth()
@@ -47,7 +47,7 @@ app.post("/api/login", (req, res) => {
 app.post("/api/register", (req, res) => {
   const token = req.body;
   if (token == null) {
-    res.status(400).send("Bad Request: ID Token is null");
+    res.status(401).send("Bad Request: ID Token is null");
   } else {
     admin
       .auth()
