@@ -1,11 +1,15 @@
-import React, { Component } from 'react';
-import Button from '@material-ui/core/Button'
+import React, { Component } from 'react'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
+import { initializeFirebase } from './auth-utils'
 
 export default class Auth extends Component {
   state = {
     displayForm: "LoginForm"
+  }
+
+  componentDidMount() {
+    initializeFirebase()
   }
 
   toggleForm = () => {

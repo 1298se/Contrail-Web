@@ -23,6 +23,10 @@ class LoginForm extends Component {
         })
     }
 
+    handeSubmit = () => {
+        loginUser(this.state.email, this.state.password)
+    }
+
     render() {
     const { classes, toggleForm } = this.props
 
@@ -68,7 +72,7 @@ class LoginForm extends Component {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
-                    onClick={loginUser}
+                    onClick={this.handleSubmit}
                 >
                     Log In
                 </Button>

@@ -24,6 +24,10 @@ class RegisterForm extends Component {
         })
     }
 
+    handleSubmit = () => {
+        registerUser(this.state.displayName, this.state.email, this.state.password)
+    }
+
     render() {
     const { classes, toggleForm } = this.props
 
@@ -81,7 +85,7 @@ class RegisterForm extends Component {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
-                    onClick={registerUser}
+                    onClick={this.handleSubmit}
                 >
                     Sign Up
                 </Button>
