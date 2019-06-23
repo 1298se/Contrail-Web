@@ -3,33 +3,31 @@ import Button from '@material-ui/core/Button'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
 
-class Auth extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      displayForm: 'LoginForm'
-    }
+export default class Auth extends Component {
+  state = {
+    displayForm: "LoginForm"
   }
 
   toggleForm = () => {
     const { displayForm } = this.state;
     this.setState({
-        displayForm: this.state.displayForm === 'LoginForm' ? 'RegisterForm' : 'LoginForm'
+      displayForm: this.state.displayForm === "LoginForm" ? "RegisterForm" : "LoginForm"
     })
-    console.log(this.state.displayForm)
   }
 
-    render() {
-      return (
-        <div>
-          <Button variant="contained" onClick={this.toggleForm}>Click me</Button>
-          {switch (this.state.displayForm) {
-            case "LoginForm": <LoginForm />
-            case "RegisterForm": <RegisterForm />
-          }}
-        </div>
-      );
+  render() {
+    var renderForm
+    switch (this.state.displayForm) {
+      case "LoginForm": renderForm = <LoginForm toggleForm={this.toggleForm} />
+        break
+      case "RegisterForm": renderForm = <RegisterForm toggleForm={this.toggleForm} />
+        break
     }
-}
 
-export default Auth;
+    return (
+      <div>
+        {renderForm}
+      </div>
+    )
+  }
+}
