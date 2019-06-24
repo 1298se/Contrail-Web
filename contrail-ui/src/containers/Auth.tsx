@@ -1,8 +1,8 @@
-import Auth from '../components/Auth/Auth/Auth';
-import * as actions from '../actions';
-import { StoreState } from '../types/index';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import * as actions from "../actions";
+import Auth from "../components/auth/auth-page/Auth";
+import { StoreState } from "../types/index";
 
 export function mapStateToProps({ enthusiasmLevel, languageName }: StoreState) {
   return {

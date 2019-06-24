@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { initializeFirebase } from "../../../utils/auth-utils";
-import LoginForm from "../LoginForm/LoginForm";
-import RegisterForm from "../RegisterForm/RegisterForm";
-import { AuthState } from "./Auth.type";
+import LoginForm from "../login-form/LoginForm";
+import RegisterForm from "../register-form/RegisterForm";
+import { AuthState } from "./auth.type";
 
 export default class Auth extends Component<any, AuthState> {
   constructor(props: Readonly<any>){
