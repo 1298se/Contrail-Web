@@ -1,64 +1,65 @@
-import React, { Component } from 'react'
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import { withStyles } from '@material-ui/styles'
-import styles from './styles'
-import { registerUser } from './auth-utils'
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/styles";
+import React, { ChangeEvent, Component } from "react";
+import { registerUser } from "../../../utils/auth-utils";
+import styles from "../styles";
+import { RegisterFormProps } from "./RegisterForm.type";
 
-class RegisterForm extends Component {
-    state = {
+class RegisterForm extends Component<RegisterFormProps, any> {
+
+    public state = {
         displayName: "",
         email: "",
         password: "",
-    }
+    };
 
-    handleChange = (event) => {
+    public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         this.setState({
-            [event.target.name]: event.target.value
-        })
+            [event.target.name]: event.target.value,
+        });
     }
 
-    handleSubmit = () => {
-        registerUser(this.state.displayName, this.state.email, this.state.password)
+    public handleSubmit = () => {
+        registerUser(this.state.displayName, this.state.email, this.state.password);
     }
 
-    render() {
-    const { classes, toggleForm } = this.props
+    public render() {
+    const { classes, toggleForm } = this.props;
 
-        return (
+    return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-            </Avatar>
+            <Avatar className={classes.avatar}/>
             <Typography component="h1" variant="h5">
                 Register
             </Typography>
-            <form className={classes.form} noValidate>
+            <form className={classes.form} noValidate={true}>
                 <TextField
                     variant="outlined"
                     margin="normal"
-                    required
-                    fullWidth
+                    required={true}
+                    fullWidth={true}
                     id="displayName"
                     label="Username"
                     name="displayName"
                     autoComplete="username"
                     value={this.state.displayName}
                     onChange={this.handleChange}
-                    autoFocus
+                    autoFocus={true}
                 />
                 <TextField
                     variant="outlined"
                     margin="normal"
-                    required
-                    fullWidth
+                    required={true}
+                    fullWidth={true}
                     id="email"
                     label="Email Address"
                     name="email"
@@ -69,8 +70,8 @@ class RegisterForm extends Component {
                 <TextField
                     variant="outlined"
                     margin="normal"
-                    required
-                    fullWidth
+                    required={true}
+                    fullWidth={true}
                     name="password"
                     label="Password"
                     type="password"
@@ -81,7 +82,7 @@ class RegisterForm extends Component {
                 />
                 <Button
                     type="submit"
-                    fullWidth
+                    fullWidth={true}
                     variant="contained"
                     color="primary"
                     className={classes.submit}
@@ -89,8 +90,8 @@ class RegisterForm extends Component {
                 >
                     Sign Up
                 </Button>
-                <Grid container>
-                <Grid item>
+                <Grid container={true}>
+                <Grid item={true}>
                     <Link href="#" variant="body2" onClick={toggleForm}>
                         {"Already have an account? Log In"}
                     </Link>
@@ -103,4 +104,4 @@ class RegisterForm extends Component {
     }
 }
 
-export default withStyles(styles)(RegisterForm)
+export default withStyles(styles)(RegisterForm);

@@ -4,11 +4,11 @@ import * as ReactDOM from "react-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
-import theme from "./theme";
 import { EnthusiasmAction } from "./actions";
-import { enthusiasm } from "./reducers/index";
-import { StoreState } from "./types/index";
 import App from "./App";
+import { enthusiasm } from "./reducers/index";
+import theme from "./theme";
+import { StoreState } from "./types/index";
 
 const store = createStore<StoreState, EnthusiasmAction, any, any>(enthusiasm, {
   enthusiasmLevel: 1,
@@ -16,10 +16,12 @@ const store = createStore<StoreState, EnthusiasmAction, any, any>(enthusiasm, {
 });
 
 ReactDOM.render(
-  (<Provider store={store}>
+  (
+  <Provider store={store}>
     <ThemeProvider theme={theme}>
         <App />
     </ThemeProvider >
-  </Provider>),
+  </Provider>
+  ),
   document.getElementById("root") as HTMLElement,
 );

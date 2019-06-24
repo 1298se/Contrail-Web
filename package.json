@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "install": "npm run-script installApi && npm run-script installUi",
-    "installApi": "cd .\\contrail-api && npm install",
-    "installUi": "cd .\\contrail-ui && npm install",
+    "installApi": "cd contrail-api && npm install",
+    "installUi": "cd contrail-ui && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

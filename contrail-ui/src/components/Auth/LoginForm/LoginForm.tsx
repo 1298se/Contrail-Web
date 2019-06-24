@@ -1,63 +1,62 @@
-import React, { Component } from 'react'
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import { withStyles } from '@material-ui/styles'
-import styles from './styles'
-import { loginUser } from './auth-utils'
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/styles";
+import React, { ChangeEvent, Component } from "react";
+import { loginUser } from "../../../utils/auth-utils";
+import styles from "../styles";
+import { LoginFormProps, LoginFormState } from "./LoginForm.type";
 
-class LoginForm extends Component {
-    state = {
+class LoginForm extends Component<LoginFormProps, LoginFormState> {
+    public state = {
         email: "",
         password: "",
-    }
-
-    handleChange = (event) => {
+    };
+    public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         this.setState({
-            [event.target.name]: event.target.value
-        })
+            [event.target.name]: event.target.value,
+        });
     }
 
-    handeSubmit = () => {
-        loginUser(this.state.email, this.state.password)
+    public handleSubmit = () => {
+        loginUser(this.state.email, this.state.password);
     }
 
-    render() {
-    const { classes, toggleForm } = this.props
+    public render() {
+    const { classes, toggleForm } = this.props;
 
-        return (
+    return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-            </Avatar>
+            <Avatar className={classes.avatar}/>
             <Typography component="h1" variant="h5">
                 Log In
             </Typography>
-            <form className={classes.form} noValidate>
+            <form className={classes.form} noValidate={true}>
                 <TextField
                     variant="outlined"
                     margin="normal"
-                    required
-                    fullWidth
+                    required={true}
+                    fullWidth={true}
                     id="email"
                     label="Email Address"
                     name="email"
                     autoComplete="email"
                     value={this.state.email}
                     onChange={this.handleChange}
-                    autoFocus
+                    autoFocus={true}
                 />
                 <TextField
                     variant="outlined"
                     margin="normal"
-                    required
-                    fullWidth
+                    required={true}
+                    fullWidth={true}
                     name="password"
                     label="Password"
                     type="password"
@@ -68,7 +67,7 @@ class LoginForm extends Component {
                 />
                 <Button
                     type="submit"
-                    fullWidth
+                    fullWidth={true}
                     variant="contained"
                     color="primary"
                     className={classes.submit}
@@ -76,8 +75,8 @@ class LoginForm extends Component {
                 >
                     Log In
                 </Button>
-                <Grid container>
-                <Grid item>
+                <Grid container={true}>
+                <Grid item={true}>
                     <Link href="#" variant="body2" onClick={toggleForm}>
                         {"Don't have an account? Sign Up"}
                     </Link>
@@ -90,4 +89,4 @@ class LoginForm extends Component {
     }
 }
 
-export default withStyles(styles)(LoginForm)
+export default withStyles(styles)(LoginForm);

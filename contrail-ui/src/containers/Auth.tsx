@@ -1,4 +1,4 @@
-import Auth from '../components/Auth/Auth';
+import Auth from '../components/Auth/Auth/Auth';
 import * as actions from '../actions';
 import { StoreState } from '../types/index';
 import { connect } from 'react-redux';
