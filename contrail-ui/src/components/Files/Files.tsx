@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
+import "./Files.css";
 
 class Files extends Component {
-      
 
-    render() {
+    public render() {
       const redirect  = false;
 
       if (redirect) {
-        return <Redirect to='/auth'/>;
+        return <Redirect to="/auth"/>;
       }
-    
+
       return (
        <h1>Files</h1>
       );
