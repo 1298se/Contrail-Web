@@ -17,9 +17,7 @@ export function initializeFirebase() {
         messagingSenderId: "342081308461",
         appId: "1:342081308461:web:229362ba93e13630",
     };
-    if(firebase.apps.length === 0){
-        firebase.initializeApp(firebaseConfig);
-    }
+    firebase.initializeApp(firebaseConfig);
     console.log("firebase initialized");
 }
 
@@ -30,25 +28,23 @@ export function initializeFirebase() {
  * @param password the user's password received from registration.
  *
  */
-export function registerUser(displayName: string, email: string, password: string) : boolean{
+export function registerUser(displayName: string, email: string, password: string) {
     console.log("registering user");
-    firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
         console.log("registration successful, updating profile");
         const user = firebase.auth().currentUser;
-        if (user === null) {
-            throw Error("User not found");
+        if(user === null){
+            throw Error('User not found');
         }
         user.updateProfile({
             displayName,
-        }).then(() => {
+        }).then(function() {
             console.log("profile update successful");
-            return true;
         });
 
-    }).catch((error) => {
-        console.error("registration failed: ", error);
+    }).catch(function(error) {
+        console.log("registration failed: ", error);
     });
-    return false;
 }
 
 /**
@@ -56,12 +52,12 @@ export function registerUser(displayName: string, email: string, password: strin
  * @param email the user's email received from login
  * @param password the user's password received from login
  */
-export function loginUser(email: string, password: string): Promise<firebase.auth.UserCredential | void> {
+export function loginUser(email: string, password: string) {
     console.log("logging in user");
-    return firebase.auth().signInWithEmailAndPassword(email, password).then((auth: firebase.auth.UserCredential) => {
-        return auth;
-    }).catch((error) => {
-        console.error("login failed: ", error);
+    firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+        console.log("login successful");
+    }).catch(function(error) {
+        console.log("login failed: ", error);
     });
 }
 
@@ -69,14 +65,14 @@ export function loginUser(email: string, password: string): Promise<firebase.aut
  * Gets the ID Token of a current user, or null
  * @returns current user ID Token, or null
  */
-export async function getUserToken(): Promise<string | null> {
+export function getUserToken() {
     const user = firebase.auth().currentUser;
     if (user == null) {
         return null;
     }
-    try {
-        return await user.getIdToken(true);
-    } catch (error) {
-        throw Error("Can not get token");
-    }
+    user.getIdToken(true).then(function(idToken) {
+        return idToken;
+      }).catch(function(error) {
+        return null;
+      });
 }
