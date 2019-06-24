@@ -1,12 +1,37 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
+import LoginForm from './LoginForm'
+import RegisterForm from './RegisterForm'
+import { initializeFirebase } from './auth-utils'
 
-class Auth extends Component {
+export default class Auth extends Component {
+  state = {
+    displayForm: "LoginForm"
+  }
 
-    public render() {
-      return (
-       <h1>Login</h1>
-      );
+  componentDidMount() {
+    initializeFirebase()
+  }
+
+  toggleForm = () => {
+    const { displayForm } = this.state;
+    this.setState({
+      displayForm: this.state.displayForm === "LoginForm" ? "RegisterForm" : "LoginForm"
+    })
+  }
+
+  render() {
+    var renderForm
+    switch (this.state.displayForm) {
+      case "LoginForm": renderForm = <LoginForm toggleForm={this.toggleForm} />
+        break
+      case "RegisterForm": renderForm = <RegisterForm toggleForm={this.toggleForm} />
+        break
     }
-}
 
-export default Auth;
+    return (
+      <div>
+        {renderForm}
+      </div>
+    )
+  }
+}
