@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { initializeFirebase } from "../../../utils/auth-utils";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import { AuthState } from "./auth.type";
@@ -10,10 +9,6 @@ export default class Auth extends Component<any, AuthState> {
     this.state = {
       displayForm: "LoginForm",
     };
-  }
-
-  public componentDidMount() {
-    initializeFirebase();
   }
 
   public toggleForm = () => {

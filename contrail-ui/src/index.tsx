@@ -9,11 +9,14 @@ import App from "./App";
 import { enthusiasm } from "./reducers/index";
 import theme from "./theme";
 import { StoreState } from "./types/index";
+import { initializeFirebase } from "./utils/auth-utils";
 
 const store = createStore<StoreState, EnthusiasmAction, any, any>(enthusiasm, {
   enthusiasmLevel: 1,
   languageName: "TypeScript",
 });
+
+initializeFirebase();
 
 ReactDOM.render(
   (
