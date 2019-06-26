@@ -28,16 +28,16 @@ export function initializeFirebase() {
  * @param displayName the user's display name received from registration
  * @param email the user's email received from registration.
  * @param password the user's password received from registration.
- * @returns a promise that resolves with the current user, or rejects with the error
+ * @returns a {@link Promis} that resolves with the current user, or rejects with the error
  */
-export function registerUser(displayName: string, email: string, password: string) {
+export function registerUser(displayName: string, email: string, password: string): Promise<firebase.User|null> {
     console.log("registering user");
     return new Promise((resolve, reject) => {
         firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
             const user = firebase.auth().currentUser;
             if (user === null) {
                 console.log("registration failed: user is null");
-                reject("user is null");
+                resolve(null);
             } else {
                 console.log("registration successful: updating profile");
                 user.updateProfile({
@@ -58,15 +58,19 @@ export function registerUser(displayName: string, email: string, password: strin
  * Logins a user to Firebase. *NOTE* {@link initializeFirebase} must be called before.
  * @param email the user's email received from login
  * @param password the user's password received from login
- * @return a promise that resolves with the current user, or rejects with the error
+ * @return a {@link Promise} that resolves with the current user, or rejects with the error
  */
-export function loginUser(email: string, password: string) {
+export function loginUser(email: string, password: string): Promise<firebase.User|null> {
     console.log("logging in user");
     return new Promise((resolve, reject) => {
         firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
             console.log("login successful");
             const user = firebase.auth().currentUser;
-            resolve(user);
+            if (user === null) {
+                resolve(null);
+            } else {
+                resolve(user);
+            }
         }).catch((error) => {
             console.log("login failed: ", error);
             reject(error);
@@ -76,10 +80,10 @@ export function loginUser(email: string, password: string) {
 
 /**
  * Gets the ID Token of a current user, or null
- * @returns a promise that resolves null if there is no current user or the user's IDToken if there is,
+ * @returns a {@link Promise} that resolves null if there is no current user or the user's IDToken if there is,
  *  or rejects with error.
  */
-export function getUserToken() {
+export function getUserToken(): Promise<string|null> {
     return new Promise((resolve, reject) => {
         const user = firebase.auth().currentUser;
         if (user == null) {
