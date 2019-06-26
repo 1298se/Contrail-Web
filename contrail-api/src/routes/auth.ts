@@ -9,13 +9,7 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-router.get("/", (req, res) => {
-  const authPage = path.join(__dirname, "public", "login.html");
-  console.log(`Root route received, sending root: ${authPage}`);
-  res.sendFile(authPage);
-});
-
-router.post("/api/auth", (req, res) => {
+router.post("/", (req, res) => {
   const token = req.body;
   if (token == null) {
     res.status(401).send("Bad Request: ID Token is null");
@@ -27,13 +21,13 @@ router.post("/api/auth", (req, res) => {
         res.status(200).send("userLoginSuccessful");
       })
       .catch((error) => {
-        res.status(500).send("userLoginFailed")
+        res.status(500).send("userLoginFailed");
         console.error(`/login - ${error}`);
       });
   }
 });
 
-router.post("/api/register", (req, res) => {
+router.post("/register", (req, res) => {
   const token = req.body;
   if (token == null) {
     res.status(401).send("Bad Request: ID Token is null");
@@ -66,4 +60,5 @@ router.post("/api/register", (req, res) => {
   }
 });
 
-module.exports = router
+// module.exports = router;
+export default router
