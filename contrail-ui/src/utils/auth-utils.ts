@@ -67,6 +67,7 @@ export function loginUser(email: string, password: string): Promise<firebase.Use
             console.log("login successful");
             const user = firebase.auth().currentUser;
             if (user === null) {
+                console.error("login failed: user is null");
                 resolve(null);
             } else {
                 resolve(user);
