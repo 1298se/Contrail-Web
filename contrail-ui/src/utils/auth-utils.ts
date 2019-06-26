@@ -36,17 +36,17 @@ export function registerUser(displayName: string, email: string, password: strin
         firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
             const user = firebase.auth().currentUser;
             if (user === null) {
-                console.log("registration failed: user is null");
+                console.error("registration failed: user is null");
                 resolve(null);
             } else {
                 console.log("registration successful: updating profile");
                 user.updateProfile({
                     displayName,
                 }).then(() => {
-                    console.log("profile updat successful");
+                    console.log("profile update successful");
                     resolve(user);
                 }).catch((error) => {
-                    console.log("profile update failed:  ", error);
+                    console.error("profile update failed:  ", error);
                     reject(error);
                 });
             }
@@ -72,7 +72,7 @@ export function loginUser(email: string, password: string): Promise<firebase.Use
                 resolve(user);
             }
         }).catch((error) => {
-            console.log("login failed: ", error);
+            console.error("login failed: ", error);
             reject(error);
         });
     });
