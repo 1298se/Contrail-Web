@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import Auth from "../../components/auth/auth-page/Auth";
 import * as actions from "../actions";
-import Auth from "../components/auth/auth-page/Auth";
 import { StoreState } from "../types/index";
 
 export function mapStateToProps({ enthusiasmLevel, languageName }: StoreState) {
