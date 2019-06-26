@@ -28,7 +28,7 @@ export function initializeFirebase() {
  * @param displayName the user's display name received from registration
  * @param email the user's email received from registration.
  * @param password the user's password received from registration.
- * @returns a {@link Promis} that resolves with the current user, or rejects with the error
+ * @returns a {@link Promise} that resolves with the current user, or rejects with the error
  */
 export function registerUser(displayName: string, email: string, password: string): Promise<firebase.User|null> {
     console.log("registering user");
