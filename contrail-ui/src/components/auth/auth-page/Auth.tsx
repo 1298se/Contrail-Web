@@ -1,6 +1,4 @@
-import firebase from "firebase";
 import React, { Component } from "react";
-import { initializeFirebase } from "../../../utils/auth-utils";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import { AuthState } from "./auth.type";
