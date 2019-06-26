@@ -22,7 +22,6 @@ class MainAppBar extends Component<any, any> {
                     </AppBar>
                 </div>
             </body>
-
         );
     }
 }

@@ -8,7 +8,6 @@ function App() {
     <Router>
       <Route path="/auth" exact={true} component={Auth} />
       <Route path="/main" exact={true} component={MainFrame} />
-      {/* <Redirect to="/auth" /> */}
     </Router>
   );
 }

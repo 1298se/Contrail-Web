@@ -18,9 +18,7 @@ class MainDrawer extends Component<any, any> {
             <Drawer
                 className={classes.drawer}
                 variant="permanent"
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
+                classes={{paper: classes.drawerPaper}}
             >
                 <div className={classes.toolbar} />
                 <List>
