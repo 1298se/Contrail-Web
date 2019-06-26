@@ -7,6 +7,9 @@ import "firebase/auth";
 /**
  * Initializes Firebase authentication. Call when app starts.
  */
+
+// tslint:disable: object-literal-sort-keys
+// tslint:disable: no-console
 export function initializeFirebase() {
     const firebaseConfig = {
         apiKey: "AIzaSyB9tiUIhIC_R9mAibHA71A8WM1Mt9euL0w",
@@ -18,7 +21,6 @@ export function initializeFirebase() {
         appId: "1:342081308461:web:229362ba93e13630",
     };
     firebase.initializeApp(firebaseConfig);
-    console.log("firebase initialized");
 }
 
 /**
@@ -26,24 +28,29 @@ export function initializeFirebase() {
  * @param displayName the user's display name received from registration
  * @param email the user's email received from registration.
  * @param password the user's password received from registration.
- *
+ * @returns a promise that resolves with the current user, or rejects with the error
  */
 export function registerUser(displayName: string, email: string, password: string) {
     console.log("registering user");
-    firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
-        console.log("registration successful, updating profile");
-        const user = firebase.auth().currentUser;
-        if(user === null){
-            throw Error('User not found');
-        }
-        user.updateProfile({
-            displayName,
-        }).then(function() {
-            console.log("profile update successful");
+    return new Promise((resolve, reject) => {
+        firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
+            const user = firebase.auth().currentUser;
+            if (user === null) {
+                console.log("registration failed: user is null");
+                reject("user is null");
+            } else {
+                console.log("registration successful: updating profile");
+                user.updateProfile({
+                    displayName,
+                }).then(() => {
+                    console.log("profile updat successful");
+                    resolve(user);
+                }).catch((error) => {
+                    console.log("profile update failed:  ", error);
+                    reject(error);
+                });
+            }
         });
-
-    }).catch(function(error) {
-        console.log("registration failed: ", error);
     });
 }
 
@@ -51,28 +58,38 @@ export function registerUser(displayName: string, email: string, password: strin
  * Logins a user to Firebase. *NOTE* {@link initializeFirebase} must be called before.
  * @param email the user's email received from login
  * @param password the user's password received from login
+ * @return a promise that resolves with the current user, or rejects with the error
  */
 export function loginUser(email: string, password: string) {
     console.log("logging in user");
-    firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
-        console.log("login successful");
-    }).catch(function(error) {
-        console.log("login failed: ", error);
+    return new Promise((resolve, reject) => {
+        firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
+            console.log("login successful");
+            const user = firebase.auth().currentUser;
+            resolve(user);
+        }).catch((error) => {
+            console.log("login failed: ", error);
+            reject(error);
+        });
     });
 }
 
 /**
  * Gets the ID Token of a current user, or null
- * @returns current user ID Token, or null
+ * @returns a promise that resolves null if there is no current user or the user's IDToken if there is,
+ *  or rejects with error.
  */
 export function getUserToken() {
-    const user = firebase.auth().currentUser;
-    if (user == null) {
-        return null;
-    }
-    user.getIdToken(true).then(function(idToken) {
-        return idToken;
-      }).catch(function(error) {
-        return null;
-      });
+    return new Promise((resolve, reject) => {
+        const user = firebase.auth().currentUser;
+        if (user == null) {
+            resolve(user);
+        } else {
+            user.getIdToken(true).then((idToken) => {
+                resolve(idToken);
+            }).catch((error) => {
+                reject(error);
+            });
+        }
+    });
 }
