@@ -3,22 +3,22 @@ const drawerWidth = 240;
 
 const styles = (theme: Theme) =>
     createStyles({
-        root: {
-            display: 'flex',
-        },
         appBar: {
             zIndex: theme.zIndex.drawer + 1,
-        },
-        drawer: {
-            width: drawerWidth,
-            flexShrink: 0,
-        },
-        drawerPaper: {
-            width: drawerWidth,
         },
         content: {
             flexGrow: 1,
             padding: theme.spacing(3),
+        },
+        drawer: {
+            flexShrink: 0,
+            width: drawerWidth,
+        },
+        drawerPaper: {
+            width: drawerWidth,
+        },
+        root: {
+            display: "flex",
         },
         toolbar: theme.mixins.toolbar,
     });
