@@ -86,7 +86,7 @@ export function loginUser(email: string, password: string): Promise<firebase.Use
 export function getUserToken(): Promise<string|null> {
     return new Promise((resolve, reject) => {
         const user = firebase.auth().currentUser;
-        if (user == null) {
+        if (user === null) {
             resolve(user);
         } else {
             user.getIdToken(true).then((idToken) => {
