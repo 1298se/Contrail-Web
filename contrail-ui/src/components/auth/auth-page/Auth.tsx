@@ -1,3 +1,4 @@
+import firebase from "firebase";
 import React, { Component } from "react";
 import { initializeFirebase } from "../../../utils/auth-utils";
 import LoginForm from "../login-form/LoginForm";
@@ -10,10 +11,6 @@ export default class Auth extends Component<any, AuthState> {
     this.state = {
       displayForm: "LoginForm",
     };
-  }
-
-  public componentDidMount() {
-    initializeFirebase();
   }
 
   public toggleForm = () => {
