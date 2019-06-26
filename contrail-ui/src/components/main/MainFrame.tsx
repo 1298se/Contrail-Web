@@ -6,11 +6,11 @@ import MainView from "./main-view/MainView";
 class MainFrame extends Component {
     public render() {
         return (
-            <div>
-            <MainAppBar />
-            <MainDrawer />
-            <MainView />
-            </div>
+            <React.Fragment>
+                <MainAppBar />
+                <MainDrawer />
+                <MainView />
+            </React.Fragment>
         );
     }
 }

@@ -10,18 +10,16 @@ class MainAppBar extends Component<any, any> {
     public render() {
         const { classes } = this.props;
         return (
-            <body>
-                <div className={classes.root}>
-                    <CssBaseline />
+            <div className={classes.root}>
+                <CssBaseline />
                     <AppBar position="fixed" className={classes.appBar}>
                         <Toolbar>
                             <Typography variant="h6" noWrap={true}>
                                 Contrail Web
                             </Typography>
-                        </Toolbar>
-                    </AppBar>
-                </div>
-            </body>
+                    </Toolbar>
+                </AppBar>
+            </div>
         );
     }
 }
