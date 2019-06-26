@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { registerUser } from "../../../utils/auth-utils";
-import styles from "../styles";
+import styles from "../authStyles";
 import { RegisterFormProps } from "./registerForm.type";
 
 class RegisterForm extends Component<RegisterFormProps, any> {
