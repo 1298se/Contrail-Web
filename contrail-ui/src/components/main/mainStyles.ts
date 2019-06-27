@@ -17,6 +17,11 @@ const styles = (theme: Theme) =>
         drawerPaper: {
             width: drawerWidth,
         },
+        paper: {
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+        },
         root: {
             display: "flex",
         },
