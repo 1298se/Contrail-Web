@@ -66,7 +66,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
                     onChange={this.handleChange}
                 />
                 <Button
-                    type="submit"
+                    type="button"
                     fullWidth={true}
                     variant="contained"
                     color="primary"

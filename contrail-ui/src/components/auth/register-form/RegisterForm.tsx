@@ -81,7 +81,7 @@ class RegisterForm extends Component<RegisterFormProps, any> {
                     onChange={this.handleChange}
                 />
                 <Button
-                    type="submit"
+                    type="button"
                     fullWidth={true}
                     variant="contained"
                     color="primary"
