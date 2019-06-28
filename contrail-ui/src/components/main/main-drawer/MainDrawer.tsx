@@ -20,7 +20,7 @@ class MainDrawer extends Component<any, any> {
                 variant="permanent"
                 classes={{paper: classes.drawerPaper}}
             >
-                <div className={classes.appBarSpacer} />
+                <div className={classes.toolbar} />
                     <List>
                         <ListItem button={true} key="Files">
                             <ListItemIcon>
