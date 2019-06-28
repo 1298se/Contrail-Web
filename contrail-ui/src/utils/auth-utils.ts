@@ -30,7 +30,7 @@ export function initializeFirebase() {
  * @param password the user's password received from registration.
  * @returns a {@link Promise} that resolves with the current user, or rejects with the error
  */
-export function registerUser(displayName: string, email: string, password: string): Promise<firebase.User|null> {
+export function registerUser(displayName: string, email: string, password: string): Promise<firebase.User | null> {
     console.log("registering user");
     return new Promise((resolve, reject) => {
         firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
@@ -60,7 +60,7 @@ export function registerUser(displayName: string, email: string, password: strin
  * @param password the user's password received from login
  * @return a {@link Promise} that resolves with the current user, or rejects with the error
  */
-export function loginUser(email: string, password: string): Promise<firebase.User|null> {
+export function loginUser(email: string, password: string): Promise<firebase.User | null> {
     console.log("logging in user");
     return new Promise((resolve, reject) => {
         firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
