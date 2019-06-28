@@ -4,6 +4,9 @@ import RegisterForm from "../register-form/RegisterForm";
 import { IAuthState } from "./auth.type";
 
 export default class Auth extends Component<{}, IAuthState> {
+  public state = {
+    displayForm: "LoginForm",
+  };
 
   public toggleForm = () => {
     const { displayForm } = this.state;
