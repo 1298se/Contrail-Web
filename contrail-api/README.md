@@ -8,7 +8,7 @@
 
 ### Just run this
 ```sh
-npm i -g nodemon typescript tslint eslint
+npm i -g nodemon typescript tslint
 ```
 
 ## Scripts
