@@ -78,7 +78,7 @@ class MainToolBar extends Component<IMainToolBarProps, IMainToolBarState> {
         <AppBar position="static" color="secondary">
           <Toolbar>
             <Typography className={classes.title} variant="h6" noWrap={true}>
-              Material-UI
+              Files
                 </Typography>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
