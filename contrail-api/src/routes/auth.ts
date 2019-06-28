@@ -1,64 +1,46 @@
 import express from "express";
-import * as admin from "firebase-admin";
-import * as path from "path";
-import serviceAccount from "../ServiceAccountKey";
+import app from "../firebaseapp";
 
 const router = express.Router();
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-const db = admin.firestore();
+const db = app.firestore();
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const token = req.body;
   if (token == null) {
     res.status(401).send("Bad Request: ID Token is null");
   } else {
-    admin
-      .auth()
-      .verifyIdToken(token)
-      .then((decodedToken) => {
-        res.status(200).send("userLoginSuccessful");
-      })
-      .catch((error) => {
-        res.status(500).send("userLoginFailed");
-        console.error(`/login - ${error}`);
-      });
+    try {
+      const decodedToken = await app.auth().verifyIdToken(token);
+      res.status(200).send(decodedToken);
+    } catch (err) {
+      res.status(500).send(err);
+    }
   }
 });
 
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
   const token = req.body;
-  if (token == null) {
+  if (token === null) {
     res.status(401).send("Bad Request: ID Token is null");
   } else {
-    admin
-      .auth()
-      .verifyIdToken(token)
-      .then((decodedToken) => {
-        return admin.auth().getUser(decodedToken.uid);
-      })
-      .then((userRecord) => {
-        const newUser = db.collection("users").doc(userRecord.uid);
-        newUser.set({
-          displayName: userRecord.displayName,
-          documents: {
-            owned: [],
-            sharedToUser: [],
-          },
-          email: userRecord.email,
-          profileImageUri: null,
-          userId: userRecord.uid,
-        });
-        console.log("register user complete");
-        res.status(200).send("userRegistrationSuccessful");
-      })
-      .catch((error) => {
-        console.log("error registering user", error);
-        res.status(500).send("userRegistrationFailed");
+    try{
+      const decodedToken = await app.auth().verifyIdToken(token);
+      const user = await app.auth().getUser(decodedToken.uid);
+      const newUserRef = db.collection("users").doc(user.uid);
+      const result = await newUserRef.set({
+        displayName: user.displayName,
+        documents: {
+          owned: [],
+          sharedToUser: [],
+        },
+        email: user.email,
+        profileImageUri: null,
       });
+      res.status(200).send(result);
+    } catch(err){
+      res.status(500).send(err);
+    }
   }
 });
 
-// module.exports = router;
-export default router
+export default router;
