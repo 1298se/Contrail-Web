@@ -6,7 +6,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
-import SharedIcon from "@material-ui/icons/FolderShared"
+import SharedIcon from "@material-ui/icons/FolderShared";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, {Component} from "react";
 import styles from "../mainStyles";
