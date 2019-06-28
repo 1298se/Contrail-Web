@@ -6,7 +6,7 @@ const db = app.firestore();
 
 router.post("/", async (req, res) => {
   const token = req.body;
-  if (token == null) {
+  if (token === null) {
     res.status(401).send("Bad Request: ID Token is null");
   } else {
     try {
@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
   if (token === null) {
     res.status(401).send("Bad Request: ID Token is null");
   } else {
-    try{
+    try {
       const decodedToken = await app.auth().verifyIdToken(token);
       const user = await app.auth().getUser(decodedToken.uid);
       const newUserRef = db.collection("users").doc(user.uid);
@@ -37,7 +37,7 @@ router.post("/register", async (req, res) => {
         profileImageUri: null,
       });
       res.status(200).send(result);
-    } catch(err){
+    } catch (err) {
       res.status(500).send(err);
     }
   }
