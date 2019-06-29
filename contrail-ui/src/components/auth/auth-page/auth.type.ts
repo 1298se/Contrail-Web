@@ -1,3 +1,3 @@
-export type AuthState = {
-    displayForm : string;
+export interface IAuthState {
+    displayForm: string;
 }

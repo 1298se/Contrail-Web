@@ -6,9 +6,12 @@ const styles = (theme: Theme) =>
         appBar: {
             zIndex: theme.zIndex.drawer + 1,
         },
+        appBarSpacer: theme.mixins.toolbar,
         content: {
             flexGrow: 1,
-            padding: theme.spacing(3),
+            height: "100%",
+            overflow: "auto",
+            padding: theme.spacing(2),
         },
         drawer: {
             flexShrink: 0,
@@ -25,6 +28,5 @@ const styles = (theme: Theme) =>
         root: {
             display: "flex",
         },
-        toolbar: theme.mixins.toolbar,
     });
 export default styles;
