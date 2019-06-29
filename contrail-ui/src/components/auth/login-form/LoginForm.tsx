@@ -8,15 +8,23 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import * as ROUTES from "../../../routes";
+import * as actions from "../../../store/actions/authActions";
 import { loginUser } from "../../../utils/auth-utils";
 import styles from "../authStyles";
 import { LoginFormProps, LoginFormState } from "./loginForm.type";
 
 class LoginForm extends Component<LoginFormProps, LoginFormState> {
-    public state = {
-        email: "",
-        password: "",
-    };
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            email: "",
+            password: "",
+         };
+    }
+
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         this.setState({
             [event.target.name]: event.target.value,
@@ -24,12 +32,24 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
     }
 
     public handleSubmit = () => {
-        loginUser(this.state.email, this.state.password);
+        const { authUserLogin }: any = this.props;
+
+        loginUser(this.state.email, this.state.password)
+        .then((user) => {
+            if (user && user.refreshToken) {
+                authUserLogin(user, user.refreshToken);
+                localStorage.setItem("token",  user.refreshToken);
+                this.props.history.push(ROUTES.MAIN);
+            }
+        })
+        .catch((err) => {
+            // display message
+        });
     }
 
     public render() {
-    const { classes, toggleForm } = this.props;
-
+    const { classes, toggleForm, authToken} = this.props;
+    console.log(this)
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -89,4 +109,17 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
     }
 }
 
-export default withStyles(styles)(LoginForm);
+const mapStateToProps = (state: any): any => {
+    return {
+        authToken: state.authState.authToken,
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<actions.AuthTypes>): any => {
+    return {
+        authUserLogin: (user: firebase.User, authToken: string) => dispatch(actions.authUserLogin(user, authToken)),
+        authUserLogout: () => dispatch(actions.authUserLogout()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginForm));

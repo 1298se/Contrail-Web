@@ -1,12 +1,25 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import * as ROUTES from "../../../routes";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import { IAuthState } from "./auth.type";
 
-export default class Auth extends Component<{}, IAuthState> {
-  public state = {
-    displayForm: "LoginForm",
-  };
+class Auth extends Component<any, IAuthState> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      displayForm: "LoginForm",
+    };
+  }
+
+  componentDidMount() {
+      const { authToken } = this.props;
+      const isAuth =  authToken || localStorage.getItem("token");
+      if (isAuth) {
+        this.props.history.push(ROUTES.MAIN);
+      }
+  }
 
   public toggleForm = () => {
     const { displayForm } = this.state;
@@ -17,9 +30,10 @@ export default class Auth extends Component<{}, IAuthState> {
 
   public render() {
     let renderForm;
+    console.log(this)
     switch (this.state.displayForm) {
       case "LoginForm":
-        renderForm = <LoginForm toggleForm={this.toggleForm} />;
+        renderForm = <LoginForm toggleForm={this.toggleForm} history={this.props.history}/>;
         break;
       case "RegisterForm":
         renderForm = <RegisterForm toggleForm={this.toggleForm} />;
@@ -28,3 +42,11 @@ export default class Auth extends Component<{}, IAuthState> {
     return <div>{renderForm}</div>;
   }
 }
+
+const mapStateToProps = (state: any): any => {
+    return {
+        authToken: state.authState.authToken,
+    };
+};
+
+export default connect(mapStateToProps)(Auth);
