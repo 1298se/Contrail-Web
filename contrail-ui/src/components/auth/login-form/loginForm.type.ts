@@ -9,6 +9,7 @@ export type LoginFormProps  = {
 }
 interface LoginFormPropsClasses {
     paper: string;
+    avatar: string;
     form: string;
     submit: string;
 }

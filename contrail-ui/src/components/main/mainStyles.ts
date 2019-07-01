@@ -29,5 +29,4 @@ const styles = (theme: Theme) =>
             display: "flex",
         },
     });
-
 export default styles;
