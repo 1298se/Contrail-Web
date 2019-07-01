@@ -1,26 +1,30 @@
 import { createStyles, Theme } from "@material-ui/core";
 
 const styles = (theme: Theme) => createStyles({
-  "@global": {
-    body: {
+  body: {
       backgroundColor: theme.palette.common.white,
-    },
   },
-  "paper": {
-    marginTop: theme.spacing(8),
+  content: {
+    flexGrow: 1,
+    height: "100%",
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+  },
+  paper: {
+    alignItems: "center",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    justifyContent: "center",
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    height: "100%",
+    overflow: "auto",
   },
-  "form": {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  "submit": {
+  submit: {
     margin: theme.spacing(3, 0, 2),
   },
 });
