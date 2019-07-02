@@ -87,12 +87,13 @@ export default function EnhancedTable() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const isSelected = (name: string) => selected.indexOf(name) !== -1;
+    const isSelected = (name: string) => selected.includes(name);
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-  
+    const rowHeight = 49;
+
     const renderEmptyRows = emptyRows > 0 && (
-        <TableRow style={{ height: 49 * emptyRows }}>
+        <TableRow style={{ height: rowHeight * emptyRows }}>
             <TableCell colSpan={6} />
         </TableRow>
     );
@@ -163,7 +164,7 @@ export default function EnhancedTable() {
     }
 
     function handleChangeRowsPerPage(event: React.ChangeEvent<HTMLInputElement>) {
-        setRowsPerPage(+event.target.value);
+        setRowsPerPage(parseInt(event.target.value, 10));
     }
 
     return (
