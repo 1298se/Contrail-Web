@@ -1,9 +1,13 @@
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
+import styles from "../authStyles";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
-import { IAuthState } from "./auth.type";
+import * as types from "./auth.type";
 
-export default class Auth extends Component<{}, IAuthState> {
+class Auth extends Component<types.IAuthProps, types.IAuthState> {
   public state = {
     displayForm: "LoginForm",
   };
@@ -16,6 +20,8 @@ export default class Auth extends Component<{}, IAuthState> {
   }
 
   public render() {
+    const { classes } = this.props;
+
     let renderForm;
     switch (this.state.displayForm) {
       case "LoginForm":
@@ -25,6 +31,15 @@ export default class Auth extends Component<{}, IAuthState> {
         renderForm = <RegisterForm toggleForm={this.toggleForm} />;
         break;
     }
-    return <div>{renderForm}</div>;
+    return (
+      <main className={classes.root}>
+        <Container className={classes.content} maxWidth="xs">
+              <CssBaseline />
+              {renderForm}
+        </Container>
+      </main>
+    );
   }
 }
+
+export default withStyles(styles)(Auth);

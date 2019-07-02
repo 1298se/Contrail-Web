@@ -4,7 +4,6 @@ export interface RegisterFormProps  {
 }
 interface RegisterFormPropsClasses {
     paper: string;
-    avatar: string;
     form: string;
     submit: string;
 }
