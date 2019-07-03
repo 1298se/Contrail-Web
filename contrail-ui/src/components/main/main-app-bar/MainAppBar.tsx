@@ -9,7 +9,7 @@ class MainAppBar extends Component<any, any> {
     public render() {
         const { classes } = this.props;
         return (
-            <AppBar position="absolute" className={classes.appBar}>
+            <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" noWrap={true}>
                         Contrail Web
