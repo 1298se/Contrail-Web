@@ -135,7 +135,7 @@ export default function EnhancedTable() {
             const newSelecteds = rows.map((n) => n.name);
             setSelected(newSelecteds);
         } else {
-        setSelected([]);
+            setSelected([]);
         }
     }
 
