@@ -119,7 +119,7 @@ export default function EnhancedTable() {
                         <TableCell padding="checkbox">
                             <Checkbox
                                 checked={isItemSelected}
-                                color="default"
+                                color="fdefault"
                             />
                         </TableCell>
                         <TableCell align="left">{row.name}</TableCell>
@@ -132,11 +132,11 @@ export default function EnhancedTable() {
 
     function handleSelectAllClick(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.checked) {
-            const newSelecteds = rows.map(n => n.name);
+            const newSelecteds = rows.map((n) => n.name);
             setSelected(newSelecteds);
-            return;
-        }
+        } else {
         setSelected([]);
+        }
     }
 
     function handleClick(event: React.MouseEvent<unknown>, name: string) {
