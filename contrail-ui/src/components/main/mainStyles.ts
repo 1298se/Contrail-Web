@@ -10,6 +10,10 @@ const styles = (theme: Theme) =>
         container: {
             padding: theme.spacing(2),
         },
+        button: {
+            borderRadius: 25,
+            margin: theme.spacing(1),
+        },
         content: {
             flexGrow: 1,
             height: "100%",
@@ -24,6 +28,9 @@ const styles = (theme: Theme) =>
         },
         root: {
             display: "flex",
+        },
+        uploadIcon: {
+            marginRight: theme.spacing(1),
         },
     });
 
