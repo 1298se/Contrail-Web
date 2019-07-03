@@ -1,9 +1,11 @@
 import { withStyles } from "@material-ui/core";
+import Button from '@material-ui/core/Button';
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import SharedIcon from "@material-ui/icons/FolderShared";
@@ -21,6 +23,10 @@ class MainDrawer extends Component<any, any> {
                 classes={{paper: classes.drawerPaper}}
             >
                 <div className={classes.appBarSpacer} />
+                    <Button variant="contained" color="primary" size='large' className={classes.button}>
+                        <CloudUploadIcon className={classes.uploadIcon} />
+                        Upload
+                    </Button>
                     <List>
                         <ListItem button={true} key="Files">
                             <ListItemIcon>

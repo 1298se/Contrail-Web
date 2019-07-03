@@ -4,6 +4,7 @@ import Divider from "@material-ui/core/Divider";
 import { borders } from "@material-ui/system";
 import React, { Component } from "react";
 import MainToolBar from "../main-tool-bar/MainToolBar";
+import FileUploadModal from "../../files/file-upload-modal/fileUploadModal";
 import styles from "../mainStyles";
 
 class MainView extends Component<any, any> {
@@ -11,6 +12,7 @@ class MainView extends Component<any, any> {
         const { classes } = this.props;
         return (
             <main className={classes.content}>
+                <FileUploadModal />
                 <div className={classes.appBarSpacer} />
                 <Box className={classes.mainToolBarBorder}>
                     <MainToolBar />

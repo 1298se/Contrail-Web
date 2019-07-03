@@ -7,6 +7,10 @@ const styles = (theme: Theme) =>
             zIndex: theme.zIndex.drawer + 1,
         },
         appBarSpacer: theme.mixins.toolbar,
+        button: {
+            borderRadius: 25,
+            margin: theme.spacing(1),
+        },
         content: {
             flexGrow: 1,
             height: "100%",
@@ -27,6 +31,9 @@ const styles = (theme: Theme) =>
         },
         root: {
             display: "flex",
+        },
+        uploadIcon: {
+            marginRight: theme.spacing(1),
         },
     });
 
