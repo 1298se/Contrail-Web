@@ -5,10 +5,16 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TablePagination from "@material-ui/core/TablePagination";
+import TableRow from "@material-ui/core/TableRow";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import CancelIcon from "@material-ui/icons/Cancel";
 import React, { Component } from "react";
 import styles from "../fileStyles";
-import { throwStatement } from "@babel/types";
 
 class FileUploadModal extends Component<any, any> {
     public state = {
@@ -16,17 +22,35 @@ class FileUploadModal extends Component<any, any> {
     };
 
     public handleFileUpload = (e: any) => {
-        console.log(e.target.files);
-        const newFiles = e.target.files
+        const newFiles : any = [...(e.target.files)]
         this.setState({
-            files: newFiles
+            files: this.state.files.concat(newFiles)
         })
     }
+
+    public removeFileUpload = (e: any) => {
+        console.log(e.target)
+    }
+
     public render() {
         const { classes } = this.props;
-        const { files } = this.state; 
+        const { files } = this.state;
+        const renderUploadFiles = (
+            files &&  files.map((file: any, i) => { 
+                return (
+                    <TableRow
+                        key={i}
+                        hover={true}
+                    >
+                        <TableCell key={i} padding="checkbox"> {file.name} </TableCell>
+                        <TableCell align="right"> 
+                            <CancelIcon data-title={file.name} color="inherit" onClick={this.removeFileUpload}/>
+                        </TableCell>
+                    </TableRow>
+                );
+            })
+        );
 
-        console.log(this)
         return (
         <div>
             <Dialog open={true} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="lg">
@@ -35,9 +59,10 @@ class FileUploadModal extends Component<any, any> {
                 <DialogContentText>
                     Drag files here, or click below!
                 </DialogContentText>
-                {files && files.map((file: any, i) => <h1 key={i}>{file.name}</h1> )}
+                <Table>
+                    {renderUploadFiles}
+                </Table>
                 <input
-                    accept="image/*"
                     className={classes.input}
                     style={{ display: 'none' }}
                     id="raised-button-file"
@@ -47,8 +72,7 @@ class FileUploadModal extends Component<any, any> {
                 />
                 <label htmlFor="raised-button-file">
                 <Button component="span" variant="contained" color="primary" className={classes.button}>
-                    <CloudUploadIcon className={classes.uploadIcon} />
-                    Upload
+                    Add
                 </Button>
                 </label> 
                 </DialogContent>
@@ -57,12 +81,12 @@ class FileUploadModal extends Component<any, any> {
                     Cancel
                 </Button>
                 <Button  color="primary">
-                    Add
+                    Upload
                 </Button>
                 </DialogActions>
             </Dialog>
         </div >
-        )
+        );
     }
 }
 export default withStyles(styles)(FileUploadModal);
