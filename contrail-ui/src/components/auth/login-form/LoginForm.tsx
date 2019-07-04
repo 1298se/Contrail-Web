@@ -26,7 +26,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
 
     public render() {
     const { classes, toggleForm } = this.props;
-
+        console.log(this)
     return (
             <div className={classes.paper}>
             <Typography component="h1" variant="h5">
