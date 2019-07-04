@@ -4,6 +4,7 @@ import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
+import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
@@ -34,7 +35,7 @@ class RegisterForm extends Component<RegisterFormProps, any> {
     const { classes, toggleForm } = this.props;
 
     return (
-            <div className={classes.paper}>
+            <Paper className={classes.paper}>
             <Typography component="h1" variant="h5">
                 Register
             </Typography>
@@ -95,7 +96,7 @@ class RegisterForm extends Component<RegisterFormProps, any> {
                 </Grid>
                 </Grid>
             </form>
-            </div>
+            </Paper>
         );
     }
 }

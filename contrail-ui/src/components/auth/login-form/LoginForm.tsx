@@ -1,6 +1,7 @@
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
+import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
@@ -28,7 +29,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
     const { classes, toggleForm } = this.props;
 
     return (
-            <div className={classes.paper}>
+            <Paper className={classes.paper}>
             <Typography component="h1" variant="h5">
                 Log In
             </Typography>
@@ -77,7 +78,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
                 </Grid>
                 </Grid>
             </form>
-            </div>
+            </Paper>
         );
     }
 }
