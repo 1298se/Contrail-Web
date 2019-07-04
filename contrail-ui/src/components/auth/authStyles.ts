@@ -10,14 +10,25 @@ const styles = (theme: Theme) => createStyles({
         justifyContent: "center",
     },
     image: {
+        alignItems: "center",
         backgroundColor: theme.palette.primary.main,
+        display: "none",
+        [theme.breakpoints.up("sm")]: {
+            display: "flex",
+        },
+        flexDirection: "column",
+        justifyContent: "center",
+    },
+    largeIcon: {
+        height: "200px",
+        width: "300px",
     },
     paper: {
         alignItems: "center",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        margin: theme.spacing(0, 4, 0, 4),
+        margin: theme.spacing(4),
         padding: theme.spacing(4),
     },
     root: {
