@@ -17,13 +17,10 @@ import styles from "../authStyles";
 import { LoginFormProps, LoginFormState } from "./loginForm.type";
 
 class LoginForm extends Component<LoginFormProps, LoginFormState> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            email: "",
-            password: "",
-         };
-    }
+    public state = {
+        email: "",
+        password: "",
+    };
 
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         this.setState({
@@ -49,7 +46,6 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
 
     public render() {
     const { classes, toggleForm, authToken} = this.props;
-    console.log(this)
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />

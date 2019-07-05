@@ -1,6 +1,6 @@
-export const MAIN = "/main";
+export const MAIN = "/app";
 export const AUTH = "/auth";
-export const FILES = "/main/files";
-export const FAVORITES = "/main/favorites";
-export const SHARED = "/main/shared";
-export const TRASH = "/main/trash";
+export const FILES = "/app/files";
+export const FAVORITES = "/app/favorites";
+export const SHARED = "/app/shared";
+export const TRASH = "/app/trash";

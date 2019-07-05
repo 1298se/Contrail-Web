@@ -6,16 +6,14 @@ import RegisterForm from "../register-form/RegisterForm";
 import { IAuthState } from "./auth.type";
 
 class Auth extends Component<any, IAuthState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      displayForm: "LoginForm",
-    };
-  }
+  public state = {
+    displayForm: "LoginForm",
+  };
 
   componentDidMount() {
       const { authToken } = this.props;
-      const isAuth =  authToken || localStorage.getItem("token");
+      // const isAuth =  authToken || localStorage.getItem("token");
+      const isAuth =  authToken;
       if (isAuth) {
         this.props.history.push(ROUTES.MAIN);
       }
@@ -30,7 +28,6 @@ class Auth extends Component<any, IAuthState> {
 
   public render() {
     let renderForm;
-    console.log(this)
     switch (this.state.displayForm) {
       case "LoginForm":
         renderForm = <LoginForm toggleForm={this.toggleForm} history={this.props.history}/>;
