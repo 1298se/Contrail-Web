@@ -28,9 +28,9 @@ class Auth extends Component<types.IAuthProps, {}> {
                     </Grid>
                     <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
                         <Switch>
-                            <Route path="/auth/login" component={LoginForm} />
-                            <Route path="/auth/register" component={RegisterForm} />
-                            <Redirect to="/auth/login" />
+                            <Route path="/login" component={LoginForm} />
+                            <Route path="/register" component={RegisterForm} />
+                            <Redirect to="/login" />
                         </Switch>
                     </Grid>
                 </Grid>

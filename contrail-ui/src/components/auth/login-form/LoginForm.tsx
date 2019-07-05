@@ -73,7 +73,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                 </Button>
                 <Grid container={true}>
                 <Grid item={true}>
-                    <Link component={RouterLink} to="/auth/register" variant="body2">
+                    <Link component={RouterLink} to="/register" variant="body2">
                         {"Don't have an account? Sign Up"}
                     </Link>
                 </Grid>

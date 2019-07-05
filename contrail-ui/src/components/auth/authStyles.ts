@@ -2,7 +2,6 @@ import { createStyles, Theme } from "@material-ui/core";
 
 const styles = (theme: Theme) => createStyles({
     form: {
-        width: "100%", // Fix IE 11 issue.
     },
     formContainer: {
         alignItems: "center",

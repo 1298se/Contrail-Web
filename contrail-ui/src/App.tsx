@@ -6,7 +6,7 @@ import MainFrame from "./components/main/MainFrame";
 function App() {
   return (
     <Router>
-      <Route path="/auth" component={Auth} />
+      <Route path="/" component={Auth} />
       <Route path="/main" component={MainFrame} />
     </Router>
   );
