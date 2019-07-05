@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import { loginUser } from "../../../utils/auth-utils";
 import styles from "../authStyles";
 import * as types from "./loginForm.type";
@@ -72,7 +73,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                 </Button>
                 <Grid container={true}>
                 <Grid item={true}>
-                    <Link href="/auth/register" variant="body2">
+                    <Link component={RouterLink} to="/auth/register" variant="body2">
                         {"Don't have an account? Sign Up"}
                     </Link>
                 </Grid>

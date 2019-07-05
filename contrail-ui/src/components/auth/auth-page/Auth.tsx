@@ -16,10 +16,6 @@ class Auth extends Component<types.IAuthProps, {}> {
     public render() {
         const { classes } = this.props;
 
-        const loginRedirect = () => (
-            <Redirect to="/auth/login" />
-        );
-
         return (
             <Router>
                 <Grid container={true} component="main" className={classes.root}>
@@ -31,9 +27,11 @@ class Auth extends Component<types.IAuthProps, {}> {
                         </Typography>
                     </Grid>
                     <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
-                        <Route path="/auth" exact={true} component={loginRedirect} />
-                        <Route path="/auth/login" exact={true} component={LoginForm} />
-                        <Route path="/auth/register" exact={true} component={RegisterForm} />
+                        <Switch>
+                            <Route path="/auth/login" component={LoginForm} />
+                            <Route path="/auth/register" component={RegisterForm} />
+                            <Redirect to="/auth/login" />
+                        </Switch>
                     </Grid>
                 </Grid>
             </Router>
