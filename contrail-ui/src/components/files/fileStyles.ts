@@ -7,8 +7,12 @@ const styles = (theme: Theme) => createStyles({
   dialog: {
     margin: "10px 20px",
     borderStyle: "dashed",
-    borderBlockColor: "gray"
-  }
+    borderBlockColor: "gray",
+  },
+  paper: {
+    height: "300px",
+    overflowY: "auto",
+  },
 });
 
 export default styles;

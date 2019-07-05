@@ -1,6 +1,7 @@
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/storage";
 
 // TODO: Call initializeFirebase in App component mount. *NOTE* It is currently
 // initialized in Auth.js onMount, but it is initialized every time the component mounts
@@ -21,6 +22,7 @@ export function initializeFirebase() {
         appId: "1:342081308461:web:229362ba93e13630",
     };
     firebase.initializeApp(firebaseConfig);
+    var storage = firebase.storage();
 }
 
 /**
