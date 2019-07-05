@@ -1,10 +1,12 @@
-export interface RegisterFormProps  {
-    classes: RegisterFormPropsClasses;
-    toggleForm: RegisterFormPropsToggleForm;
+import { WithStyles } from "@material-ui/core";
+import styles from "../authStyles";
+
+export interface IRegisterFormState {
+    displayName: string;
+    email: string;
+    password: string;
+    [x: string]: string;
 }
-interface RegisterFormPropsClasses {
-    paper: string;
-    form: string;
-    submit: string;
+export interface IRegisterFormProps extends WithStyles<typeof styles> {
+
 }
-type RegisterFormPropsToggleForm = ()  => void;

@@ -8,9 +8,9 @@ import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { loginUser } from "../../../utils/auth-utils";
 import styles from "../authStyles";
-import { LoginFormProps, LoginFormState } from "./loginForm.type";
+import * as types from "./loginForm.type";
 
-class LoginForm extends Component<LoginFormProps, LoginFormState> {
+class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> {
     public state = {
         email: "",
         password: "",
@@ -26,7 +26,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
     }
 
     public render() {
-    const { classes, toggleForm } = this.props;
+    const { classes } = this.props;
 
     return (
             <Paper className={classes.paper}>
@@ -72,7 +72,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
                 </Button>
                 <Grid container={true}>
                 <Grid item={true}>
-                    <Link href="#" variant="body2" onClick={toggleForm}>
+                    <Link href="/auth/register" variant="body2">
                         {"Don't have an account? Sign Up"}
                     </Link>
                 </Grid>

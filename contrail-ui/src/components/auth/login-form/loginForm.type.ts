@@ -1,15 +1,11 @@
-export type LoginFormState = {
+import { WithStyles } from "@material-ui/core";
+import styles from "../authStyles";
+
+export interface ILoginFormState {
     email: string;
     password: string;
     [x: string]: string;
 }
-export type LoginFormProps  = {
-    classes: LoginFormPropsClasses;
-    toggleForm: LoginFormPropsToggleForm;
+export interface ILoginFormProps extends WithStyles<typeof styles> {
+
 }
-interface LoginFormPropsClasses {
-    paper: string;
-    form: string;
-    submit: string;
-}
-type LoginFormPropsToggleForm = ()  => void;

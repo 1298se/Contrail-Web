@@ -11,9 +11,9 @@ import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { registerUser } from "../../../utils/auth-utils";
 import styles from "../authStyles";
-import { RegisterFormProps } from "./registerForm.type";
+import * as types from "./registerForm.type";
 
-class RegisterForm extends Component<RegisterFormProps, any> {
+class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFormState> {
 
     public state = {
         displayName: "",
@@ -32,7 +32,7 @@ class RegisterForm extends Component<RegisterFormProps, any> {
     }
 
     public render() {
-    const { classes, toggleForm } = this.props;
+    const { classes } = this.props;
 
     return (
             <Paper className={classes.paper}>
@@ -90,7 +90,7 @@ class RegisterForm extends Component<RegisterFormProps, any> {
                 </Button>
                 <Grid container={true}>
                 <Grid item={true}>
-                    <Link href="#" variant="body2" onClick={toggleForm}>
+                    <Link href="/auth/login" variant="body2">
                         {"Already have an account? Log In"}
                     </Link>
                 </Grid>
