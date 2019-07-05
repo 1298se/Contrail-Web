@@ -40,10 +40,8 @@ const headRows: types.IHeadRow[] = [
     { id: "fileSize", numeric: true, label: "File Size" },
 ];
 
-
 function EnhancedTableHead(props: types.IEnhancedTableProps) {
     const { onSelectAllClick, numSelected, rowCount } = props;
-
 
     const renderHeadRows = headRows.map((row) => (
         <TableCell
