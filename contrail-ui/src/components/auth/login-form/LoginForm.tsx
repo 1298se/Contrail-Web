@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
@@ -30,6 +31,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
     const { classes } = this.props;
 
     return (
+        <Container maxWidth="sm">
             <Paper className={classes.paper}>
             <Typography component="h1" variant="h5">
                 Log In
@@ -80,6 +82,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                 </Grid>
             </form>
             </Paper>
+        </Container>
         );
     }
 }
