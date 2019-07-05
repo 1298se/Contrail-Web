@@ -119,7 +119,7 @@ export default function EnhancedTable() {
                         <TableCell padding="checkbox">
                             <Checkbox
                                 checked={isItemSelected}
-                                color="fdefault"
+                                color="default"
                             />
                         </TableCell>
                         <TableCell align="left">{row.name}</TableCell>
