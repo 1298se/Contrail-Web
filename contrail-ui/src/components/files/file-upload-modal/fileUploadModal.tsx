@@ -15,17 +15,53 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import CancelIcon from "@material-ui/icons/Cancel";
 import React, { Component } from "react";
 import styles from "../fileStyles";
+import Dropzone from 'react-dropzone';
+import * as firebase from "firebase/app";
 
 class FileUploadModal extends Component<any, any> {
     public state = {
         files: [],
+        uploading: false,
+    };
+
+    public onDrop = (acceptedFiles: any) => {
+        this.setState({
+            files: this.state.files.concat(acceptedFiles),
+        });
     };
 
     public handleFileUpload = (e: any) => {
-        const newFiles : any = [...(e.target.files)]
+        const newFiles: any = [...(e.target.files)];
         this.setState({
-            files: this.state.files.concat(newFiles)
-        })
+            files: this.state.files.concat(newFiles),
+        });
+    }
+
+    public uploadFiles = () => {
+        if (this.state.files.length != 0) {
+            let storageRef = firebase.storage().ref();
+            this.state.files.map((file: any) => {
+                console.log(file)
+                const name = file && file.name
+                console.log(name)
+                let uploadTask = storageRef.child('vguntam' + '/' + name).put(file);
+                console.log(uploadTask)
+                uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+                function(snapshot) {
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                        console.log('Upload is paused');
+                        break;
+                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                        console.log('Upload is running');
+                        break;
+                }
+            })
+        });
+        }
     }
 
     public removeFileUpload = (e: any) => {
@@ -35,14 +71,15 @@ class FileUploadModal extends Component<any, any> {
     public render() {
         const { classes } = this.props;
         const { files } = this.state;
+
         const renderUploadFiles = (
-            files &&  files.map((file: any, i) => { 
+            files &&  files.map((file: any, i) => {
                 return (
                     <TableRow
                         key={i}
                         hover={true}
                     >
-                        <TableCell key={i} padding="checkbox"> {file.name} </TableCell>
+                        <TableCell key={i}> {file.name} </TableCell>
                         <TableCell align="right"> 
                             <CancelIcon data-title={file.name} color="inherit" onClick={this.removeFileUpload}/>
                         </TableCell>
@@ -51,17 +88,39 @@ class FileUploadModal extends Component<any, any> {
             })
         );
 
+        const renderDropzone = (
+            <Dropzone
+                onDrop={this.onDrop}
+                noClick={true}
+            >
+            {({getRootProps, getInputProps}) => (
+            <section className="container">
+                <div {...getRootProps({className: 'dropzone'})}>
+                    <input {...getInputProps()} />
+                <DialogContentText>
+                    Drag files here, or click below!
+                </DialogContentText>
+                    <div className={classes.paper}>
+                        <Table>
+                            <TableBody>
+                                {renderUploadFiles}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </div>
+            </section>
+            )}
+            </Dropzone>
+        );
+
         return (
         <div>
             <Dialog open={true} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="lg">
                 <DialogTitle id="form-dialog-title">Upload Files</DialogTitle>
                 <DialogContent className={classes.dialog}>
-                <DialogContentText>
-                    Drag files here, or click below!
-                </DialogContentText>
-                <Table>
-                    {renderUploadFiles}
-                </Table>
+                {renderDropzone}
+                </DialogContent>
+                <DialogActions>
                 <input
                     className={classes.input}
                     style={{ display: 'none' }}
@@ -74,13 +133,11 @@ class FileUploadModal extends Component<any, any> {
                 <Button component="span" variant="contained" color="primary" className={classes.button}>
                     Add
                 </Button>
-                </label> 
-                </DialogContent>
-                <DialogActions>
-                <Button  color="primary">
+                </label>
+                <Button component="span" variant="contained" color="primary" className={classes.button}>
                     Cancel
                 </Button>
-                <Button  color="primary">
+                <Button component="span" variant="contained" color="primary" className={classes.button} onClick={this.uploadFiles}>
                     Upload
                 </Button>
                 </DialogActions>
