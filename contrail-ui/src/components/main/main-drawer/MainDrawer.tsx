@@ -21,32 +21,32 @@ class MainDrawer extends Component<any, any> {
                 classes={{paper: classes.drawerPaper}}
             >
                 <div className={classes.appBarSpacer} />
-                    <List>
-                        <ListItem button={true} key="Files">
-                            <ListItemIcon>
-                                <FileCopyIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Files" />
-                        </ListItem>
-                        <ListItem button={true} key="Favorites">
-                            <ListItemIcon>
-                                <FavoriteIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Favorites" />
-                        </ListItem>
-                        <ListItem button={true} key="Shared">
-                            <ListItemIcon>
-                                <SharedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Shared" />
-                        </ListItem>
-                        <ListItem button={true} key="Trash">
-                            <ListItemIcon>
-                                <TrashIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Trash" />
-                        </ListItem>
-                    </List>
+                <List>
+                    <ListItem button={true} key="Files">
+                        <ListItemIcon>
+                            <FileCopyIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Files" />
+                    </ListItem>
+                    <ListItem button={true} key="Favorites">
+                        <ListItemIcon>
+                            <FavoriteIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Favorites" />
+                    </ListItem>
+                    <ListItem button={true} key="Shared">
+                        <ListItemIcon>
+                            <SharedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Shared" />
+                    </ListItem>
+                    <ListItem button={true} key="Trash">
+                        <ListItemIcon>
+                            <TrashIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Trash" />
+                    </ListItem>
+                </List>
             </Drawer>
         );
     }

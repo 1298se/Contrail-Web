@@ -1,7 +1,4 @@
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import TextField from "@material-ui/core/TextField";
@@ -47,10 +44,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
     public render() {
     const { classes, toggleForm, authToken} = this.props;
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
             <div className={classes.paper}>
-            <Avatar className={classes.avatar}/>
             <Typography component="h1" variant="h5">
                 Log In
             </Typography>
@@ -100,7 +94,6 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
                 </Grid>
             </form>
             </div>
-        </Container>
         );
     }
 }

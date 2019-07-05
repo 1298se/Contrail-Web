@@ -34,10 +34,7 @@ class RegisterForm extends Component<RegisterFormProps, any> {
     const { classes, toggleForm } = this.props;
 
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
             <div className={classes.paper}>
-            <Avatar className={classes.avatar}/>
             <Typography component="h1" variant="h5">
                 Register
             </Typography>
@@ -99,7 +96,6 @@ class RegisterForm extends Component<RegisterFormProps, any> {
                 </Grid>
             </form>
             </div>
-        </Container>
         );
     }
 }
