@@ -15,23 +15,36 @@ import * as types from "./registerForm.type";
 class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFormState> {
 
     public state = {
-        displayName: "",
-        email: "",
-        password: "",
+        values: {
+            displayName: "",
+            email: "",
+            password: "",
+        },
+        errors: {
+            displayName: "",
+            email: "",
+            password: "",
+        },
+        isFormValid: false,
     };
 
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         this.setState({
-            [event.target.name]: event.target.value,
+            values: {
+                ...this.state.values,
+                [event.target.name]: event.target.value,
+            },
         });
     }
 
     public handleSubmit = () => {
-        registerUser(this.state.displayName, this.state.email, this.state.password);
+        const { displayName, email, password } = this.state.values;
+        registerUser(displayName, email, password);
     }
 
     public render() {
     const { classes } = this.props;
+    const { displayName, email, password } = this.state.values;
 
     return (
         <Container maxWidth="sm">
@@ -49,7 +62,7 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
                         label="Username"
                         name="displayName"
                         autoComplete="username"
-                        value={this.state.displayName}
+                        value={displayName}
                         onChange={this.handleChange}
                         autoFocus={true}
                     />
@@ -62,7 +75,7 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
                         label="Email Address"
                         name="email"
                         autoComplete="email"
-                        value={this.state.email}
+                        value={email}
                         onChange={this.handleChange}
                     />
                     <TextField
@@ -75,7 +88,7 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                        value={this.state.password}
+                        value={password}
                         onChange={this.handleChange}
                     />
                     <Button

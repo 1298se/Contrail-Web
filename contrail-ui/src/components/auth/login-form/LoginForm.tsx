@@ -14,21 +14,33 @@ import * as types from "./loginForm.type";
 
 class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> {
     public state = {
-        email: "",
-        password: "",
+        values: {
+            email: "",
+            password: "",
+        },
+        errors: {
+            email: "",
+            password: "",
+        },
+        isFormValid: false,
     };
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         this.setState({
-            [event.target.name]: event.target.value,
+            values: {
+                  ...this.state.values,
+                  [event.target.name]: event.target.value,
+            },
         });
     }
 
     public handleSubmit = () => {
-        loginUser(this.state.email, this.state.password);
+        const { email, password } = this.state.values;
+        loginUser(email, password);
     }
 
     public render() {
     const { classes } = this.props;
+    const { email, password } = this.state.values;
 
     return (
         <Container maxWidth="sm">
@@ -38,6 +50,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
             </Typography>
             <form className={classes.form} noValidate={true}>
                 <TextField
+                    error={true}
                     variant="outlined"
                     margin="normal"
                     required={true}
@@ -46,7 +59,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                     label="Email Address"
                     name="email"
                     autoComplete="email"
-                    value={this.state.email}
+                    value={email}
                     onChange={this.handleChange}
                     autoFocus={true}
                 />
@@ -60,7 +73,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                     type="password"
                     id="password"
                     autoComplete="current-password"
-                    value={this.state.password}
+                    value={password}
                     onChange={this.handleChange}
                 />
                 <Button
