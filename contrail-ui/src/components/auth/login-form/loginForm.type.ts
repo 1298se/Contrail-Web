@@ -7,8 +7,8 @@ export interface IFormValues {
     [x: string]: string;
 }
 export interface IFormErrors {
-    email: string;
-    password: string;
+    emailError: string;
+    passwordError: string;
     [x: string]: string;
 }
 export interface ILoginFormState {

@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { registerUser } from "../../../utils/auth-utils";
+import { emailRegex, registerUser } from "../../../utils/auth-utils";
 import styles from "../authStyles";
 import * as types from "./registerForm.type";
 
@@ -21,19 +21,63 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
             password: "",
         },
         errors: {
-            displayName: "",
-            email: "",
-            password: "",
+            displayNameError: "",
+            emailError: "",
+            passwordError: "",
         },
         isFormValid: false,
     };
 
+    public isFormValid = (errors: types.IFormErrors): boolean => {
+        const { displayName, email, password } = this.state.values;
+        let valid = true;
+
+        if (displayName.length === 0 || email.length === 0 || password.length === 0) {
+            valid = false;
+        }
+
+        Object.values(errors).forEach((val) => {
+            return (val.length > 0 && (valid = false));
+        });
+
+        return valid;
+    }
+
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        event.preventDefault();
+
+        const { name, value } = event.target;
+        const errors: types.IFormErrors = this.state.errors;
+
+        switch (name) {
+            case "displayName":
+                errors.displayNameError = value.length > 3
+                ? ""
+                : "Usernames must have a minimum of 4 characters.";
+                break;
+            case "email":
+                errors.emailError = emailRegex.test(value)
+                    ? ""
+                    : "Please enter a valid email.";
+                break;
+            case "password":
+                errors.passwordError = value.length > 6
+                    ? ""
+                    : "Passwords must have a minimum of 6 characters.";
+                break;
+            default:
+                break;
+        }
+
+        const isValid: boolean = this.isFormValid(errors);
+
         this.setState({
             values: {
                 ...this.state.values,
-                [event.target.name]: event.target.value,
+                [name]: value,
             },
+            errors,
+            isFormValid: isValid,
         });
     }
 
@@ -45,6 +89,7 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
     public render() {
     const { classes } = this.props;
     const { displayName, email, password } = this.state.values;
+    const { displayNameError, emailError, passwordError } = this.state.errors;
 
     return (
         <Container maxWidth="sm">
@@ -63,8 +108,10 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
                         name="displayName"
                         autoComplete="username"
                         value={displayName}
-                        onChange={this.handleChange}
                         autoFocus={true}
+                        error={displayNameError.length > 0}
+                        helperText={displayNameError}
+                        onChange={this.handleChange}
                     />
                     <TextField
                         variant="outlined"
@@ -76,6 +123,8 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
                         name="email"
                         autoComplete="email"
                         value={email}
+                        error={emailError.length > 0}
+                        helperText={emailError}
                         onChange={this.handleChange}
                     />
                     <TextField
@@ -89,6 +138,8 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
                         id="password"
                         autoComplete="current-password"
                         value={password}
+                        error={passwordError.length > 0}
+                        helperText={passwordError}
                         onChange={this.handleChange}
                     />
                     <Button
@@ -97,13 +148,14 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        disabled={!this.state.isFormValid}
                         onClick={this.handleSubmit}
                     >
                         Sign Up
                     </Button>
                     <Grid container={true}>
                     <Grid item={true}>
-                        <Link component={RouterLink} to="/auth/login" variant="body2">
+                        <Link component={RouterLink} to="/login" variant="body2">
                             {"Already have an account? Log In"}
                         </Link>
                     </Grid>

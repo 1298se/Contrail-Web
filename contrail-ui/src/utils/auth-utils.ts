@@ -2,6 +2,12 @@
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
+/**
+ * Regex for email
+ */
+// tslint:disable-next-line: max-line-length
+export const emailRegex = RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
 // TODO: Call initializeFirebase in App component mount. *NOTE* It is currently
 // initialized in Auth.js onMount, but it is initialized every time the component mounts
 /**

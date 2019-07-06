@@ -9,9 +9,9 @@ export interface IFormValues {
 }
 
 export interface IFormErrors {
-    displayName: string;
-    email: string;
-    password: string;
+    displayNameError: string;
+    emailError: string;
+    passwordError: string;
     [x: string]: string;
 }
 export interface IRegisterFormState {
