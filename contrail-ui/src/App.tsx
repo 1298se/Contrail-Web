@@ -9,7 +9,7 @@ function App() {
   return (
     <Router>
       <Route path={ROUTES.AUTH} component={Auth} />
-      <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
+      <Route path={ROUTES.MAIN} component={MainFrame} />
       <AuthorizedRoute path={ROUTES.FILES} component={MainFrame} authRoute={"files"} />
       <AuthorizedRoute path={ROUTES.FAVORITES} component={MainFrame} authRoute={"favorites"}  />
       <AuthorizedRoute path={ROUTES.SHARED} component={MainFrame} authRoute={"shared"} />
