@@ -17,8 +17,8 @@ export type AuthTypes = IAuthUserLogin | IAuthUserLogout;
 export function authUserLogin(user: firebase.User, authToken: string): IAuthUserLogin {
     return {
         type: constants.AUTH_USER_LOGIN,
-        user,
         authToken,
+        user,
     };
 }
 

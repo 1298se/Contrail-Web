@@ -5,13 +5,24 @@ const styles = (theme: Theme) => createStyles({
       backgroundColor: theme.palette.common.white,
   },
   dialog: {
-    margin: "10px 20px",
-    borderStyle: "dashed",
     borderBlockColor: "gray",
+    borderStyle: "dashed",
+    margin: "10px 20px",
+  },
+  name: {
+    width: "50%",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   paper: {
     height: "300px",
     overflowY: "auto",
+  },
+  progress: {
+    backgroundColor: "#b7d0f7",
+    borderRadius: 20,
+    height: 10,
+    margin: theme.spacing(1),
   },
 });
 

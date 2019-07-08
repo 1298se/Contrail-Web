@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 import authReducer from "./authReducer";
-import fileUploadReducer from "./fileUploadReducer";
+import uploadDialogReducer from "./uploadDialogReducer";
 
 const rootReducer = combineReducers({
   authState: authReducer,
-  fileUploadState: fileUploadReducer,
+  uploadDialogState: uploadDialogReducer,
 });
 
 export default rootReducer;

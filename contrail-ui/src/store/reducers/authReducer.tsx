@@ -1,4 +1,3 @@
-import * as firebase from "firebase/app";
 import { AuthTypes } from "../actions/authActions";
 
 const INITIAL_STATE = {

@@ -1,5 +1,5 @@
 import { withStyles } from "@material-ui/core";
-import Button from '@material-ui/core/Button';
+import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -11,14 +11,14 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, {Component} from "react";
-import styles from "../mainStyles";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import * as actions from "../../../store/actions/fileUploadActions";
+import * as actions from "../../../store/actions/uploadDialogActions";
+import styles from "../mainStyles";
 
 class MainDrawer extends Component<any, any> {
     public openFileUpload = () => {
-        this.props.fileUploadOpen();
+        this.props.uploadDialogOpen();
     }
 
     public render() {
@@ -30,7 +30,12 @@ class MainDrawer extends Component<any, any> {
                 classes={{paper: classes.drawerPaper}}
             >
                 <div className={classes.appBarSpacer} />
-                    <Button variant="contained" color="primary" size='large' className={classes.button} onClick={this.openFileUpload}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        className={classes.button}
+                        onClick={this.openFileUpload}>
                         <CloudUploadIcon className={classes.uploadIcon} />
                         Upload
                     </Button>
@@ -67,7 +72,7 @@ class MainDrawer extends Component<any, any> {
 
 const mapDispatchToProps = (dispatch: Dispatch<actions.AuthTypes>): any => {
     return {
-        fileUploadOpen: () => dispatch(actions.fileUploadOpen()),
+        uploadDialogOpen: () => dispatch(actions.uploadDialogOpen()),
     };
 };
 

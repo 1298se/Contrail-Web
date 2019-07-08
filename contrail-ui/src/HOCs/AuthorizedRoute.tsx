@@ -6,21 +6,13 @@ import { IAuthorizedRouteProps } from "./AuthorizedRoute.type";
 class AuthorizedRoute extends React.Component<IAuthorizedRouteProps> {
     public render() {
         const { component: Component, authToken, ...rest } = this.props;
-        // const isAuth =  authToken || localStorage.getItem("token");
-        const isAuth =  authToken;
+        const isAuth =  authToken || localStorage.getItem("token");
+        // const isAuth =  authToken;
         return (
         <Route
             {...rest}
-           render={(routeProps) =>
-                isAuth ? (
-                    <Component {...routeProps} />
-                ) : (
-                    <Redirect
-                        to={"/auth"}
-                    />
-                )
-            }
-            />
+           render={(routeProps) => isAuth ? (<Component {...routeProps} />) : (<Redirect to={"/auth"} />)}
+        />
         );
     }
 }
