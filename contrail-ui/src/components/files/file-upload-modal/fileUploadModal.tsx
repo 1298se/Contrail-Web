@@ -17,11 +17,16 @@ import React, { Component } from "react";
 import styles from "../fileStyles";
 import Dropzone from 'react-dropzone';
 import * as firebase from "firebase/app";
+import * as actions from "../../../store/actions/fileUploadActions";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 class FileUploadModal extends Component<any, any> {
     public state = {
         files: [],
         uploading: false,
+        filesProgess: {},
     };
 
     public onDrop = (acceptedFiles: any) => {
@@ -29,6 +34,13 @@ class FileUploadModal extends Component<any, any> {
             files: this.state.files.concat(acceptedFiles),
         });
     };
+
+    public closeFileUpload = () => {
+        this.setState({
+            files: []
+        })
+        this.props.fileUploadClose()
+    }
 
     public handleFileUpload = (e: any) => {
         const newFiles: any = [...(e.target.files)];
@@ -69,8 +81,8 @@ class FileUploadModal extends Component<any, any> {
     }
 
     public render() {
-        const { classes } = this.props;
-        const { files } = this.state;
+        const { classes, modalOpen } = this.props;
+        const { files, filesProgess } = this.state;
 
         const renderUploadFiles = (
             files &&  files.map((file: any, i) => {
@@ -80,6 +92,9 @@ class FileUploadModal extends Component<any, any> {
                         hover={true}
                     >
                         <TableCell key={i}> {file.name} </TableCell>
+                        <TableCell key={i}>
+                            <LinearProgress color="primary" variant="determinate" value={100} />
+                        </TableCell>
                         <TableCell align="right"> 
                             <CancelIcon data-title={file.name} color="inherit" onClick={this.removeFileUpload}/>
                         </TableCell>
@@ -115,7 +130,7 @@ class FileUploadModal extends Component<any, any> {
 
         return (
         <div>
-            <Dialog open={true} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="lg">
+            <Dialog open={modalOpen} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="lg">
                 <DialogTitle id="form-dialog-title">Upload Files</DialogTitle>
                 <DialogContent className={classes.dialog}>
                 {renderDropzone}
@@ -134,7 +149,7 @@ class FileUploadModal extends Component<any, any> {
                     Add
                 </Button>
                 </label>
-                <Button component="span" variant="contained" color="primary" className={classes.button}>
+                <Button component="span" variant="contained" color="primary" className={classes.button} onClick={this.closeFileUpload}>
                     Cancel
                 </Button>
                 <Button component="span" variant="contained" color="primary" className={classes.button} onClick={this.uploadFiles}>
@@ -146,4 +161,18 @@ class FileUploadModal extends Component<any, any> {
         );
     }
 }
-export default withStyles(styles)(FileUploadModal);
+
+const mapStateToProps = (state: any): any => {
+    return {
+        user: state.authState.user,
+        modalOpen: state.fileUploadState.modalOpen
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<actions.AuthTypes>): any => {
+    return {
+        fileUploadClose: () => dispatch(actions.fileUploadClose()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FileUploadModal));

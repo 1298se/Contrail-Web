@@ -4,3 +4,9 @@ export type AUTH_USER_LOGIN = typeof AUTH_USER_LOGIN;
 
 export const AUTH_USER_LOGOUT = "AUTH_USER_LOGOUT";
 export type AUTH_USER_LOGOUT = typeof AUTH_USER_LOGOUT;
+
+export const FILE_UPLOAD_OPEN = "FILE_UPLOAD_OPEN";
+export type FILE_UPLOAD_OPEN = typeof FILE_UPLOAD_OPEN;
+
+export const FILE_UPLOAD_CLOSE = "FILE_UPLOAD_CLOSE";
+export type FILE_UPLOAD_CLOSE = typeof FILE_UPLOAD_CLOSE;

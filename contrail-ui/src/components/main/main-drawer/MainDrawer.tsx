@@ -12,8 +12,15 @@ import SharedIcon from "@material-ui/icons/FolderShared";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, {Component} from "react";
 import styles from "../mainStyles";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import * as actions from "../../../store/actions/fileUploadActions";
 
 class MainDrawer extends Component<any, any> {
+    public openFileUpload = () => {
+        this.props.fileUploadOpen();
+    }
+
     public render() {
         const { classes } = this.props;
         return (
@@ -23,7 +30,7 @@ class MainDrawer extends Component<any, any> {
                 classes={{paper: classes.drawerPaper}}
             >
                 <div className={classes.appBarSpacer} />
-                    <Button variant="contained" color="primary" size='large' className={classes.button}>
+                    <Button variant="contained" color="primary" size='large' className={classes.button} onClick={this.openFileUpload}>
                         <CloudUploadIcon className={classes.uploadIcon} />
                         Upload
                     </Button>
@@ -57,4 +64,11 @@ class MainDrawer extends Component<any, any> {
         );
     }
 }
-export default withStyles(styles)(MainDrawer);
+
+const mapDispatchToProps = (dispatch: Dispatch<actions.AuthTypes>): any => {
+    return {
+        fileUploadOpen: () => dispatch(actions.fileUploadOpen()),
+    };
+};
+
+export default connect(null, mapDispatchToProps)(withStyles(styles)(MainDrawer));

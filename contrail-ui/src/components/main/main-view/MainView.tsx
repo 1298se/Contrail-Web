@@ -9,6 +9,7 @@ import FileUploadModal from "../../files/file-upload-modal/fileUploadModal";
 import styles from "../mainStyles";
 import ResourceListView from "../resource-list-view/ResourceListView";
 
+
 class MainView extends Component<any, any> {
     public render() {
         const { classes } = this.props;
