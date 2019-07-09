@@ -1,4 +1,5 @@
 
+import axios, { AxiosAdapter, AxiosResponse } from "axios";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
@@ -7,14 +8,14 @@ import "firebase/auth";
  */
 // tslint:disable-next-line: max-line-length
 export const emailRegex = RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-
+export const minPasswordLength = 6;
+export const minDisplayNameLength = 3;
 // TODO: Call initializeFirebase in App component mount. *NOTE* It is currently
 // initialized in Auth.js onMount, but it is initialized every time the component mounts
 /**
  * Initializes Firebase authentication. Call when app starts.
  */
 
-// tslint:disable: object-literal-sort-keys
 // tslint:disable: no-console
 export function initializeFirebase() {
     const firebaseConfig = {
@@ -30,7 +31,8 @@ export function initializeFirebase() {
 }
 
 /**
- * Registers a user to Firebase. *NOTE*: {@link initializeFirebase} must be called before.
+ * Registers a user to Firebase, then logs in using {@link loginUser}. 
+ * *NOTE*: {@link initializeFirebase} must be called before this.
  * @param displayName the user's display name received from registration
  * @param email the user's email received from registration.
  * @param password the user's password received from registration.
@@ -50,6 +52,7 @@ export function registerUser(displayName: string, email: string, password: strin
                     displayName,
                 }).then(() => {
                     console.log("profile update successful");
+                    loginUser(email, password);
                     resolve(user);
                 }).catch((error) => {
                     console.error("profile update failed:  ", error);
@@ -60,8 +63,22 @@ export function registerUser(displayName: string, email: string, password: strin
     });
 }
 
+export function registerUserDb(user: firebase.User | null): Promise<AxiosResponse | any> {
+
+    return new Promise((resolve, reject) => {
+        axios.post("/register", user)
+        .then((response) => {
+            resolve(response);
+        }).
+        catch((error) => {
+            reject(error);
+        });
+    });
+}
+
 /**
- * Logins a user to Firebase. *NOTE* {@link initializeFirebase} must be called before.
+ * Logins a user to Firebase.
+ * *NOTE* {@link initializeFirebase} must be called before this.
  * @param email the user's email received from login
  * @param password the user's password received from login
  * @return a {@link Promise} that resolves with the current user, or rejects with the error

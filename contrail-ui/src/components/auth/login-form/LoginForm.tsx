@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { emailRegex, loginUser } from "../../../utils/auth-utils";
+import * as auth from "../../../utils/auth-utils";
 import styles from "../authStyles";
 import * as types from "./loginForm.type";
 
@@ -48,12 +48,12 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
 
         switch (name) {
             case "email":
-                errors.emailError = emailRegex.test(value)
+                errors.emailError = auth.emailRegex.test(value)
                     ? ""
                     : "Please enter a valid email.";
                 break;
             case "password":
-                errors.passwordError = value.length > 6
+                errors.passwordError = value.length >= auth.minPasswordLength
                     ? ""
                     : "Passwords must have a minimum of 6 characters.";
                 break;
@@ -75,7 +75,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
 
     public handleSubmit = () => {
         const { email, password } = this.state.values;
-        loginUser(email, password);
+        auth.loginUser(email, password);
     }
 
     public render() {

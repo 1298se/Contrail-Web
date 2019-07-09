@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { emailRegex, registerUser } from "../../../utils/auth-utils";
+import * as auth from "../../../utils/auth-utils";
 import styles from "../authStyles";
 import * as types from "./registerForm.type";
 
@@ -51,17 +51,17 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
 
         switch (name) {
             case "displayName":
-                errors.displayNameError = value.length > 3
+                errors.displayNameError = value.length >= auth.minDisplayNameLength
                 ? ""
                 : "Usernames must have a minimum of 4 characters.";
                 break;
             case "email":
-                errors.emailError = emailRegex.test(value)
+                errors.emailError = auth.emailRegex.test(value)
                     ? ""
                     : "Please enter a valid email.";
                 break;
             case "password":
-                errors.passwordError = value.length > 6
+                errors.passwordError = value.length >= auth.minPasswordLength
                     ? ""
                     : "Passwords must have a minimum of 6 characters.";
                 break;
@@ -83,7 +83,11 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
 
     public handleSubmit = () => {
         const { displayName, email, password } = this.state.values;
-        registerUser(displayName, email, password);
+
+        auth.registerUser(displayName, email, password)
+        .then((user) => {
+            auth.registerUserDb(user);
+        });
     }
 
     public render() {
