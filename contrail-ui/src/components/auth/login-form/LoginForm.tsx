@@ -7,8 +7,13 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
+import { connect } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
+import { Dispatch } from "redux";
+import * as ROUTES from "../../../routes";
+import * as actions from "../../../store/actions/authActions";
 import * as auth from "../../../utils/auth-utils";
+import { loginUser } from "../../../utils/auth-utils";
 import styles from "../authStyles";
 import * as types from "./loginForm.type";
 
@@ -74,8 +79,20 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
     }
 
     public handleSubmit = () => {
+        const { authUserLogin }: any = this.props;
         const { email, password } = this.state.values;
-        auth.loginUser(email, password);
+
+        loginUser(email, password)
+        .then((user) => {
+            if (user && user.refreshToken) {
+                authUserLogin(user, user.refreshToken);
+                localStorage.setItem("token",  user.refreshToken);
+                this.props.history.push(ROUTES.MAIN);
+            }
+        })
+        .catch((err) => {
+            // display message
+        });
     }
 
     public render() {
@@ -145,4 +162,17 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
     }
 }
 
-export default withStyles(styles)(LoginForm);
+const mapStateToProps = (state: any): any => {
+    return {
+        authToken: state.authState.authToken,
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<actions.AuthTypes>): any => {
+    return {
+        authUserLogin: (user: firebase.User, authToken: string) => dispatch(actions.authUserLogin(user, authToken)),
+        authUserLogout: () => dispatch(actions.authUserLogout()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginForm));

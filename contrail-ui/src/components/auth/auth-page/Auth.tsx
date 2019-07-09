@@ -1,17 +1,26 @@
-import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import CloudUploadOutlined from "@material-ui/icons/CloudUploadOutlined";
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import * as ROUTES from "../../../routes";
 import styles from "../authStyles";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
 class Auth extends Component<types.IAuthProps, {}> {
+  public componentDidMount() {
+    const { authToken } = this.props;
+    // const isAuth =  authToken || localStorage.getItem("token");
+    const isAuth =  authToken;
+    if (isAuth) {
+      this.props.history.push(ROUTES.MAIN);
+    }
+  }
 
     public render() {
         const { classes } = this.props;
@@ -37,6 +46,12 @@ class Auth extends Component<types.IAuthProps, {}> {
             </Router>
         );
     }
-}
+  }
 
-export default withStyles(styles)(Auth);
+const mapStateToProps = (state: any): any => {
+    return {
+        authToken: state.authState.authToken,
+    };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(Auth));

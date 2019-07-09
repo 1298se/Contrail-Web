@@ -17,5 +17,6 @@ export interface ILoginFormState {
     isFormValid: boolean;
 }
 export interface ILoginFormProps extends WithStyles<typeof styles> {
-
+    history?: any;
+    authToken?: string;
 }
