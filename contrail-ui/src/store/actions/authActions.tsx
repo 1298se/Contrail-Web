@@ -19,7 +19,7 @@ export const fetchUser = (
             });
         } else {
             dispatch({
-                type: constants.AUTH_USER_FETCH_USER_ERROR,
+                type: constants.AUTH_USER_FETCH_USER,
                 authUser: null,
                 authToken: null,
             });

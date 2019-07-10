@@ -5,7 +5,6 @@ const INITIAL_STATE = {
     authUser: null,
     authToken: null,
     authError: {
-        fetchError: null,
         loginError: null,
         logoutError: null,
     },
@@ -15,9 +14,13 @@ function authReducer(state = INITIAL_STATE, action: AuthTypes): any {
     switch (action.type) {
         case AUTH_USER_FETCH_USER:
             return {
-                ...state,
                 authUser: action.authUser,
                 authToken: action.authToken,
+                authError: {
+                    fetchError: null,
+                    loginError: null,
+                    logoutError: null,
+                },
             };
         case AUTH_USER_LOGIN_ERROR:
             return {

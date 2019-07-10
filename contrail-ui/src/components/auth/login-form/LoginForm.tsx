@@ -12,6 +12,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { Dispatch } from "redux";
 import * as ROUTES from "../../../routes";
 import * as actions from "../../../store/actions/authActions";
+import * as storeTypes from "../../../store/store.types";
 import * as auth from "../../../utils/firebase/auth-utils";
 import { loginUser } from "../../../utils/firebase/auth-utils";
 import styles from "../authStyles";
@@ -168,11 +169,4 @@ const mapStateToProps = (state: any): any => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.AuthTypes>): any => {
-    return {
-        authUserLogin: (user: firebase.User, authToken: string) => dispatch(actions.authUserLogin(user, authToken)),
-        authUserLogout: () => dispatch(actions.authUserLogout()),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginForm));
+export default connect(mapStateToProps)(withStyles(styles)(LoginForm));

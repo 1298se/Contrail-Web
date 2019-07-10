@@ -12,11 +12,6 @@ export interface IAuthFetchUser {
     authToken: string;
 }
 
-export interface IAuthFetchUserError {
-    type: constants.AUTH_USER_FETCH_USER_ERROR;
-    fetchError: string;
-}
-
 export interface IAuthLoginUserError {
     type: constants.AUTH_USER_LOGIN_ERROR;
     loginError: string;
@@ -26,6 +21,4 @@ export interface IAuthUserLogoutError {
     logoutError: string;
 }
 
-export type AuthTypes = IAuthFetchUser | IAuthFetchUserError
-    | IAuthLoginUserError | IAuthUserLogoutError;
-
+export type AuthTypes = IAuthFetchUser | IAuthLoginUserError | IAuthUserLogoutError;
