@@ -17,7 +17,6 @@ function authReducer(state = INITIAL_STATE, action: AuthTypes): any {
                 authUser: action.authUser,
                 authToken: action.authToken,
                 authError: {
-                    fetchError: null,
                     loginError: null,
                     logoutError: null,
                 },
