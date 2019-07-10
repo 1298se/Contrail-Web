@@ -12,8 +12,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { Dispatch } from "redux";
 import * as ROUTES from "../../../routes";
 import * as actions from "../../../store/actions/authActions";
-import * as auth from "../../../utils/auth-utils";
-import { loginUser } from "../../../utils/auth-utils";
+import * as auth from "../../../utils/firebase/auth-utils";
+import { loginUser } from "../../../utils/firebase/auth-utils";
 import styles from "../authStyles";
 import * as types from "./loginForm.type";
 

@@ -1,7 +1,9 @@
 
 import axios, { AxiosAdapter, AxiosResponse } from "axios";
 import * as firebase from "firebase/app";
-import "firebase/auth";
+import { authRef } from "../../firebase/firebase";
+
+// tslint:disable: no-console
 
 /**
  * Regex for email
@@ -10,28 +12,9 @@ import "firebase/auth";
 export const emailRegex = RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 export const minPasswordLength = 6;
 export const minDisplayNameLength = 3;
-// TODO: Call initializeFirebase in App component mount. *NOTE* It is currently
-// initialized in Auth.js onMount, but it is initialized every time the component mounts
-/**
- * Initializes Firebase authentication. Call when app starts.
- */
-
-// tslint:disable: no-console
-export function initializeFirebase() {
-    const firebaseConfig = {
-        apiKey: "AIzaSyB9tiUIhIC_R9mAibHA71A8WM1Mt9euL0w",
-        authDomain: "contrail-db.firebaseapp.com",
-        databaseURL: "https://contrail-db.firebaseio.com",
-        projectId: "contrail-db",
-        storageBucket: "contrail-db.appspot.com",
-        messagingSenderId: "342081308461",
-        appId: "1:342081308461:web:229362ba93e13630",
-    };
-    firebase.initializeApp(firebaseConfig);
-}
 
 /**
- * Registers a user to Firebase, then logs in using {@link loginUser}. 
+ * Registers a user to Firebase, then logs in using {@link loginUser}.
  * *NOTE*: {@link initializeFirebase} must be called before this.
  * @param displayName the user's display name received from registration
  * @param email the user's email received from registration.
@@ -41,8 +24,8 @@ export function initializeFirebase() {
 export function registerUser(displayName: string, email: string, password: string): Promise<firebase.User | null> {
     console.log("registering user");
     return new Promise((resolve, reject) => {
-        firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
-            const user = firebase.auth().currentUser;
+        authRef.createUserWithEmailAndPassword(email, password).then(() => {
+            const user = authRef.currentUser;
             if (user === null) {
                 console.error("registration failed: user is null");
                 resolve(null);
@@ -86,9 +69,9 @@ export function registerUserDb(user: firebase.User | null): Promise<AxiosRespons
 export function loginUser(email: string, password: string): Promise<firebase.User | null> {
     console.log("logging in user");
     return new Promise((resolve, reject) => {
-        firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
+        authRef.signInWithEmailAndPassword(email, password).then(() => {
             console.log("login successful");
-            const user = firebase.auth().currentUser;
+            const user = authRef.currentUser;
             if (user === null) {
                 console.error("login failed: user is null");
                 resolve(null);
@@ -102,6 +85,18 @@ export function loginUser(email: string, password: string): Promise<firebase.Use
     });
 }
 
+export function logoutUser(): Promise<string> {
+    return new Promise((resolve, reject) => {
+        authRef.signOut()
+        .then(() => {
+            resolve("success");
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
 /**
  * Gets the ID Token of a current user, or null
  * @returns a {@link Promise} that resolves null if there is no current user or the user's IDToken if there is,
@@ -109,7 +104,7 @@ export function loginUser(email: string, password: string): Promise<firebase.Use
  */
 export function getUserToken(): Promise<string|null> {
     return new Promise((resolve, reject) => {
-        const user = firebase.auth().currentUser;
+        const user = authRef.currentUser;
         if (user === null) {
             resolve(null);
         } else {
