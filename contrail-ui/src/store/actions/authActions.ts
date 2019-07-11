@@ -7,34 +7,26 @@ import * as constants from "../constants";
 import { IAppReduxState } from "../store.types";
 import { IAuthFetchUserAction, IUserDataPayload } from "./authActions.types";
 
-export const fetchUserActionCreator: ActionCreator<
-    ThunkAction<
-    void,
-    IUserDataPayload,
-    null,
-    IAuthFetchUserAction>
-> = () => (dispatch) => {
+export const fetchUserAction = (): ThunkAction<void, IUserDataPayload, null, IAuthFetchUserAction> => (dispatch) => {
     authRef.onIdTokenChanged((user) => {
         if (user) {
             auth.getUserToken().then((token) => {
-                const fetchUserAction: IAuthFetchUserAction = {
+                dispatch({
                     type: constants.AUTH_USER_FETCH_USER,
                     payload: {
                         authUser: user,
                         authToken: token,
                     },
-                };
-                dispatch(fetchUserAction);
+                });
             });
         } else {
-            const fetchUserAction: IAuthFetchUserAction = {
+            dispatch({
                 type: constants.AUTH_USER_FETCH_USER,
                 payload: {
                     authUser: null,
                     authToken: null,
                 },
-            };
-            dispatch(fetchUserAction);
+            });
         }
     });
 };

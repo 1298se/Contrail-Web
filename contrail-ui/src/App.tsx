@@ -8,31 +8,31 @@ import Auth from "./components/auth/auth-page/Auth";
 import MainFrame from "./components/main/MainFrame";
 import AuthorizedRoute from "./HOCs/AuthorizedRoute";
 import * as ROUTES from "./routes";
-import { fetchUserActionCreator } from "./store/actions/authActions";
+import { fetchUserAction } from "./store/actions/authActions";
 
 const App: FC<Props> = ({
-  fetchUser,
+    fetchUser,
 }) => {
-  useEffect(() => {
-    fetchUser();
-  });
+    useEffect(() => {
+        fetchUser();
+    });
 
-  return (
-    <Router>
-      <Route path={ROUTES.AUTH} component={Auth} />
-      <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
-      <AuthorizedRoute path={ROUTES.FILES} component={MainFrame} authRoute={"files"} />
-      <AuthorizedRoute path={ROUTES.FAVORITES} component={MainFrame} authRoute={"favorites"}  />
-      <AuthorizedRoute path={ROUTES.SHARED} component={MainFrame} authRoute={"shared"} />
-      <AuthorizedRoute path={ROUTES.TRASH} component={MainFrame} authRoute={"trash"}  />
-    </Router>
-  );
+    return (
+        <Router>
+            <Route path={ROUTES.AUTH} component={Auth} />
+            <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
+            <AuthorizedRoute path={ROUTES.FILES} component={MainFrame} authRoute={"files"} />
+            <AuthorizedRoute path={ROUTES.FAVORITES} component={MainFrame} authRoute={"favorites"} />
+            <AuthorizedRoute path={ROUTES.SHARED} component={MainFrame} authRoute={"shared"} />
+            <AuthorizedRoute path={ROUTES.TRASH} component={MainFrame} authRoute={"trash"} />
+        </Router>
+    );
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) => {
-  return {
-    fetchUser: () => dispatch(fetchUserActionCreator()),
-  };
+    return {
+        fetchUser: () => dispatch(fetchUserAction()),
+    };
 };
 
 export default connect(null, mapDispatchToProps)(App);
