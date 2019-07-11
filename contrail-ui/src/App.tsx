@@ -10,6 +10,12 @@ import AuthorizedRoute from "./HOCs/AuthorizedRoute";
 import * as ROUTES from "./routes";
 import { fetchUserAction } from "./store/actions/authActions";
 
+const DefaultRedirect = () => {
+    return (
+        <Redirect to={ROUTES.LOGIN} />
+    );
+};
+
 const App: FC<Props> = ({
     fetchUser,
 }) => {
@@ -19,7 +25,8 @@ const App: FC<Props> = ({
 
     return (
         <Router>
-            <Route path={ROUTES.AUTH} component={Auth} />
+            <Route path={ROUTES.ROOT} exact={true} component={DefaultRedirect} />
+            <Route path={ROUTES.LOGIN} component={Auth} />
             <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
             <AuthorizedRoute path={ROUTES.FILES} component={MainFrame} authRoute={"files"} />
             <AuthorizedRoute path={ROUTES.FAVORITES} component={MainFrame} authRoute={"favorites"} />

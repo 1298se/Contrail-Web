@@ -1,5 +1,6 @@
+export const ROOT = "/";
 export const MAIN = "/app";
-export const AUTH = "/auth";
+export const LOGIN = "/login";
 export const FILES = "/app/files";
 export const FAVORITES = "/app/favorites";
 export const SHARED = "/app/shared";

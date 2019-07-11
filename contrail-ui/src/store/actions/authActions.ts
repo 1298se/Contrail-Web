@@ -1,31 +1,27 @@
 
-import { Action, ActionCreator } from "redux";
+import { Action } from "redux";
 import { ThunkAction } from "redux-thunk";
 import { authRef } from "../../firebase/firebase";
 import * as auth from "../../utils/firebase/auth-utils";
 import * as constants from "../constants";
 import { IAppReduxState } from "../store.types";
-import { IAuthFetchUserAction, IUserDataPayload } from "./authActions.types";
+import { IAuthFetchUserAction } from "./authActions.types";
 
-export const fetchUserAction = (): ThunkAction<void, IUserDataPayload, null, IAuthFetchUserAction> => (dispatch) => {
+export const fetchUserAction = (): ThunkAction<void, {}, null, IAuthFetchUserAction> => (dispatch) => {
     authRef.onIdTokenChanged((user) => {
         if (user) {
             auth.getUserToken().then((token) => {
                 dispatch({
                     type: constants.AUTH_USER_FETCH_USER,
-                    payload: {
-                        authUser: user,
-                        authToken: token,
-                    },
+                    authUser: user,
+                    authToken: token,
                 });
             });
         } else {
             dispatch({
                 type: constants.AUTH_USER_FETCH_USER,
-                payload: {
-                    authUser: null,
-                    authToken: null,
-                },
+                authUser: null,
+                authToken: null,
             });
         }
     });

@@ -7,7 +7,8 @@ export interface IUserDataPayload {
 }
 export interface IAuthFetchUserAction extends Action<constants.AUTH_USER_FETCH_USER> {
     type: constants.AUTH_USER_FETCH_USER;
-    payload: IUserDataPayload;
+    authUser: firebase.User | null;
+    authToken: string | null;
 }
 
 export interface IAuthLoginUserAction extends Action<constants.AUTH_USER_LOGIN> {
