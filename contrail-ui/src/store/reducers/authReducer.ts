@@ -1,7 +1,9 @@
-import { AUTH_USER_FETCH_USER, AUTH_USER_LOGIN_ERROR, AUTH_USER_LOGOUT_ERROR} from "../constants";
-import { AuthTypes } from "../store.types";
+import { Reducer } from "redux";
+import { AuthActions } from "../actions/authActions.types";
+import { AUTH_USER_FETCH_USER, AUTH_USER_LOGIN, AUTH_USER_LOGOUT} from "../constants";
+import * as types from "./authReducer.types";
 
-const INITIAL_STATE = {
+const initialAuthState: types.IAuthState = {
     authUser: null,
     authToken: null,
     authError: {
@@ -10,7 +12,10 @@ const INITIAL_STATE = {
     },
 };
 
-function authReducer(state = INITIAL_STATE, action: AuthTypes): any {
+const authReducer: Reducer<types.IAuthState, AuthActions> = (
+    state = initialAuthState,
+    action,
+) => {
     switch (action.type) {
         case AUTH_USER_FETCH_USER:
             return {
@@ -21,7 +26,7 @@ function authReducer(state = INITIAL_STATE, action: AuthTypes): any {
                     logoutError: null,
                 },
             };
-        case AUTH_USER_LOGIN_ERROR:
+        case AUTH_USER_LOGIN:
             return {
                 ...state,
                 authError: {
@@ -29,7 +34,7 @@ function authReducer(state = INITIAL_STATE, action: AuthTypes): any {
                     loginError: action.loginError,
                 },
             };
-        case AUTH_USER_LOGOUT_ERROR:
+        case AUTH_USER_LOGOUT:
             return {
                 ...state,
                 authError: {
@@ -40,6 +45,6 @@ function authReducer(state = INITIAL_STATE, action: AuthTypes): any {
         default:
             return state;
     }
-}
+};
 
 export default authReducer;

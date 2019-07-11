@@ -33,7 +33,7 @@ export const authUserLogin = (
     auth.loginUser(email, password)
         .catch((error) => {
             dispatch({
-                type: constants.AUTH_USER_LOGIN_ERROR,
+                type: constants.AUTH_USER_LOGIN,
                 loginError: error,
             });
         });
@@ -44,7 +44,7 @@ export const authUserLogout = (
     auth.logoutUser()
         .catch((error) => {
             dispatch({
-                type: constants.AUTH_USER_LOGIN_ERROR,
+                type: constants.AUTH_USER_LOGIN,
                 logoutError: error,
             });
         });
