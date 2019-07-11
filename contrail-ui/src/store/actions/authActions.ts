@@ -1,35 +1,47 @@
 
-import { Action } from "redux";
+import { Action, ActionCreator } from "redux";
 import { ThunkAction } from "redux-thunk";
 import { authRef } from "../../firebase/firebase";
 import * as auth from "../../utils/firebase/auth-utils";
 import * as constants from "../constants";
-import { AppState } from "../reducers";
+import { IAppReduxState } from "../store.types";
+import { IAuthFetchUserAction, IUserDataPayload } from "./authActions.types";
 
-export const fetchUser = (
-): ThunkAction<void, AppState, null, Action<string>> => (dispatch) => {
+export const fetchUserActionCreator: ActionCreator<
+    ThunkAction<
+    void,
+    IUserDataPayload,
+    null,
+    IAuthFetchUserAction>
+> = () => (dispatch) => {
     authRef.onIdTokenChanged((user) => {
         if (user) {
             auth.getUserToken().then((token) => {
-                dispatch({
+                const fetchUserAction: IAuthFetchUserAction = {
                     type: constants.AUTH_USER_FETCH_USER,
-                    authUser: user,
-                    authToken: token,
-                });
+                    payload: {
+                        authUser: user,
+                        authToken: token,
+                    },
+                };
+                dispatch(fetchUserAction);
             });
         } else {
-            dispatch({
+            const fetchUserAction: IAuthFetchUserAction = {
                 type: constants.AUTH_USER_FETCH_USER,
-                authUser: null,
-                authToken: null,
-            });
+                payload: {
+                    authUser: null,
+                    authToken: null,
+                },
+            };
+            dispatch(fetchUserAction);
         }
     });
 };
 
-export const authUserLogin = (
+export const authUserLoginAction = (
     email: string, password: string,
-): ThunkAction<void, AppState, null, Action<string>> => (dispatch) => {
+): ThunkAction<void, IAppReduxState, null, Action<string>> => (dispatch) => {
     auth.loginUser(email, password)
         .catch((error) => {
             dispatch({
@@ -39,8 +51,8 @@ export const authUserLogin = (
         });
 };
 
-export const authUserLogout = (
-): ThunkAction<void, AppState, null, Action<string>> => (dispatch) => {
+export const authUserLogoutAction = (
+): ThunkAction<void, IAppReduxState, null, Action<string>> => (dispatch) => {
     auth.logoutUser()
         .catch((error) => {
             dispatch({

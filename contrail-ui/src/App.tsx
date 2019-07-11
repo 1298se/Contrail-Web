@@ -1,11 +1,22 @@
-import React from "react";
+import React, { FC, useEffect } from "react";
+import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import { AnyAction } from "redux";
+import { ThunkDispatch } from "redux-thunk";
+import { Props } from "./app.types";
 import Auth from "./components/auth/auth-page/Auth";
 import MainFrame from "./components/main/MainFrame";
 import AuthorizedRoute from "./HOCs/AuthorizedRoute";
 import * as ROUTES from "./routes";
+import { fetchUserActionCreator } from "./store/actions/authActions";
 
-function App() {
+const App: FC<Props> = ({
+  fetchUser,
+}) => {
+  useEffect(() => {
+    fetchUser();
+  });
+
   return (
     <Router>
       <Route path={ROUTES.AUTH} component={Auth} />
@@ -16,6 +27,12 @@ function App() {
       <AuthorizedRoute path={ROUTES.TRASH} component={MainFrame} authRoute={"trash"}  />
     </Router>
   );
-}
+};
 
-export default App;
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) => {
+  return {
+    fetchUser: () => dispatch(fetchUserActionCreator()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(App);

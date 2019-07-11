@@ -1,3 +1,5 @@
-import rootReducer from "./reducers";
+import { IAuthState } from "./reducers/authReducer.types";
 
-export type AppState = ReturnType<typeof rootReducer>;
+export interface IAppReduxState {
+    readonly authState: IAuthState;
+}
