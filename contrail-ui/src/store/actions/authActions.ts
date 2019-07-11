@@ -27,7 +27,7 @@ export const fetchUserAction = (): ThunkAction<void, {}, null, IAuthFetchUserAct
     });
 };
 
-export const authUserLoginAction = (
+export const loginUserAction = (
     email: string, password: string,
 ): ThunkAction<void, {}, {}, IAuthLoginUserAction> => (dispatch) => {
     auth.loginUser(email, password)
@@ -45,7 +45,7 @@ export const authUserLoginAction = (
         });
 };
 
-export const authUserLogoutAction = (
+export const logoutUserAction = (
 ): ThunkAction<void, IAppReduxState, null, Action<string>> => (dispatch) => {
     auth.logoutUser()
         .catch((error) => {

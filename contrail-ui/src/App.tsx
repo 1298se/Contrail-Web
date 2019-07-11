@@ -1,14 +1,14 @@
 import React, { FC, useEffect } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
-import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
-import { Props } from "./app.types";
+import { IAppProps } from "./app.types";
 import Auth from "./components/auth/auth-page/Auth";
 import MainFrame from "./components/main/MainFrame";
 import AuthorizedRoute from "./HOCs/AuthorizedRoute";
 import * as ROUTES from "./routes";
 import { fetchUserAction } from "./store/actions/authActions";
+import { IAuthFetchUserAction } from "./store/actions/authActions.types";
 
 const DefaultRedirect = () => {
     return (
@@ -16,7 +16,7 @@ const DefaultRedirect = () => {
     );
 };
 
-const App: FC<Props> = ({
+const App: FC<IAppProps> = ({
     fetchUser,
 }) => {
     useEffect(() => {
@@ -36,7 +36,7 @@ const App: FC<Props> = ({
     );
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAuthFetchUserAction>) => {
     return {
         fetchUser: () => dispatch(fetchUserAction()),
     };

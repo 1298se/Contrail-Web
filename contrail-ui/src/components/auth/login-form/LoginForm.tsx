@@ -9,12 +9,10 @@ import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
-import { Dispatch } from "redux";
-import * as ROUTES from "../../../routes";
-import * as actions from "../../../store/actions/authActions";
-import * as storeTypes from "../../../store/store.types";
+import { ThunkDispatch } from "redux-thunk";
+import { loginUserAction } from "../../../store/actions/authActions";
+import { IAuthLoginUserAction } from "../../../store/actions/authActions.types";
 import * as auth from "../../../utils/firebase/auth-utils";
-import { loginUser } from "../../../utils/firebase/auth-utils";
 import styles from "../authStyles";
 import * as types from "./loginForm.type";
 
@@ -80,20 +78,8 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
     }
 
     public handleSubmit = () => {
-        const { authUserLogin }: any = this.props;
         const { email, password } = this.state.values;
-
-        loginUser(email, password)
-        .then((user) => {
-            if (user && user.refreshToken) {
-                authUserLogin(user, user.refreshToken);
-                localStorage.setItem("token",  user.refreshToken);
-                this.props.history.push(ROUTES.MAIN);
-            }
-        })
-        .catch((err) => {
-            // display message
-        });
+        this.props.loginUser(email, password);
     }
 
     public render() {
@@ -169,4 +155,10 @@ const mapStateToProps = (state: any): any => {
     };
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(LoginForm));
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAuthLoginUserAction>) => {
+    return {
+        loginUser: (email: string, password: string) => dispatch(loginUserAction(email, password)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginForm));
