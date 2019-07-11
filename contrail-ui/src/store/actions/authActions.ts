@@ -5,7 +5,7 @@ import { authRef } from "../../firebase/firebase";
 import * as auth from "../../utils/firebase/auth-utils";
 import * as constants from "../constants";
 import { IAppReduxState } from "../store.types";
-import { IAuthFetchUserAction } from "./authActions.types";
+import { IAuthFetchUserAction, IAuthLoginUserAction } from "./authActions.types";
 
 export const fetchUserAction = (): ThunkAction<void, {}, null, IAuthFetchUserAction> => (dispatch) => {
     authRef.onIdTokenChanged((user) => {
@@ -29,8 +29,14 @@ export const fetchUserAction = (): ThunkAction<void, {}, null, IAuthFetchUserAct
 
 export const authUserLoginAction = (
     email: string, password: string,
-): ThunkAction<void, IAppReduxState, null, Action<string>> => (dispatch) => {
+): ThunkAction<void, {}, {}, IAuthLoginUserAction> => (dispatch) => {
     auth.loginUser(email, password)
+        .then(() => {
+            dispatch({
+                type: constants.AUTH_USER_LOGIN,
+                loginError: null,
+            });
+        })
         .catch((error) => {
             dispatch({
                 type: constants.AUTH_USER_LOGIN,

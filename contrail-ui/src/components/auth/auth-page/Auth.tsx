@@ -7,20 +7,20 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import * as ROUTES from "../../../routes";
+import { IAppReduxState } from "../../../store/store.types";
 import styles from "../authStyles";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
 class Auth extends Component<types.IAuthProps, {}> {
-  public componentDidMount() {
-    const { authToken } = this.props;
-    // const isAuth =  authToken || localStorage.getItem("token");
-    const isAuth =  authToken;
-    if (isAuth) {
-      this.props.history.push(ROUTES.MAIN);
+    public componentDidMount() {
+        const { authToken } = this.props;
+        const isAuth = authToken;
+        if (isAuth) {
+            this.props.history.push(ROUTES.MAIN);
+        }
     }
-  }
 
     public render() {
         const { classes } = this.props;
@@ -46,9 +46,9 @@ class Auth extends Component<types.IAuthProps, {}> {
             </Router>
         );
     }
-  }
+}
 
-const mapStateToProps = (state: any): any => {
+const mapStateToProps = (state: IAppReduxState): types.IAuthStateProps => {
     return {
         authToken: state.authState.authToken,
     };

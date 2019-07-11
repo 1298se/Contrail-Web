@@ -19,12 +19,9 @@ const authReducer: Reducer<types.IAuthState, AuthActions> = (
     switch (action.type) {
         case AUTH_USER_FETCH_USER:
             return {
+                ...state,
                 authUser: action.authUser,
                 authToken: action.authToken,
-                authError: {
-                    loginError: null,
-                    logoutError: null,
-                },
             };
         case AUTH_USER_LOGIN:
             return {

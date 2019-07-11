@@ -1,10 +1,6 @@
 import { Action } from "redux";
 import * as constants from "../constants";
 
-export interface IUserDataPayload {
-    authUser: firebase.User | null;
-    authToken: string | null;
-}
 export interface IAuthFetchUserAction extends Action<constants.AUTH_USER_FETCH_USER> {
     type: constants.AUTH_USER_FETCH_USER;
     authUser: firebase.User | null;
@@ -13,11 +9,11 @@ export interface IAuthFetchUserAction extends Action<constants.AUTH_USER_FETCH_U
 
 export interface IAuthLoginUserAction extends Action<constants.AUTH_USER_LOGIN> {
     type: constants.AUTH_USER_LOGIN;
-    loginError: string;
+    loginError: any;
 }
 export interface IAuthUserLogoutAction extends Action<constants.AUTH_USER_LOGOUT> {
     type: constants.AUTH_USER_LOGOUT;
-    logoutError: string;
+    logoutError: any;
 }
 
 export type AuthActions =

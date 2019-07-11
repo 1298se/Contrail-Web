@@ -1,7 +1,13 @@
 import { WithStyles } from "@material-ui/core";
+import { RouteComponentProps } from "react-router-dom";
 import styles from "../authStyles";
-import { RouteComponentProps } from 'react-router-dom';
 
-export interface IAuthProps extends WithStyles<typeof styles>, RouteComponentProps {
+export interface IAuthOwnProps extends WithStyles<typeof styles>, RouteComponentProps {
+
+}
+
+export interface IAuthStateProps {
     authToken: string | null;
 }
+
+export type IAuthProps = IAuthOwnProps & IAuthStateProps;
