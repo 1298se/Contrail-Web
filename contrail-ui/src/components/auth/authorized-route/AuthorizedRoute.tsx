@@ -6,21 +6,14 @@ import { IAuthorizedProps } from "./AuthorizedRoute.type";
 
 class AuthorizedRoute extends Component<IAuthorizedProps> {
     public render() {
-        const { component: Component, authToken, ...rest } = this.props;
-        // const isAuth =  authToken || localStorage.getItem("token");
+        const { component: AuthorizedComponent, authToken, path } = this.props;
         const isAuth =  authToken;
+        const renderComponent =  () => isAuth ? <AuthorizedComponent /> : <Redirect to={ROUTES.LOGIN} />;
+
         return (
-        <Route
-            {...rest}
-           render={(routeProps) =>
-                isAuth ? (
-                    <Component {...routeProps} />
-                ) : (
-                    <Redirect
-                        to={ROUTES.LOGIN}
-                    />
-                )
-            }
+            <Route
+                path={path}
+                render={renderComponent}
             />
         );
     }
