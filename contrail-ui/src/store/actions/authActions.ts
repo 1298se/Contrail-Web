@@ -12,7 +12,7 @@ export const fetchUserAction =
 (): ThunkAction<void, {}, null, IAuthFetchUserAction | IAppSetLoadingStateAction> =>
 (dispatch) => {
     dispatch(setAppLoadingState(true));
-    authRef.onIdTokenChanged((user) => {
+    authRef.onAuthStateChanged((user) => {
         if (user) {
             auth.getUserToken().then((token) => {
                 dispatch({
@@ -20,6 +20,7 @@ export const fetchUserAction =
                     authUser: user,
                     authToken: token,
                 });
+                dispatch(setAppLoadingState(false));
             });
         } else {
             dispatch({
@@ -27,8 +28,8 @@ export const fetchUserAction =
                 authUser: null,
                 authToken: null,
             });
+            dispatch(setAppLoadingState(false));
         }
-        dispatch(setAppLoadingState(false));
     });
 };
 

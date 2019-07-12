@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
@@ -17,24 +17,30 @@ const DefaultRedirect = () => {
     );
 };
 
-const App: FC<IAppProps> = (props) => {
+class App extends Component<IAppProps, {}> {
+    public componentDidMount() {
+        this.props.fetchUser();
+    }
 
-    useEffect(() => {
-        props.fetchUser();
-    });
-
-    return (
-        <Router>
-            <Route path={ROUTES.ROOT} exact={true} component={DefaultRedirect} />
-            <Route path={ROUTES.LOGIN} component={Auth} />
-            <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
-            <AuthorizedRoute path={ROUTES.FILES} component={MainFrame} />
-            <AuthorizedRoute path={ROUTES.FAVORITES} component={MainFrame} />
-            <AuthorizedRoute path={ROUTES.SHARED} component={MainFrame} />
-            <AuthorizedRoute path={ROUTES.TRASH} component={MainFrame} />
-        </Router>
-    );
-};
+    public render() {
+        if (this.props.isLoading) {
+            return (
+                <div>LOADING</div>
+            );
+        }
+        return (
+            <Router>
+                <Route path={ROUTES.ROOT} exact={true} component={DefaultRedirect} />
+                <Route path={ROUTES.LOGIN} component={Auth} />
+                <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
+                <AuthorizedRoute path={ROUTES.FILES} component={MainFrame} />
+                <AuthorizedRoute path={ROUTES.FAVORITES} component={MainFrame} />
+                <AuthorizedRoute path={ROUTES.SHARED} component={MainFrame} />
+                <AuthorizedRoute path={ROUTES.TRASH} component={MainFrame} />
+            </Router>
+        );
+    }
+}
 
 const mapStateToProps = (state: IAppReduxState): IAppStateProps => {
     return {
