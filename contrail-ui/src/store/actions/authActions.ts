@@ -4,16 +4,14 @@ import { ThunkAction } from "redux-thunk";
 import { authRef } from "../../firebase/firebase";
 import * as auth from "../../utils/firebase/auth-utils";
 import * as constants from "../constants";
+import { setAppLoadingState } from "./appUiStateActions";
 import { IAppSetLoadingStateAction } from "./appUiStateActions.types";
 import { IAuthFetchUserAction, IAuthLoginUserAction } from "./authActions.types";
 
 export const fetchUserAction =
 (): ThunkAction<void, {}, null, IAuthFetchUserAction | IAppSetLoadingStateAction> =>
 (dispatch) => {
-    dispatch({
-        type: constants.APP_SET_LOADING_STATE,
-        payload: true,
-    });
+    dispatch(setAppLoadingState(true));
     authRef.onIdTokenChanged((user) => {
         if (user) {
             auth.getUserToken().then((token) => {
@@ -30,10 +28,7 @@ export const fetchUserAction =
                 authToken: null,
             });
         }
-        dispatch({
-            type: constants.APP_SET_LOADING_STATE,
-            payload: false,
-        });
+        dispatch(setAppLoadingState(false));
     });
 };
 

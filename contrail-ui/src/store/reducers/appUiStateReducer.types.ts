@@ -1,3 +1,3 @@
 export interface IAppUiState {
-    isLoading: boolean;
+    readonly isLoading: boolean;
 }

@@ -3,12 +3,12 @@ import { AppUiStateActions } from "../actions/appUiStateActions.types";
 import { APP_SET_LOADING_STATE} from "../constants";
 import * as types from "./appUiStateReducer.types";
 
-const initialAppUIState: types.IAppUiState = {
+const initialAppUiState: types.IAppUiState = {
     isLoading: false,
 };
 
-const appUIStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
-    state = initialAppUIState,
+const appUiStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
+    state = initialAppUiState,
     action,
 ) => {
     switch (action.type) {
@@ -22,4 +22,4 @@ const appUIStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
     }
 };
 
-export default appUIStateReducer;
+export default appUiStateReducer;
