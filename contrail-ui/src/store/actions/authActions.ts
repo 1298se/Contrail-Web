@@ -4,10 +4,16 @@ import { ThunkAction } from "redux-thunk";
 import { authRef } from "../../firebase/firebase";
 import * as auth from "../../utils/firebase/auth-utils";
 import * as constants from "../constants";
-import { IAppReduxState } from "../store.types";
+import { IAppSetLoadingStateAction } from "./appUiStateActions.types";
 import { IAuthFetchUserAction, IAuthLoginUserAction } from "./authActions.types";
 
-export const fetchUserAction = (): ThunkAction<void, {}, null, IAuthFetchUserAction> => (dispatch) => {
+export const fetchUserAction =
+(): ThunkAction<void, {}, null, IAuthFetchUserAction | IAppSetLoadingStateAction> =>
+(dispatch) => {
+    dispatch({
+        type: constants.APP_SET_LOADING_STATE,
+        payload: true,
+    });
     authRef.onIdTokenChanged((user) => {
         if (user) {
             auth.getUserToken().then((token) => {
@@ -24,6 +30,10 @@ export const fetchUserAction = (): ThunkAction<void, {}, null, IAuthFetchUserAct
                 authToken: null,
             });
         }
+        dispatch({
+            type: constants.APP_SET_LOADING_STATE,
+            payload: false,
+        });
     });
 };
 
@@ -46,7 +56,7 @@ export const loginUserAction = (
 };
 
 export const logoutUserAction = (
-): ThunkAction<void, IAppReduxState, null, Action<string>> => (dispatch) => {
+): ThunkAction<void, {}, null, Action<string>> => (dispatch) => {
     auth.logoutUser()
         .catch((error) => {
             dispatch({
