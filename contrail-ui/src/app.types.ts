@@ -2,4 +2,8 @@ export interface IAppDispatchProps {
     fetchUser: () => void;
 }
 
-export type IAppProps = IAppDispatchProps;
+export interface IAppStateProps {
+    isLoading: boolean;
+}
+
+export type IAppProps = IAppDispatchProps & IAppStateProps;

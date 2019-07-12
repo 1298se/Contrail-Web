@@ -2,13 +2,14 @@ import React, { FC, useEffect } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
-import { IAppProps } from "./app.types";
+import { IAppProps, IAppStateProps } from "./app.types";
 import Auth from "./components/auth/auth-page/Auth";
 import AuthorizedRoute from "./components/auth/authorized-route/AuthorizedRoute";
 import MainFrame from "./components/main/MainFrame";
 import * as ROUTES from "./routes";
 import { fetchUserAction } from "./store/actions/authActions";
 import { IAuthFetchUserAction } from "./store/actions/authActions.types";
+import { IAppReduxState } from "./store/store.types";
 
 const DefaultRedirect = () => {
     return (
@@ -16,10 +17,10 @@ const DefaultRedirect = () => {
     );
 };
 
-const App: FC<IAppProps> = ({ fetchUser }) => {
+const App: FC<IAppProps> = (props) => {
 
     useEffect(() => {
-        fetchUser();
+        props.fetchUser();
     });
 
     return (
@@ -35,10 +36,16 @@ const App: FC<IAppProps> = ({ fetchUser }) => {
     );
 };
 
+const mapStateToProps = (state: IAppReduxState): IAppStateProps => {
+    return {
+        isLoading: state.appUiState.isLoading,
+    };
+};
+
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAuthFetchUserAction>) => {
     return {
         fetchUser: () => dispatch(fetchUserAction()),
     };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
