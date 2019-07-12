@@ -14,16 +14,15 @@ import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
 class Auth extends Component<types.IAuthProps, {}> {
-    public componentDidMount() {
-        const { authToken } = this.props;
-        const isAuth = authToken;
-        if (isAuth) {
-            this.props.history.push(ROUTES.MAIN);
-        }
-    }
 
     public render() {
-        const { classes } = this.props;
+        const { authToken, classes } = this.props;
+
+        if (authToken) {
+            return (
+                <Redirect to={ROUTES.MAIN} />
+            );
+        }
 
         return (
             <Router>
