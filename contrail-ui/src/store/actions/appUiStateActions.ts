@@ -3,7 +3,7 @@ import { IAppSetLoadingStateAction } from "./appUiStateActions.types";
 
 export const setAppLoadingState = (isLoading: boolean): IAppSetLoadingStateAction => {
     return {
-        type: constants.APP_SET_LOADING_STATE,
+        type: constants.APP_SET_LOADING_USER_STATE,
         payload: isLoading,
     };
 };

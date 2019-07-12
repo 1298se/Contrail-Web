@@ -5,6 +5,6 @@ export interface IAuthState {
 }
 
 interface IAuthError {
-    loginError: any;
-    logoutError: any;
+    readonly loginError: any;
+    readonly logoutError: any;
 }
