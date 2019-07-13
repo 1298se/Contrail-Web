@@ -12,7 +12,7 @@ import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, { Component } from "react";
 import { IMainToolBarProps, IMainToolBarState } from "./mainToolBar.type";
-import styles from "./toolbarStyles";
+import styles from "./toolBarStyles";
 
 class MainToolBar extends Component<IMainToolBarProps, IMainToolBarState> {
     public state = {
@@ -20,15 +20,15 @@ class MainToolBar extends Component<IMainToolBarProps, IMainToolBarState> {
         mobileMoreAnchorEl: null,
     };
 
-    public handleMobileMenuClose = () => {
-        this.setState({
-            mobileMoreAnchorEl: null,
-        });
-    }
-
     public handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         this.setState({
             mobileMoreAnchorEl: event.currentTarget,
+        });
+    }
+
+    public handleMobileMenuClose = () => {
+        this.setState({
+            mobileMoreAnchorEl: null,
         });
     }
 
@@ -37,7 +37,7 @@ class MainToolBar extends Component<IMainToolBarProps, IMainToolBarState> {
         const isMobileMenuOpen = Boolean(this.state.mobileMoreAnchorEl);
 
         const { classes } = this.props;
-        const renderMobileMenu = (
+        const mobileMenu = (
             <Menu
                 anchorEl={this.state.mobileMoreAnchorEl}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -73,6 +73,7 @@ class MainToolBar extends Component<IMainToolBarProps, IMainToolBarState> {
                 </MenuItem>
             </Menu>
         );
+
         return (
             <div className={classes.grow}>
                 <AppBar position="static" color="secondary">
@@ -108,7 +109,7 @@ class MainToolBar extends Component<IMainToolBarProps, IMainToolBarState> {
                         </div>
                     </Toolbar>
                 </AppBar>
-                {renderMobileMenu}
+                {mobileMenu}
             </div>
         );
     }

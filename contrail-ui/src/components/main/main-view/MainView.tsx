@@ -1,7 +1,9 @@
 import { withStyles } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
+import Divider from "@material-ui/core/Divider";
+import { borders } from "@material-ui/system";
 import React, { Component } from "react";
-import UploadDialog from "../../files/upload-dialog/UploadDialog";
 import MainToolBar from "../main-tool-bar/MainToolBar";
 import styles from "../mainStyles";
 import ResourceListView from "../resource-list-view/ResourceListView";
@@ -11,7 +13,6 @@ class MainView extends Component<any, any> {
         const { classes } = this.props;
         return (
             <div className={classes.content}>
-                <UploadDialog />
                 <div className={classes.appBarSpacer} />
                 <Container className={classes.container}>
                     <MainToolBar />
