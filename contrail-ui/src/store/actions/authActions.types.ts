@@ -11,7 +11,7 @@ export interface IAuthLoginUserAction extends Action<constants.AUTH_USER_LOGIN> 
     type: constants.AUTH_USER_LOGIN;
     loginError: any;
 }
-export interface IAuthUserLogoutAction extends Action<constants.AUTH_USER_LOGOUT> {
+export interface IAuthLogoutUserAction extends Action<constants.AUTH_USER_LOGOUT> {
     type: constants.AUTH_USER_LOGOUT;
     logoutError: any;
 }
@@ -19,4 +19,4 @@ export interface IAuthUserLogoutAction extends Action<constants.AUTH_USER_LOGOUT
 export type AuthActions =
     IAuthFetchUserAction
     | IAuthLoginUserAction
-    | IAuthUserLogoutAction;
+    | IAuthLogoutUserAction;

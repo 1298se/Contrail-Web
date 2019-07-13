@@ -3,9 +3,6 @@ const drawerWidth = 240;
 
 const styles = (theme: Theme) =>
     createStyles({
-        appBar: {
-            zIndex: theme.zIndex.drawer + 1,
-        },
         appBarSpacer: theme.mixins.toolbar,
         container: {
             padding: theme.spacing(2),
