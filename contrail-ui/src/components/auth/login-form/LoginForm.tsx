@@ -1,99 +1,150 @@
 import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
+import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import * as ROUTES from "../../../routes";
-import * as actions from "../../../store/actions/authActions";
-import { loginUser } from "../../../utils/auth-utils";
+import { Link as RouterLink } from "react-router-dom";
+import { ThunkDispatch } from "redux-thunk";
+import { loginUserAction } from "../../../store/actions/authActions";
+import { IAuthLoginUserAction } from "../../../store/actions/authActions.types";
+import * as auth from "../../../utils/firebase/auth-utils";
 import styles from "../authStyles";
-import { LoginFormProps, LoginFormState } from "./loginForm.type";
+import * as types from "./loginForm.type";
 
-class LoginForm extends Component<LoginFormProps, LoginFormState> {
+class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> {
     public state = {
-        email: "",
-        password: "",
+        values: {
+            email: "",
+            password: "",
+        },
+        errors: {
+            emailError: "",
+            passwordError: "",
+        },
+        isFormValid: false,
     };
 
+    public isFormValid = (errors: types.IFormErrors): boolean => {
+        const { email, password } = this.state.values;
+        let valid = true;
+
+        if (email.length === 0 || password.length === 0) {
+            valid = false;
+        }
+
+        Object.values(errors).forEach((val) => {
+            return (val.length > 0 && (valid = false));
+        });
+
+        return valid;
+    }
+
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        event.preventDefault();
+
+        const { name, value } = event.target;
+        const errors: types.IFormErrors = this.state.errors;
+
+        switch (name) {
+            case "email":
+                errors.emailError = auth.emailRegex.test(value)
+                    ? ""
+                    : "Please enter a valid email.";
+                break;
+            case "password":
+                errors.passwordError = value.length >= auth.minPasswordLength
+                    ? ""
+                    : "Passwords must have a minimum of 6 characters.";
+                break;
+            default:
+                break;
+        }
+
+        const isValid: boolean = this.isFormValid(errors);
+
         this.setState({
-            [event.target.name]: event.target.value,
+            values: {
+                ...this.state.values,
+                [name]: value,
+            },
+            errors,
+            isFormValid: isValid,
         });
     }
 
     public handleSubmit = () => {
-        const { authUserLogin }: any = this.props;
-
-        loginUser(this.state.email, this.state.password)
-        .then((user) => {
-            if (user && user.refreshToken) {
-                authUserLogin(user, user.refreshToken);
-                localStorage.setItem("token",  user.refreshToken);
-                this.props.history.push(ROUTES.MAIN);
-            }
-        })
-        .catch((err) => {
-            // display message
-        });
+        const { email, password } = this.state.values;
+        this.props.loginUser(email, password);
     }
 
     public render() {
-    const { classes, toggleForm, authToken} = this.props;
-    return (
-            <div className={classes.paper}>
-            <Typography component="h1" variant="h5">
-                Log In
-            </Typography>
-            <form className={classes.form} noValidate={true}>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required={true}
-                    fullWidth={true}
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    value={this.state.email}
-                    onChange={this.handleChange}
-                    autoFocus={true}
-                />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required={true}
-                    fullWidth={true}
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                />
-                <Button
-                    type="button"
-                    fullWidth={true}
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    onClick={this.handleSubmit}
-                >
-                    Log In
-                </Button>
-                <Grid container={true}>
-                <Grid item={true}>
-                    <Link href="#" variant="body2" onClick={toggleForm}>
-                        {"Don't have an account? Sign Up"}
-                    </Link>
-                </Grid>
-                </Grid>
-            </form>
-            </div>
+        const { classes } = this.props;
+        const { email, password } = this.state.values;
+        const { emailError, passwordError } = this.state.errors;
+
+        return (
+            <Container maxWidth="sm">
+                <Paper className={classes.paper}>
+                    <Typography component="h1" variant="h5">
+                        Log In
+                    </Typography>
+                    <form className={classes.form} noValidate={true}>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required={true}
+                            fullWidth={true}
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            value={email}
+                            autoFocus={true}
+                            error={emailError.length > 0}
+                            helperText={emailError}
+                            onChange={this.handleChange}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required={true}
+                            fullWidth={true}
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={password}
+                            error={passwordError.length > 0}
+                            helperText={passwordError}
+                            onChange={this.handleChange}
+                        />
+                        <Button
+                            type="button"
+                            fullWidth={true}
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            disabled={!this.state.isFormValid}
+                            onClick={this.handleSubmit}
+                        >
+                            Log In
+                        </Button>
+                        <Grid container={true}>
+                            <Grid item={true}>
+                                <Link component={RouterLink} to="/register" variant="body2">
+                                    {"Don't have an account? Sign Up"}
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Paper>
+            </Container>
         );
     }
 }
@@ -104,10 +155,9 @@ const mapStateToProps = (state: any): any => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.AuthTypes>): any => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAuthLoginUserAction>) => {
     return {
-        authUserLogin: (user: firebase.User, authToken: string) => dispatch(actions.authUserLogin(user, authToken)),
-        authUserLogout: () => dispatch(actions.authUserLogout()),
+        loginUser: (email: string, password: string) => dispatch(loginUserAction(email, password)),
     };
 };
 

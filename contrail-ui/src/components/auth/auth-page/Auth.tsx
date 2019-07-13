@@ -1,60 +1,53 @@
-import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import CloudUploadOutlined from "@material-ui/icons/CloudUploadOutlined";
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import * as ROUTES from "../../../routes";
+import { IAppReduxState } from "../../../store/store.types";
 import styles from "../authStyles";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
+class Auth extends Component<types.IAuthProps, {}> {
 
-class Auth extends Component<types.IAuthProps, types.IAuthState> {
-  public state = {
-    displayForm: "LoginForm",
-  };
+    public render() {
+        const { authToken, classes } = this.props;
 
-  componentDidMount() {
-      const { authToken } = this.props;
-      // const isAuth =  authToken || localStorage.getItem("token");
-      const isAuth =  authToken;
-      if (isAuth) {
-        this.props.history.push(ROUTES.MAIN);
-      }
-  }
+        if (authToken) {
+            return (
+                <Redirect to={ROUTES.MAIN} />
+            );
+        }
 
-  public toggleForm = () => {
-    const { displayForm } = this.state;
-    this.setState({
-      displayForm: displayForm === "LoginForm" ? "RegisterForm" : "LoginForm",
-    });
-  }
-
-  public render() {
-    const { classes } = this.props;
-
-    let renderForm;
-    switch (this.state.displayForm) {
-      case "LoginForm":
-        renderForm = <LoginForm toggleForm={this.toggleForm} history={this.props.history}/>;
-        break;
-      case "RegisterForm":
-        renderForm = <RegisterForm toggleForm={this.toggleForm} />;
-        break;
+        return (
+            <Router>
+                <Grid container={true} component="main" className={classes.root}>
+                    <CssBaseline />
+                    <Grid item={true} xs={false} sm={5} md={7} className={classes.image}>
+                        <CloudUploadOutlined color="secondary" className={classes.largeIcon} />
+                        <Typography color="secondary" component="h1" variant="h3">
+                            Contrail
+                        </Typography>
+                    </Grid>
+                    <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
+                        <Switch>
+                            <Route path="/login" component={LoginForm} />
+                            <Route path="/register" component={RegisterForm} />
+                            <Redirect to="/login" />
+                        </Switch>
+                    </Grid>
+                </Grid>
+            </Router>
+        );
     }
-    return (
-      <main className={classes.root}>
-        <Container className={classes.content} maxWidth="xs">
-              <CssBaseline />
-              {renderForm}
-        </Container>
-      </main>
-    );
-  }
 }
 
-const mapStateToProps = (state: any): any => {
+const mapStateToProps = (state: IAppReduxState): types.IAuthStateProps => {
     return {
         authToken: state.authState.authToken,
     };

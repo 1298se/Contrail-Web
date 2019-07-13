@@ -1,19 +1,31 @@
-import * as actions from "../../../store/actions/authActions";
+import { WithStyles } from "@material-ui/core";
+import styles from "../authStyles";
 
-export type LoginFormState = {
+export interface ILoginFormState {
+    values: IFormValues;
+    errors: IFormErrors;
+    isFormValid: boolean;
+}
+
+export interface IFormValues {
     email: string;
     password: string;
     [x: string]: string;
-};
-export type LoginFormProps  = {
-    classes: LoginFormPropsClasses;
-    toggleForm: LoginFormPropsToggleForm;
+}
+
+export interface IFormErrors {
+    emailError: string;
+    passwordError: string;
+    [x: string]: string;
+}
+
+export interface ILoginFormOwnProps extends WithStyles<typeof styles> {
     history?: any;
     authToken?: string;
-};
-interface LoginFormPropsClasses {
-    paper: string;
-    form: string;
-    submit: string;
 }
-type LoginFormPropsToggleForm = ()  => void;
+
+export interface ILoginFormDispatchProps {
+    loginUser: (email: string, password: string) => void;
+}
+
+export type ILoginFormProps = ILoginFormOwnProps & ILoginFormDispatchProps;
