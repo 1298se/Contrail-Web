@@ -24,7 +24,8 @@
     "@types/body-parser": "^1.17.0",
     "express": "^4.17.1",
     "firebase": "^6.1.0",
-    "firebase-admin": "^8.0.0"
+    "firebase-admin": "^8.0.0",
+    "lodash": "^4.17.14"
   },
   "devDependencies": {
     "@types/express": "^4.17.0",
