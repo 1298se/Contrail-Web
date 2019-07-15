@@ -7,16 +7,4 @@ export interface IAuthFetchUserAction extends Action<constants.AUTH_USER_FETCH_U
     authToken: string | null;
 }
 
-export interface IAuthLoginUserAction extends Action<constants.AUTH_USER_LOGIN> {
-    type: constants.AUTH_USER_LOGIN;
-    loginError: any;
-}
-export interface IAuthLogoutUserAction extends Action<constants.AUTH_USER_LOGOUT> {
-    type: constants.AUTH_USER_LOGOUT;
-    logoutError: any;
-}
-
-export type AuthActions =
-    IAuthFetchUserAction
-    | IAuthLoginUserAction
-    | IAuthLogoutUserAction;
+export type AuthActions = IAuthFetchUserAction;
