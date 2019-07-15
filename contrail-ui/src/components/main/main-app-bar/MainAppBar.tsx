@@ -40,12 +40,7 @@ class MainAppBar extends Component<IMainAppBarProps, IMainAppBarState> {
         // TODO: Handle Errors
         this.handleMenuClose();
         auth.logoutUser()
-        .then(() => {
-            this.setState({
-                logoutRequestError: null,
-                shouldDisplayError: false,
-            });
-        }).catch((error) => {
+        .catch((error) => {
             this.setState({
                 logoutRequestError: error,
                 shouldDisplayError: true,

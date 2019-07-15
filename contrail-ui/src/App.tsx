@@ -21,28 +21,22 @@ const DefaultRedirect = () => {
 
 class App extends Component<IAppProps, {}> {
     public componentDidMount() {
-        console.log("mounting app");
         this.props.setAuthListener();
         window.addEventListener("online", this.handleConnectionChange);
         window.addEventListener("offline", this.handleConnectionChange);
     }
 
     public handleConnectionChange = () => {
-        console.log("network shit")
         const networkCondition = navigator.onLine ? "online" : "offline";
         if (networkCondition === "online") {
-            console.log("network fuck")
-            // TODO: Add proxy to backend
+            // TODO: Add proxy to backend and ping to backend
             Axios.get("/")
             .then(() => {
-                console.log("this should not happen")
                 this.props.setNetworkState(true);
             }).catch(() => {
-                console.log("network is actual shit")
                 this.props.setNetworkState(false);
             });
         } else {
-            console.log("network is actual shit")
             this.props.setNetworkState(false);
         }
     }
