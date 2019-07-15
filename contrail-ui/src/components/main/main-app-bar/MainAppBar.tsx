@@ -8,10 +8,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuIcon from "@material-ui/icons/Menu";
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { ThunkDispatch } from "redux-thunk";
-import { logoutUserAction } from "../../../store/actions/authActions";
-import { IAuthLogoutUserAction } from "../../../store/actions/authActions.types";
+import * as auth from "../../../utils/firebase/auth-utils";
 import styles from "./appBarStyles";
 import { IMainAppBarProps, IMainAppBarState } from "./mainAppBar.type";
 
@@ -33,8 +30,9 @@ class MainAppBar extends Component<IMainAppBarProps, IMainAppBarState> {
     }
 
     public handleLogoutClick = () => {
+        // TODO: Handle Errors
         this.handleMenuClose();
-        this.props.logoutUser();
+        auth.logoutUser();
     }
 
     public render() {
@@ -74,10 +72,4 @@ class MainAppBar extends Component<IMainAppBarProps, IMainAppBarState> {
     }
 }
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAuthLogoutUserAction>) => {
-    return {
-        logoutUser: () => dispatch(logoutUserAction()),
-    };
-};
-
-export default connect(null, mapDispatchToProps)(withStyles(styles)(MainAppBar));
+export default withStyles(styles)(MainAppBar);

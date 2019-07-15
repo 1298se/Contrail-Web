@@ -9,8 +9,4 @@ export interface IMainAppBarOwnProps extends WithStyles<typeof styles> {
 
 }
 
-export interface IMainAppBarDispatchProps {
-    logoutUser: () => void;
-}
-
-export type IMainAppBarProps = IMainAppBarOwnProps & IMainAppBarDispatchProps;
+export type IMainAppBarProps = IMainAppBarOwnProps;

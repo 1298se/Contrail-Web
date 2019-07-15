@@ -3,29 +3,26 @@ import styles from "../authStyles";
 
 export interface ILoginFormState {
     values: IFormValues;
-    errors: IFormErrors;
+    formErrors: IFormErrors;
     isFormValid: boolean;
+    shouldDisplayError: boolean;
+    loginRequestError: any;
 }
 
 export interface IFormValues {
+    [x: string]: string;
     email: string;
     password: string;
-    [x: string]: string;
 }
 
 export interface IFormErrors {
-    emailError: string;
-    passwordError: string;
-    [x: string]: string;
+    [x: string]: string | null;
+    emailError: string | null;
+    passwordError: string | null;
 }
 
 export interface ILoginFormOwnProps extends WithStyles<typeof styles> {
-    history?: any;
-    authToken?: string;
+
 }
 
-export interface ILoginFormDispatchProps {
-    loginUser: (email: string, password: string) => void;
-}
-
-export type ILoginFormProps = ILoginFormOwnProps & ILoginFormDispatchProps;
+export type ILoginFormProps = ILoginFormOwnProps;
