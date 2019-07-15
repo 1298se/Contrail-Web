@@ -9,7 +9,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuIcon from "@material-ui/icons/Menu";
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
-import * as auth from "../../../utils/firebase/auth-utils";
+import * as auth from "../../../firebase/utils/auth-utils";
 import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "./appBarStyles";
 import { IMainAppBarProps, IMainAppBarState } from "./mainAppBar.type";

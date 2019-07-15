@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import * as auth from "../../../utils/firebase/auth-utils";
+import * as auth from "../../../firebase/utils/auth-utils";
 import styles from "../authStyles";
 import * as types from "./registerForm.type";
 

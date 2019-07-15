@@ -7,7 +7,7 @@ import useStyles from "./snackbarContentWrapperStyles";
 
 function SnackbarContentWrapper(props: types.ISnackbarProps) {
     const classes = useStyles();
-    const { className, message, onClose, variant, ...other } = props;
+    const { message, onClose, variant } = props;
     const Icon = types.variant[variant];
 
     const renderMessage = (
@@ -18,7 +18,7 @@ function SnackbarContentWrapper(props: types.ISnackbarProps) {
     );
 
     const renderActionClose = (
-        <IconButton color="inherit" onClick={onClose}>
+        <IconButton key="close" color="inherit" onClick={onClose}>
             <CloseIcon className={classes.icon} />
         </IconButton>
     );
@@ -28,7 +28,6 @@ function SnackbarContentWrapper(props: types.ISnackbarProps) {
             className={classes[variant]}
             message={renderMessage}
             action={[renderActionClose]}
-            {...other}
         />
     );
 }
