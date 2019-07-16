@@ -21,7 +21,7 @@ export const minDisplayNameLength = 3;
  * @param password the user's password received from registration.
  * @returns a {@link Promise} that resolves with the current user, or rejects with the error
  */
-export function registerUser(displayName: string, email: string, password: string): Promise<null> {
+export function registerUser(displayName: string, email: string, password: string): Promise<firebase.User | null> {
     console.log("registering user");
     return new Promise((resolve, reject) => {
         authRef.createUserWithEmailAndPassword(email, password).then(() => {
@@ -34,13 +34,9 @@ export function registerUser(displayName: string, email: string, password: strin
                 user.updateProfile({
                     displayName,
                 }).then(() => {
-                    console.log("profile update successful: setting up user");
-                    registerUserDb(user).then(() => {
-                        console.log("user setup successful");
-                        resolve();
-                    }).catch((error) => {
-                        reject(error);
-                    });
+                    console.log("profile update successful");
+                    loginUser(email, password);
+                    resolve(user);
                 }).catch((error) => {
                     console.error("profile update failed:  ", error);
                     reject(error);
@@ -50,12 +46,6 @@ export function registerUser(displayName: string, email: string, password: strin
     });
 }
 
-/**
- * Registers a user to the backend server with @POST "/register".
- *
- * @param registerUserDb the current user's user object.
- * @returns a {@link Promise} that resolves, or rejects with error.
- */
 export function registerUserDb(user: firebase.User | null): Promise<AxiosResponse | any> {
 
     return new Promise((resolve, reject) => {
@@ -105,12 +95,12 @@ export function loginUser(email: string, password: string): Promise<firebase.Use
 export function logoutUser(): Promise<string> {
     return new Promise((resolve, reject) => {
         authRef.signOut()
-            .then(() => {
-                resolve("success");
-            })
-            .catch((error) => {
-                reject(error);
-            });
+        .then(() => {
+            resolve("success");
+        })
+        .catch((error) => {
+            reject(error);
+        });
     });
 }
 
@@ -119,7 +109,7 @@ export function logoutUser(): Promise<string> {
  * @returns a {@link Promise} that resolves null if there is no current user or the user's IDToken if there is,
  *  or rejects with error.
  */
-export function getUserToken(): Promise<string | null> {
+export function getUserToken(): Promise<string|null> {
     return new Promise((resolve, reject) => {
         const user = authRef.currentUser;
         if (user === null) {
