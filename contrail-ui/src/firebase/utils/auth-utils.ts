@@ -42,6 +42,8 @@ export function registerUser(displayName: string, email: string, password: strin
                     reject(error);
                 });
             }
+        }).catch((error) => {
+            reject(error);
         });
     });
 }
