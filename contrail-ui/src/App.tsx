@@ -13,12 +13,6 @@ import { IAuthFetchUserAction } from "./store/actions/authActions.types";
 import { setNetworkState } from "./store/actions/networkActions";
 import { IAppReduxState } from "./store/store.types";
 
-const DefaultRedirect = () => {
-    return (
-        <Redirect to={ROUTES.LOGIN} />
-    );
-};
-
 class App extends Component<IAppProps, {}> {
     public componentDidMount() {
         this.props.setAuthListener();
@@ -49,8 +43,7 @@ class App extends Component<IAppProps, {}> {
         }
         return (
             <Router>
-                <Route path={ROUTES.ROOT} exact={true} component={DefaultRedirect} />
-                <Route path={ROUTES.LOGIN} component={Auth} />
+                <Route path={ROUTES.ROOT} component={Auth} />
                 <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
             </Router>
         );

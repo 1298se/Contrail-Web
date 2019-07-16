@@ -16,9 +16,9 @@ import * as types from "./auth.type";
 class Auth extends Component<types.IAuthProps, {}> {
 
     public render() {
-        const { authToken, classes } = this.props;
+        const { authToken, authUser, classes } = this.props;
 
-        if (authToken) {
+        if (authToken && authUser) {
             return (
                 <Redirect to={ROUTES.MAIN} />
             );
@@ -50,6 +50,7 @@ class Auth extends Component<types.IAuthProps, {}> {
 const mapStateToProps = (state: IAppReduxState): types.IAuthStateProps => {
     return {
         authToken: state.authState.authToken,
+        authUser: state.authState.authUser,
     };
 };
 
