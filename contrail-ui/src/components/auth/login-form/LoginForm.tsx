@@ -14,7 +14,7 @@ import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/Snac
 import styles from "../authStyles";
 import * as types from "./loginForm.type";
 
-class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> {
+class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
 
     public state = {
         values: {

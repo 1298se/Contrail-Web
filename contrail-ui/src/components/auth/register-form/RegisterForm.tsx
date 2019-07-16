@@ -14,7 +14,7 @@ import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/Snac
 import styles from "../authStyles";
 import * as types from "./registerForm.type";
 
-class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFormState> {
+class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFormState> {
 
     public state = {
         values: {

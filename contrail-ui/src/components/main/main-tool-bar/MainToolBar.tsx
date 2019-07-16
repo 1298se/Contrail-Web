@@ -11,10 +11,10 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, { Component } from "react";
-import { IMainToolBarProps, IMainToolBarState } from "./mainToolBar.type";
+import * as types from "./mainToolBar.type";
 import styles from "./toolBarStyles";
 
-class MainToolBar extends Component<IMainToolBarProps, IMainToolBarState> {
+class MainToolBar extends Component<types.MainToolBarProps, types.IMainToolBarState> {
     public state = {
         anchorEl: null,
         mobileMoreAnchorEl: null,

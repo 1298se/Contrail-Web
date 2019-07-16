@@ -25,4 +25,4 @@ export interface ILoginFormOwnProps extends WithStyles<typeof styles> {
 
 }
 
-export type ILoginFormProps = ILoginFormOwnProps;
+export type LoginFormProps = ILoginFormOwnProps;

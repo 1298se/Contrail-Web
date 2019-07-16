@@ -13,7 +13,7 @@ import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
-class Auth extends Component<types.IAuthProps, {}> {
+class Auth extends Component<types.AuthProps, {}> {
 
     public render() {
         const { authToken, authUser, classes } = this.props;

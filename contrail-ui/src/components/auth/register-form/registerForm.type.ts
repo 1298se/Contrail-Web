@@ -26,4 +26,4 @@ export interface IRegisterFormOwnProps extends WithStyles<typeof styles> {
 
 }
 
-export type IRegisterFormProps = IRegisterFormOwnProps;
+export type RegisterFormProps = IRegisterFormOwnProps;

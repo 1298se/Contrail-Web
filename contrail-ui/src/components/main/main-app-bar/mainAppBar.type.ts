@@ -11,4 +11,4 @@ export interface IMainAppBarOwnProps extends WithStyles<typeof styles> {
 
 }
 
-export type IMainAppBarProps = IMainAppBarOwnProps;
+export type MainAppBarProps = IMainAppBarOwnProps;

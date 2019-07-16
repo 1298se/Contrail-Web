@@ -6,6 +6,8 @@ export interface IMainToolBarState {
     mobileMoreAnchorEl: HTMLElement | null;
 }
 
-export interface IMainToolBarProps extends WithStyles<typeof styles> {
+export interface IMainToolBarOwnProps extends WithStyles<typeof styles> {
 
 }
+
+export type MainToolBarProps = IMainToolBarOwnProps;

@@ -11,4 +11,4 @@ export interface IAuthStateProps {
     authUser: firebase.User | null;
 }
 
-export type IAuthProps = IAuthOwnProps & IAuthStateProps;
+export type AuthProps = IAuthOwnProps & IAuthStateProps;

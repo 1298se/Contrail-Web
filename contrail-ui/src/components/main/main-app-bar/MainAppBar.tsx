@@ -12,12 +12,12 @@ import React, { Component } from "react";
 import * as auth from "../../../firebase/utils/auth-utils";
 import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "./appBarStyles";
-import { IMainAppBarProps, IMainAppBarState } from "./mainAppBar.type";
+import * as types from "./mainAppBar.type";
 
 // TODO: Currently, it logs the user out because the authStateChangedListener responds to network failure
 // and redirects the user to login. Needs to be changed to redirect back to login page AFTER
 // logout is complete (e.g.) do not let a redux state update if the user disconnects from WIFI
-class MainAppBar extends Component<IMainAppBarProps, IMainAppBarState> {
+class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState> {
     public state = {
         anchorEl: null,
         logoutRequestError: null,

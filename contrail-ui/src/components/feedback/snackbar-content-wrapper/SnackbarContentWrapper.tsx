@@ -5,7 +5,7 @@ import React from "react";
 import * as types from "./snackbarContentWrapper.types";
 import useStyles from "./snackbarContentWrapperStyles";
 
-function SnackbarContentWrapper(props: types.ISnackbarProps) {
+function SnackbarContentWrapper(props: types.SnackbarProps) {
     const classes = useStyles();
     const { message, onClose, variant } = props;
     const Icon = types.variant[variant];

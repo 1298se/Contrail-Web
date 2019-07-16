@@ -6,4 +6,4 @@ export interface INetworkSetConnectionStateAction extends Action<constants.NETWO
     connectionState: boolean;
 }
 
-export type INetworkActions = INetworkSetConnectionStateAction;
+export type NetworkActions = INetworkSetConnectionStateAction;
