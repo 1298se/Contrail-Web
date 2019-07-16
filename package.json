@@ -4,7 +4,7 @@
   "description": "Contrail is a file storage and sharing application.\r Created using\r   - React\r   - Node + Express\r   - Firebase",
   "main": "index.js",
   "scripts": {
-    "install": "npm run-script installApi && npm run-script installUi",
+    "installAll": "npm install && npm run-script installApi && npm run-script installUi",
     "installApi": "cd contrail-api && npm install",
     "installUi": "cd contrail-ui && npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
