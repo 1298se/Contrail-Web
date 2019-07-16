@@ -1,24 +1,29 @@
 import { WithStyles } from "@material-ui/core";
 import styles from "../authStyles";
 
-export interface IFormValues {
-    displayName: string;
-    email: string;
-    password: string;
-    [x: string]: string;
-}
-
-export interface IFormErrors {
-    displayNameError: string;
-    emailError: string;
-    passwordError: string;
-    [x: string]: string;
-}
 export interface IRegisterFormState {
     values: IFormValues;
     errors: IFormErrors;
     isFormValid: boolean;
+    registerRequestError: any;
+    shouldDisplayError: boolean;
 }
-export interface IRegisterFormProps extends WithStyles<typeof styles> {
+
+export interface IFormValues {
+    [x: string]: string;
+    displayName: string;
+    email: string;
+    password: string;
+}
+
+export interface IFormErrors {
+    [x: string]: string;
+    displayNameError: string;
+    emailError: string;
+    passwordError: string;
+}
+export interface IRegisterFormOwnProps extends WithStyles<typeof styles> {
 
 }
+
+export type IRegisterFormProps = IRegisterFormOwnProps;

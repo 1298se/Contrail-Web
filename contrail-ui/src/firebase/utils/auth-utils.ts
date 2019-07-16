@@ -34,7 +34,9 @@ export function registerUser(displayName: string, email: string, password: strin
                 user.updateProfile({
                     displayName,
                 }).then(() => {
+                    console.log("profile update successful: setting up user");
                     registerUserDb(user).then(() => {
+                        console.log("user setup successful");
                         resolve();
                     }).catch((error) => {
                         reject(error);
@@ -60,7 +62,7 @@ export function registerUserDb(user: firebase.User | null): Promise<AxiosRespons
         if (user != null) {
             user.getIdToken()
                 .then((token) => {
-                    Axios.post("/register", token)
+                    Axios.post("http://localhost:5000", token)
                         .then((response) => {
                             resolve(response);
                         }).
