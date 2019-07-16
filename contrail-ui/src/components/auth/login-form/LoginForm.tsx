@@ -90,6 +90,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                 loginRequestError: null,
                 shouldDisplayError: false,
             });
+            this.props.initiateRedirect();
         }).catch((error) => {
             this.setState({
                 loginRequestError: error,

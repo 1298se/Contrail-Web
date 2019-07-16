@@ -13,16 +13,28 @@ import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
-class Auth extends Component<types.AuthProps, {}> {
+class Auth extends Component<types.IAuthProps, types.IAuthState> {
+    public state = {
+        shouldRedirect: false,
+    };
+
+    public initiateRedirect = () => {
+        this.setState({
+            shouldRedirect: true,
+        });
+    }
 
     public render() {
         const { authToken, authUser, classes } = this.props;
 
-        if (authToken && authUser) {
+        if (authToken && authUser && this.state.shouldRedirect) {
             return (
                 <Redirect to={ROUTES.MAIN} />
             );
         }
+
+        const renderLoginForm = () => <LoginForm initiateRedirect={this.initiateRedirect} />;
+        const renderRegisterForm = () => <RegisterForm initiateRedirect={this.initiateRedirect} />;
 
         return (
             <Router>
@@ -36,8 +48,8 @@ class Auth extends Component<types.AuthProps, {}> {
                     </Grid>
                     <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
                         <Switch>
-                            <Route path="/login" component={LoginForm} />
-                            <Route path="/register" component={RegisterForm} />
+                            <Route path="/login" render={renderLoginForm}/>
+                            <Route path="/register" render={renderRegisterForm}/>
                             <Redirect to="/login" />
                         </Switch>
                     </Grid>

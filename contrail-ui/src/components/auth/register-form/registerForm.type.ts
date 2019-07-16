@@ -23,7 +23,7 @@ export interface IFormErrors {
     passwordError: string;
 }
 export interface IRegisterFormOwnProps extends WithStyles<typeof styles> {
-
+    initiateRedirect: () => void;
 }
 
 export type RegisterFormProps = IRegisterFormOwnProps;

@@ -96,6 +96,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                             registerRequestError: null,
                             shouldDisplayError: false,
                         });
+                        this.props.initiateRedirect();
                     }).catch((error) => {
                         this.setState({
                             registerRequestError: error,
@@ -136,7 +137,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             <Container maxWidth="sm">
                 <Snackbar
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={this.state.shouldDisplayError}
+                    open={true}
                     onClose={this.handleErrorClose}
                     onExited={this.clearRegisterRequestError}
                 >

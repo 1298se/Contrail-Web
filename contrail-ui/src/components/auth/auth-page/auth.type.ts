@@ -11,4 +11,8 @@ export interface IAuthStateProps {
     authUser: firebase.User | null;
 }
 
+export interface IAuthState {
+    shouldRedirect: boolean;
+}
+
 export type AuthProps = IAuthOwnProps & IAuthStateProps;
