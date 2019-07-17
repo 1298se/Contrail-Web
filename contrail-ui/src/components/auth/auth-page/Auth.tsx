@@ -13,7 +13,7 @@ import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
-class Auth extends Component<types.IAuthProps, types.IAuthState> {
+class Auth extends Component<types.AuthProps, types.IAuthState> {
     public state = {
         shouldRedirect: false,
     };
