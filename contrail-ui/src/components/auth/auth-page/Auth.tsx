@@ -18,6 +18,13 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
         shouldRedirect: false,
     };
 
+    public componentDidMount() {
+        const { authUser, authToken } = this.props;
+        if (authUser && authToken) {
+            this.initiateRedirect();
+        }
+    }
+
     public initiateRedirect = () => {
         this.setState({
             shouldRedirect: true,
@@ -25,9 +32,9 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
     }
 
     public render() {
-        const { authToken, authUser, classes } = this.props;
+        const { authUser, authToken, classes } = this.props;
 
-        if (authToken && authUser && this.state.shouldRedirect) {
+        if (authUser && authToken && this.state.shouldRedirect) {
             return (
                 <Redirect to={ROUTES.MAIN} />
             );
@@ -35,6 +42,7 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
 
         const renderLoginForm = () => <LoginForm initiateRedirect={this.initiateRedirect} />;
         const renderRegisterForm = () => <RegisterForm initiateRedirect={this.initiateRedirect} />;
+        const redirectLogin = () => <Redirect to={ROUTES.LOGIN} />;
 
         return (
             <Router>
@@ -48,9 +56,9 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
                     </Grid>
                     <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
                         <Switch>
-                            <Route path="/login" render={renderLoginForm}/>
-                            <Route path="/register" render={renderRegisterForm}/>
-                            <Redirect to="/login" />
+                            <Route path={ROUTES.LOGIN} exact={true} render={renderLoginForm}/>
+                            <Route path={ROUTES.REGISTER} exact={true} render={renderRegisterForm}/>
+                            <Route path={ROUTES.ROOT} exact={true} render={redirectLogin} />
                         </Switch>
                     </Grid>
                 </Grid>

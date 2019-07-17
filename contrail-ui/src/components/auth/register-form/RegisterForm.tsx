@@ -90,19 +90,11 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
 
         auth.registerUser(displayName, email, password)
             .then((user) => {
-                auth.registerUserDb(user)
-                    .then(() => {
-                        this.setState({
-                            registerRequestError: null,
-                            shouldDisplayError: false,
-                        });
-                        this.props.initiateRedirect();
-                    }).catch((error) => {
-                        this.setState({
-                            registerRequestError: error,
-                            shouldDisplayError: true,
-                        });
-                    });
+                this.setState({
+                    registerRequestError: null,
+                    shouldDisplayError: false,
+                });
+                this.props.initiateRedirect();
             }).catch((error) => {
                 this.setState({
                     registerRequestError: error,
@@ -137,7 +129,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             <Container maxWidth="sm">
                 <Snackbar
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={true}
+                    open={this.state.shouldDisplayError}
                     onClose={this.handleErrorClose}
                     onExited={this.clearRegisterRequestError}
                 >

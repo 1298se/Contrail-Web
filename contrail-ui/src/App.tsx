@@ -43,7 +43,9 @@ class App extends Component<IAppProps, {}> {
         }
         return (
             <Router>
-                <Route path={ROUTES.ROOT} component={Auth} />
+                <Route path={ROUTES.ROOT} exact={true} component={Auth} />
+                <Route path={ROUTES.LOGIN} exact={true} component={Auth} />
+                <Route path={ROUTES.REGISTER} exact={true} component={Auth} />
                 <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
             </Router>
         );

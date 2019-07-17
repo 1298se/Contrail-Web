@@ -9,7 +9,7 @@ class AuthorizedRoute extends Component<types.IAuthorizedProps> {
     public render() {
         const { component: AuthorizedComponent, authToken, authUser, path } = this.props;
         const isAuth =  authToken != null && authUser != null;
-        const renderComponent =  () => isAuth ? <AuthorizedComponent /> : <Redirect to={ROUTES.LOGIN} />;
+        const renderComponent =  () => isAuth ? <AuthorizedComponent /> : <Redirect to={ROUTES.ROOT} />;
 
         return (
             <Route
