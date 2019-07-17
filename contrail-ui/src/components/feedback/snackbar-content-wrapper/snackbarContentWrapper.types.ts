@@ -10,9 +10,11 @@ export const variant = {
     info: InfoIcon,
 };
 
-export interface ISnackbarProps {
+export interface ISnackbarOwnProps {
     className?: string;
     message?: string;
     onClose?: () => void;
     variant: keyof typeof variant;
 }
+
+export type SnackbarProps = ISnackbarOwnProps;

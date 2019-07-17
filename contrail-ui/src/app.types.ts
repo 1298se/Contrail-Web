@@ -1,5 +1,6 @@
 export interface IAppDispatchProps {
-    fetchUser: () => void;
+    setAuthListener: () => void;
+    setNetworkState: (isConnected: boolean) => void;
 }
 
 export interface IAppStateProps {

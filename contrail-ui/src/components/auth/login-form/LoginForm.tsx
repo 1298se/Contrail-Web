@@ -9,12 +9,12 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import * as auth from "../../../utils/firebase/auth-utils";
+import * as auth from "../../../firebase/utils/auth-utils";
 import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "../authStyles";
 import * as types from "./loginForm.type";
 
-class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> {
+class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
 
     public state = {
         values: {
@@ -40,7 +40,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
         }
 
         Object.values(errors).forEach((val) => {
-            return (val != null && (valid = false));
+            return (val !== null && (valid = false));
         });
 
         return valid;
@@ -90,6 +90,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                 loginRequestError: null,
                 shouldDisplayError: false,
             });
+            this.props.initiateRedirect();
         }).catch((error) => {
             this.setState({
                 loginRequestError: error,
@@ -150,7 +151,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                             autoComplete="email"
                             value={email}
                             autoFocus={true}
-                            error={emailError != null}
+                            error={emailError !== null}
                             helperText={emailError}
                             onChange={this.handleChange}
                         />
@@ -165,7 +166,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                             id="password"
                             autoComplete="current-password"
                             value={password}
-                            error={passwordError != null}
+                            error={passwordError !== null}
                             helperText={passwordError}
                             onChange={this.handleChange}
                         />

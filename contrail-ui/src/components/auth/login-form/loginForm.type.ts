@@ -5,8 +5,8 @@ export interface ILoginFormState {
     values: IFormValues;
     formErrors: IFormErrors;
     isFormValid: boolean;
-    shouldDisplayError: boolean;
     loginRequestError: any;
+    shouldDisplayError: boolean;
 }
 
 export interface IFormValues {
@@ -22,7 +22,7 @@ export interface IFormErrors {
 }
 
 export interface ILoginFormOwnProps extends WithStyles<typeof styles> {
-
+    initiateRedirect: () => void;
 }
 
-export type ILoginFormProps = ILoginFormOwnProps;
+export type LoginFormProps = ILoginFormOwnProps;

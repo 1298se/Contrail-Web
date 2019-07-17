@@ -1,7 +1,7 @@
 
 import { ThunkAction } from "redux-thunk";
 import { authRef } from "../../firebase/firebase";
-import * as auth from "../../utils/firebase/auth-utils";
+import * as auth from "../../firebase/utils/auth-utils";
 import * as constants from "../constants";
 import { setAppLoadingState } from "./appUiStateActions";
 import { IAppSetLoadingStateAction } from "./appUiStateActions.types";
@@ -13,7 +13,7 @@ import * as actions from "./authActions.types";
  * This also dispatches {@link IAppSetLoadingStateAction} to set the loading state for fetching user to false
  * after the listener initiates.
  */
-export const fetchUserAction =
+export const setAuthListener =
     (): ThunkAction<void, {}, null, actions.IAuthFetchUserAction | IAppSetLoadingStateAction> =>
         (dispatch) => {
             dispatch(setAppLoadingState(true));

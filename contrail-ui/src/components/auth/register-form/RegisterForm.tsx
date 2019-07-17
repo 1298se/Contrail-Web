@@ -3,16 +3,18 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
+import Snackbar from "@material-ui/core/Snackbar";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import * as auth from "../../../utils/firebase/auth-utils";
+import * as auth from "../../../firebase/utils/auth-utils";
+import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "../authStyles";
 import * as types from "./registerForm.type";
 
-class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFormState> {
+class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFormState> {
 
     public state = {
         values: {
@@ -26,6 +28,8 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
             passwordError: "",
         },
         isFormValid: false,
+        registerRequestError: null,
+        shouldDisplayError: false,
     };
 
     public isFormValid = (errors: types.IFormErrors): boolean => {
@@ -52,8 +56,8 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
         switch (name) {
             case "displayName":
                 errors.displayNameError = value.length >= auth.minDisplayNameLength
-                ? ""
-                : "Usernames must have a minimum of 4 characters.";
+                    ? ""
+                    : "Usernames must have a minimum of 4 characters.";
                 break;
             case "email":
                 errors.emailError = auth.emailRegex.test(value)
@@ -85,88 +89,126 @@ class RegisterForm extends Component<types.IRegisterFormProps, types.IRegisterFo
         const { displayName, email, password } = this.state.values;
 
         auth.registerUser(displayName, email, password)
-        .then((user) => {
-            auth.registerUserDb(user);
+            .then((user) => {
+                this.setState({
+                    registerRequestError: null,
+                    shouldDisplayError: false,
+                });
+                this.props.initiateRedirect();
+            }).catch((error) => {
+                this.setState({
+                    registerRequestError: error,
+                    shouldDisplayError: true,
+                });
+            });
+    }
+
+    // This function is to handle a bug where the error message of the snackbar
+    // changes during exit transition. This function resets the registerRequestError to null
+    // after the transition has been completed.
+    public clearRegisterRequestError = () => {
+        this.setState({
+            registerRequestError: null,
+        });
+    }
+
+    // This function is to handle a bug where the error message of the snackbar
+    // changes during exit transition. This function handles closing the snackbar
+    public handleErrorClose = () => {
+        this.setState({
+            shouldDisplayError: false,
         });
     }
 
     public render() {
-    const { classes } = this.props;
-    const { displayName, email, password } = this.state.values;
-    const { displayNameError, emailError, passwordError } = this.state.errors;
+        const { classes } = this.props;
+        const { displayName, email, password } = this.state.values;
+        const { displayNameError, emailError, passwordError } = this.state.errors;
 
-    return (
-        <Container maxWidth="sm">
-            <Paper className={classes.paper}>
-                <Typography component="h1" variant="h5">
-                    Register
+        return (
+            <Container maxWidth="sm">
+                <Snackbar
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    open={this.state.shouldDisplayError}
+                    onClose={this.handleErrorClose}
+                    onExited={this.clearRegisterRequestError}
+                >
+                    <SnackbarContentWrapper
+                        message={String(this.state.registerRequestError)}
+                        variant="error"
+                        onClose={this.handleErrorClose}
+                    />
+                </Snackbar>
+                <Paper className={classes.paper}>
+                    <Typography component="h1" variant="h5">
+                        Register
                 </Typography>
-                <form className={classes.form} noValidate={true}>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required={true}
-                        fullWidth={true}
-                        id="displayName"
-                        label="Username"
-                        name="displayName"
-                        autoComplete="username"
-                        value={displayName}
-                        autoFocus={true}
-                        error={displayNameError.length > 0}
-                        helperText={displayNameError}
-                        onChange={this.handleChange}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required={true}
-                        fullWidth={true}
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        value={email}
-                        error={emailError.length > 0}
-                        helperText={emailError}
-                        onChange={this.handleChange}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required={true}
-                        fullWidth={true}
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        value={password}
-                        error={passwordError.length > 0}
-                        helperText={passwordError}
-                        onChange={this.handleChange}
-                    />
-                    <Button
-                        type="button"
-                        fullWidth={true}
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        disabled={!this.state.isFormValid}
-                        onClick={this.handleSubmit}
-                    >
-                        Sign Up
-                    </Button>
-                    <Grid container={true}>
-                    <Grid item={true}>
-                        <Link component={RouterLink} to="/login" variant="body2">
-                            {"Already have an account? Log In"}
-                        </Link>
-                    </Grid>
-                    </Grid>
-                </form>
-            </Paper>
-        </Container>
+                    <form className={classes.form} noValidate={true}>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required={true}
+                            fullWidth={true}
+                            id="displayName"
+                            label="Username"
+                            name="displayName"
+                            autoComplete="username"
+                            value={displayName}
+                            autoFocus={true}
+                            error={displayNameError.length > 0}
+                            helperText={displayNameError}
+                            onChange={this.handleChange}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required={true}
+                            fullWidth={true}
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            value={email}
+                            error={emailError.length > 0}
+                            helperText={emailError}
+                            onChange={this.handleChange}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required={true}
+                            fullWidth={true}
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={password}
+                            error={passwordError.length > 0}
+                            helperText={passwordError}
+                            onChange={this.handleChange}
+                        />
+                        <Button
+                            type="button"
+                            fullWidth={true}
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            disabled={!this.state.isFormValid}
+                            onClick={this.handleSubmit}
+                        >
+                            Sign Up
+                        </Button>
+                        <Grid container={true}>
+                            <Grid item={true}>
+                                <Link component={RouterLink} to="/login" variant="body2">
+                                    {"Already have an account? Log In"}
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Paper>
+            </Container>
         );
     }
 }
