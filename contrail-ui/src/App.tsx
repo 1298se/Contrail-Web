@@ -23,7 +23,6 @@ class App extends Component<IAppProps, {}> {
     public handleConnectionChange = () => {
         const networkCondition = navigator.onLine ? "online" : "offline";
         if (networkCondition === "online") {
-            // TODO: Add proxy to backend and ping to backend
             Axios.get("/")
             .then(() => {
                 this.props.setNetworkState(true);
