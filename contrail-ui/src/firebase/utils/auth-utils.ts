@@ -51,7 +51,7 @@ export function registerUser(displayName: string, email: string, password: strin
 export function registerUserDb(user: firebase.User | null): Promise<AxiosResponse | any> {
 
     return new Promise((resolve, reject) => {
-        if (user != null) {
+        if (user !== null) {
             user.getIdToken()
                 .then((token) => {
                     Axios.post("http://localhost:5000", token)

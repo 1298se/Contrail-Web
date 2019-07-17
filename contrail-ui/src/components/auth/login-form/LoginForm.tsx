@@ -40,7 +40,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         }
 
         Object.values(errors).forEach((val) => {
-            return (val != null && (valid = false));
+            return (val !== null && (valid = false));
         });
 
         return valid;
@@ -151,7 +151,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                             autoComplete="email"
                             value={email}
                             autoFocus={true}
-                            error={emailError != null}
+                            error={emailError !== null}
                             helperText={emailError}
                             onChange={this.handleChange}
                         />
@@ -166,7 +166,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                             id="password"
                             autoComplete="current-password"
                             value={password}
-                            error={passwordError != null}
+                            error={passwordError !== null}
                             helperText={passwordError}
                             onChange={this.handleChange}
                         />
