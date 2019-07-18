@@ -1,7 +1,7 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import CloudUploadOutlined from "@material-ui/icons/CloudUploadOutlined";
+import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -49,7 +49,7 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
                 <Grid container={true} component="main" className={classes.root}>
                     <CssBaseline />
                     <Grid item={true} xs={false} sm={5} md={7} className={classes.image}>
-                        <CloudUploadOutlined color="secondary" className={classes.largeIcon} />
+                        <CloudUploadOutlinedIcon color="secondary" className={classes.largeIcon} />
                         <Typography color="secondary" component="h1" variant="h3">
                             Contrail
                         </Typography>
