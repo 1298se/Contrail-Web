@@ -13,13 +13,14 @@ import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, {Component} from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import * as actions from "../../../store/actions/uploadDialogActions.ts";
+import { uploadDialogOpenAction } from "../../../store/actions/uploadDialogActions";
+import { IUploadDialogOpenAction } from "../../../store/actions/uploadDialogActions.types";
 import styles from "../mainStyles";
-import * as types from "./mainDrawer.type.ts";
+import * as types from "./mainDrawer.type";
 
 class MainDrawer extends Component<any, any> {
     public openFileUpload = () => {
-        this.props.fileUploadOpen();
+        this.props.uploadDialogOpen();
     }
 
     public render() {
@@ -72,9 +73,9 @@ class MainDrawer extends Component<any, any> {
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.IUploadDialogAction>): types.IMainDrawerDispatchProps => {
+const mapDispatchToProps = (dispatch: Dispatch<IUploadDialogOpenAction>): types.IMainDrawerDispatchProps => {
     return {
-        uploadDialogOpen: () => dispatch(actions.uploadDialogOpen()),
+        uploadDialogOpen: () => dispatch(uploadDialogOpenAction()),
     };
 };
 

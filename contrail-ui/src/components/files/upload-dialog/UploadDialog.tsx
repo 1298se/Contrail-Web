@@ -17,94 +17,102 @@ import React, { Component } from "react";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import * as actions from "../../../store/actions/uploadDialogActions";
-import styles from "../fileStyles";
-import { IUploadDialogProps, IUploadDialogState } from "./uploadDialog.type";
+import { uploadDialogCloseAction } from "../../../store/actions/uploadDialogActions";
+import * as actions from "../../../store/actions/uploadDialogActions.types";
+import { IAppReduxState } from "../../../store/store.types";
+import { IUploadDialogDispatchProps, IUploadDialogProps, IUploadDialogState, IUploadDialogStateProps } from "./uploadDialog.type";
+import styles from "./uploadDialogStyles";
 
 class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     public state = {
-        files: [],
+        files: [] as File[],
         filesProgess: new Map<string, number>(),
     };
 
     public handleFileDrop = (newFiles: File[]) => {
-        this.setState({
-            files: this.state.files.concat(newFiles),
-        });
-        newFiles.map((file: File) => {
-            const name = file && file.name;
-            this.setState((prevState: IUploadDialogState) => ({
-                filesProgess: {...prevState.filesProgess, [name]: 0},
-            }));
+        this.setState((prevState) => {
+            newFiles.forEach((file) => {
+                prevState.filesProgess.set(file.name, 0);
+            });
+            return {
+                files: prevState.files ? prevState.files.concat(newFiles) : newFiles,
+                filesProgess: prevState.filesProgess,
+            };
         });
     }
 
-    public handleAddFile = (e: React.MouseEvent<HTMLElement>) => {
-        const newFiles: File[] = [...e.target.files];
-        this.setState({
-            files: this.state.files.concat(newFiles),
-        });
-        newFiles.map((file: File) => {
-            const name = file && file.name;
-            this.setState((prevState: IUploadDialogState) => ({
-                filesProgess: {...prevState.filesProgess, [name]: 0},
-            }));
+    public handleAddFile = (newFileList: FileList | null) => {
+        const newFiles = [...newFileList];
+        this.setState((prevState) => {
+            newFiles.forEach((file) => {
+                prevState.filesProgess.set(file.name, 0);
+            });
+            return {
+                files: prevState.files ? prevState.files.concat(newFiles) : newFiles,
+                filesProgess: prevState.filesProgess,
+            };
         });
     }
 
     public closeFileUpload = () => {
         this.setState({
-            files: [],
+            files: [] as File[],
             filesProgess: new Map<string, number>(),
         });
         this.props.uploadDialogClose();
     }
 
     public uploadFiles = () => {
-        const userID = this.props.user;
-        if (this.state.files.length !== 0) {
+        if (this.props.user && this.state.files.length) {
+            const userID = this.props.user.uid;
             const storageRef = firebase.storage().ref();
             this.state.files.map((file: File) => {
                 const name = file && file.name;
-                const uploadTask = storageRef.child(userID + "/" + name).put(file);
-                uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    this.setState((prevState: IUploadDialogState) => ({
-                        filesProgess: {...prevState.filesProgess, [name]: progress},
-                    }));
-                });
+                console.log(file)
+                if (this.state.filesProgess.get(name) === 0) {
+                    const uploadTask = storageRef.child(userID + "/" + name).put(file);
+                    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        this.setState((prevState: IUploadDialogState) => ({
+                            filesProgess: prevState.filesProgess.set(name, progress),
+                        }));
+                    }, (error) => {
+                        console.log(error);
+                    });
+                }
             });
         }
     }
 
-    public removeFileUpload = (fileName: string) => {
-        const newFiles = this.state.files.filter((file) => {
-            const name = file && fileName;
-            return name !== fileName;
-        });
-        let newfilesProgress: Map<string, number> = Object.assign({}, this.state.filesProgess);
-        delete newfilesProgress[fileName];
-        this.setState({
-            files: newFiles,
-        });
+    public removeFileUpload = (index: number) => {
+        if (this.state.files) {
+            const selectedFile = this.state.files[index];
+            this.setState((prevState: IUploadDialogState) => {
+                prevState.filesProgess.delete(selectedFile.name);
+                return {
+                    files:  this.state.files.filter((_, i) => i !== index),
+                    filesProgess: prevState.filesProgess,
+                };
+            });
+        }
     }
 
     public render() {
         const { classes, dialogOpen } = this.props;
         const { files, filesProgess } = this.state;
-
+        console.log(this.state)
         const renderUploadFiles = (
             files &&  files.map((file: File, i) => {
-                const fileName: string = file.name;
-                const fileProgress: number = filesProgess[fileName];
+                const fileName = file.name;
+                const fileProgress = filesProgess.get(fileName);
                 return (
                     <TableRow
-                        key={i}
+                        key={'row' + i}
                         hover={true}
                     >
-                        <TableCell key={i} align="left" className={classes.name}> {fileName} </TableCell>
-                        <TableCell key={i} align="center">
+                        <TableCell align="left" className={classes.name}> {fileName} </TableCell>
+                        <TableCell align="center" className={classes.progressContainer}>
                             <LinearProgress
                                 className={classes.progress}
                                 color="primary"
@@ -112,14 +120,14 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                                 value={fileProgress}
                             />
                         </TableCell>
-                        <TableCell align="right" size="small">
+                        <TableCell align="right" size="small" className={classes.doneContainer}>
                             {fileProgress === 0 &&
-                            <Button onClick={() => this.removeFileUpload(fileName)}> 
+                            <Button onClick={() => this.removeFileUpload(i)}> 
                                 <CancelIcon color="inherit" />
                             </Button>
                             }
                             {fileProgress === 100 && 
-                                <CloudDoneIcon />
+                                <CloudDoneIcon fontSize="large" color="primary" />
                             }
                         </TableCell>
                     </TableRow>
@@ -158,8 +166,8 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
             <Dialog
                 open={dialogOpen}
                 onBackdropClick={this.closeFileUpload}
-                aria-labelledby="form-dialog-title" 
-                fullWidth={true} 
+                aria-labelledby="form-dialog-title"
+                fullWidth={true}
                 maxWidth="lg">
                 <DialogTitle id="form-dialog-title">Upload Files</DialogTitle>
                 <DialogContent className={classes.dialog}>
@@ -167,15 +175,14 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                 </DialogContent>
                 <DialogActions>
                 <input
-                    className={classes.input}
                     style={{ display: "none" }}
                     id="raised-button-file"
                     multiple={true}
                     type="file"
-                    onChange={this.handleAddFile}
+                    onChange={(e) => this.handleAddFile(e.target.files)}
                 />
                 <label htmlFor="raised-button-file">
-                <Button component="span" variant="contained" color="primary" className={classes.button}>
+                <Button component="span" variant="contained" color="primary">
                     Add
                 </Button>
                 </label>
@@ -183,7 +190,6 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                     component="span"
                     variant="contained"
                     color="primary"
-                    className={classes.button}
                     onClick={this.closeFileUpload}
                 >
                     Cancel
@@ -192,7 +198,6 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                     component="span"
                     variant="contained"
                     color="primary"
-                    className={classes.button}
                     onClick={this.uploadFiles}
                 >
                     Upload
@@ -204,16 +209,16 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     }
 }
 
-const mapStateToProps = (state: IAppReduxState): IUploadDialogProps => {
+const mapStateToProps = (state: IAppReduxState): IUploadDialogStateProps => {
     return {
         dialogOpen: state.uploadDialogState.dialogOpen,
         user: state.authState.authUser,
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.IUploadDialogAction>): IUploadDialogProps => {
+const mapDispatchToProps = (dispatch: Dispatch<actions.IUploadDialogCloseAction>): IUploadDialogDispatchProps => {
     return {
-        uploadDialogClose: () => dispatch(actions.uploadDialogClose()),
+        uploadDialogClose: () => dispatch(uploadDialogCloseAction()),
     };
 };
 

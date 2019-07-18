@@ -7,5 +7,5 @@ export interface IAppReduxState {
     readonly authState: IAuthState;
     readonly appUiState: IAppUiState;
     readonly networkState: INetworkState;
-    readonly uplaodDialogState: IUploadDialogState;
+    readonly uploadDialogState: IUploadDialogState;
 }

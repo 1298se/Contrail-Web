@@ -1,5 +1,7 @@
+import { WithStyles } from "@material-ui/core";
+import styles from "./uploadDialogStyles";
 export interface IUploadDialogState {
-    files: File[];
+    files: File[] | null;
     filesProgess: Map<string, number>;
 }
 
@@ -12,4 +14,7 @@ export interface IUploadDialogDispatchProps {
     uploadDialogClose: () => void;
 }
 
-export type IUploadDialogProps = IUploadDialogStateProps & IUploadDialogDispatchProps;
+export interface IUploadDialogOwnProps extends WithStyles<typeof styles> {
+}
+
+export type IUploadDialogProps = IUploadDialogOwnProps & IUploadDialogStateProps & IUploadDialogDispatchProps;

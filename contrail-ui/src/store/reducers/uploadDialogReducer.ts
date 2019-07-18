@@ -8,7 +8,7 @@ const initialUploadDialogState: types.IUploadDialogState = {
     dialogOpen: false,
 };
 
-const uploadDialogStateReducer: Reducer< ypes.IUploadDialogState, IUploadDialogAction> = (
+const uploadDialogStateReducer: Reducer< types.IUploadDialogState, IUploadDialogAction> = (
     state = initialUploadDialogState,
     action,
 ) => {

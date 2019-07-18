@@ -1,3 +1,3 @@
 export interface IMainDrawerDispatchProps {
-    uploadDialogClose: () => void;
+    uploadDialogOpen: () => void;
 }
