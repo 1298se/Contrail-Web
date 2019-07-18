@@ -8,6 +8,11 @@ export interface IAuthOwnProps extends WithStyles<typeof styles>, RouteComponent
 
 export interface IAuthStateProps {
     authToken: string | null;
+    authUser: firebase.User | null;
 }
 
-export type IAuthProps = IAuthOwnProps & IAuthStateProps;
+export interface IAuthState {
+    shouldRedirect: boolean;
+}
+
+export type AuthProps = IAuthOwnProps & IAuthStateProps;

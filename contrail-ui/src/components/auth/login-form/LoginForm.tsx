@@ -3,32 +3,34 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
+import Snackbar from "@material-ui/core/Snackbar";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
-import { connect } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
-import { ThunkDispatch } from "redux-thunk";
-import { loginUserAction } from "../../../store/actions/authActions";
-import { IAuthLoginUserAction } from "../../../store/actions/authActions.types";
-import * as auth from "../../../utils/firebase/auth-utils";
+import * as auth from "../../../firebase/utils/auth-utils";
+import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "../authStyles";
 import * as types from "./loginForm.type";
 
-class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> {
+class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
+
     public state = {
         values: {
             email: "",
             password: "",
         },
-        errors: {
-            emailError: "",
-            passwordError: "",
+        formErrors: {
+            emailError: null,
+            passwordError: null,
         },
         isFormValid: false,
+        loginRequestError: null,
+        shouldDisplayError: false,
     };
 
+    // Checks if the form is valid by checking form values and errors
     public isFormValid = (errors: types.IFormErrors): boolean => {
         const { email, password } = this.state.values;
         let valid = true;
@@ -38,57 +40,101 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
         }
 
         Object.values(errors).forEach((val) => {
-            return (val.length > 0 && (valid = false));
+            return (val !== null && (valid = false));
         });
 
         return valid;
     }
 
+    // On-Text-Change listener to set form errors
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         event.preventDefault();
 
         const { name, value } = event.target;
-        const errors: types.IFormErrors = this.state.errors;
+        const formErrors: types.IFormErrors = this.state.formErrors;
 
         switch (name) {
             case "email":
-                errors.emailError = auth.emailRegex.test(value)
-                    ? ""
+                formErrors.emailError = auth.emailRegex.test(value)
+                    ? null
                     : "Please enter a valid email.";
                 break;
             case "password":
-                errors.passwordError = value.length >= auth.minPasswordLength
-                    ? ""
+                formErrors.passwordError = value.length >= auth.minPasswordLength
+                    ? null
                     : "Passwords must have a minimum of 6 characters.";
                 break;
             default:
                 break;
         }
 
-        const isValid: boolean = this.isFormValid(errors);
+        const isValid: boolean = this.isFormValid(formErrors);
 
         this.setState({
             values: {
                 ...this.state.values,
                 [name]: value,
             },
-            errors,
+            formErrors,
             isFormValid: isValid,
         });
     }
 
+    // For logging in the user on button click. On a successful login, reset the error state
+    // for the snackbar
     public handleSubmit = () => {
         const { email, password } = this.state.values;
-        this.props.loginUser(email, password);
+        auth.loginUser(email, password)
+        .then(() => {
+            this.setState({
+                loginRequestError: null,
+                shouldDisplayError: false,
+            });
+            this.props.initiateRedirect();
+        }).catch((error) => {
+            this.setState({
+                loginRequestError: error,
+                shouldDisplayError: true,
+            });
+        });
+    }
+
+    // This function is to handle a bug where the error message of the snackbar
+    // changes during exit transition. This function handles closing the snackbar
+    public handleErrorClose = () => {
+        this.setState({
+            shouldDisplayError: false,
+        });
+    }
+
+    // This function is to handle a bug where the error message of the snackbar
+    // changes during exit transition. This function resets the loginRequestError to null
+    // after the transition has been completed.
+    public clearLoginRequestError = () => {
+        this.setState({
+            loginRequestError: null,
+        });
     }
 
     public render() {
         const { classes } = this.props;
         const { email, password } = this.state.values;
-        const { emailError, passwordError } = this.state.errors;
+        const { emailError, passwordError } = this.state.formErrors;
 
         return (
             <Container maxWidth="sm">
+                <Snackbar
+                    anchorOrigin={{vertical: "bottom", horizontal: "center"}}
+                    open={this.state.shouldDisplayError}
+                    onClose={this.handleErrorClose}
+                    onExited={this.clearLoginRequestError}
+                >
+                    <SnackbarContentWrapper
+                        message={String(this.state.loginRequestError)}
+                        variant="error"
+                        onClose={this.handleErrorClose}
+                    />
+                </Snackbar>
                 <Paper className={classes.paper}>
                     <Typography component="h1" variant="h5">
                         Log In
@@ -105,7 +151,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                             autoComplete="email"
                             value={email}
                             autoFocus={true}
-                            error={emailError.length > 0}
+                            error={emailError !== null}
                             helperText={emailError}
                             onChange={this.handleChange}
                         />
@@ -120,7 +166,7 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
                             id="password"
                             autoComplete="current-password"
                             value={password}
-                            error={passwordError.length > 0}
+                            error={passwordError !== null}
                             helperText={passwordError}
                             onChange={this.handleChange}
                         />
@@ -149,16 +195,4 @@ class LoginForm extends Component<types.ILoginFormProps, types.ILoginFormState> 
     }
 }
 
-const mapStateToProps = (state: any): any => {
-    return {
-        authToken: state.authState.authToken,
-    };
-};
-
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAuthLoginUserAction>) => {
-    return {
-        loginUser: (email: string, password: string) => dispatch(loginUserAction(email, password)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LoginForm));
+export default withStyles(styles)(LoginForm);

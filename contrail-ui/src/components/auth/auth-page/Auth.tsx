@@ -13,16 +13,36 @@ import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
-class Auth extends Component<types.IAuthProps, {}> {
+class Auth extends Component<types.AuthProps, types.IAuthState> {
+    public state = {
+        shouldRedirect: false,
+    };
+
+    public componentDidMount() {
+        const { authUser, authToken } = this.props;
+        if (authUser && authToken) {
+            this.initiateRedirect();
+        }
+    }
+
+    public initiateRedirect = () => {
+        this.setState({
+            shouldRedirect: true,
+        });
+    }
 
     public render() {
-        const { authToken, classes } = this.props;
+        const { authUser, authToken, classes } = this.props;
 
-        if (authToken) {
+        if (authUser && authToken && this.state.shouldRedirect) {
             return (
                 <Redirect to={ROUTES.MAIN} />
             );
         }
+
+        const renderLoginForm = () => <LoginForm initiateRedirect={this.initiateRedirect} />;
+        const renderRegisterForm = () => <RegisterForm initiateRedirect={this.initiateRedirect} />;
+        const redirectLogin = () => <Redirect to={ROUTES.LOGIN} />;
 
         return (
             <Router>
@@ -36,9 +56,9 @@ class Auth extends Component<types.IAuthProps, {}> {
                     </Grid>
                     <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
                         <Switch>
-                            <Route path="/login" component={LoginForm} />
-                            <Route path="/register" component={RegisterForm} />
-                            <Redirect to="/login" />
+                            <Route path={ROUTES.LOGIN} exact={true} render={renderLoginForm}/>
+                            <Route path={ROUTES.REGISTER} exact={true} render={renderRegisterForm}/>
+                            <Route path={ROUTES.ROOT} exact={true} render={redirectLogin} />
                         </Switch>
                     </Grid>
                 </Grid>
@@ -50,6 +70,7 @@ class Auth extends Component<types.IAuthProps, {}> {
 const mapStateToProps = (state: IAppReduxState): types.IAuthStateProps => {
     return {
         authToken: state.authState.authToken,
+        authUser: state.authState.authUser,
     };
 };
 

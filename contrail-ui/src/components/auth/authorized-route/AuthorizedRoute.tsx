@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route } from "react-router-dom";
 import * as ROUTES from "../../../routes";
-import { IAuthorizedProps } from "./AuthorizedRoute.type";
+import { IAppReduxState } from "../../../store/store.types";
+import * as types from "./AuthorizedRoute.type";
 
-class AuthorizedRoute extends Component<IAuthorizedProps> {
+class AuthorizedRoute extends Component<types.IAuthorizedProps> {
     public render() {
-        const { component: AuthorizedComponent, authToken, path } = this.props;
-        const isAuth =  authToken;
-        const renderComponent =  () => isAuth ? <AuthorizedComponent /> : <Redirect to={ROUTES.LOGIN} />;
+        const { component: AuthorizedComponent, authToken, authUser, path } = this.props;
+        const isAuth =  authToken !== null && authUser !== null;
+        const renderComponent =  () => isAuth ? <AuthorizedComponent /> : <Redirect to={ROUTES.ROOT} />;
 
         return (
             <Route
@@ -19,8 +20,9 @@ class AuthorizedRoute extends Component<IAuthorizedProps> {
     }
 }
 
-const mapStateToProps = (state: any): any => {
+const mapStateToProps = (state: IAppReduxState): types.IAuthorizedStateProps => {
     return {
+        authUser: state.authState.authUser,
         authToken: state.authState.authToken,
     };
 };
