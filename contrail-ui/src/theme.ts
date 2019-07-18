@@ -7,7 +7,12 @@ const theme = createMuiTheme({
         primary: { main: blue[900] },
         secondary: { main: "#ffffff" },
     },
-
+    typography: {
+        fontFamily: [
+          "Nunito",
+          "sans-serif"
+        ].join(','),
+      },
 });
 
 export default theme;

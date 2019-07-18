@@ -6,10 +6,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CloudDoneIcon from "@material-ui/icons/CloudDone";
 import * as firebase from "firebase/app";
@@ -22,6 +18,7 @@ import * as actions from "../../../store/actions/uploadDialogActions.types";
 import { IAppReduxState } from "../../../store/store.types";
 import { IUploadDialogDispatchProps, IUploadDialogProps, IUploadDialogState, IUploadDialogStateProps } from "./uploadDialog.type";
 import styles from "./uploadDialogStyles";
+import Divider from "@material-ui/core/Divider";
 
 class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     public state = {
@@ -68,7 +65,6 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
             const storageRef = firebase.storage().ref();
             this.state.files.map((file: File) => {
                 const name = file && file.name;
-                console.log(file)
                 if (this.state.filesProgess.get(name) === 0) {
                     const uploadTask = storageRef.child(userID + "/" + name).put(file);
                     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
@@ -101,36 +97,29 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     public render() {
         const { classes, dialogOpen } = this.props;
         const { files, filesProgess } = this.state;
-        console.log(this.state)
+
         const renderUploadFiles = (
             files &&  files.map((file: File, i) => {
                 const fileName = file.name;
                 const fileProgress = filesProgess.get(fileName);
                 return (
-                    <TableRow
-                        key={'row' + i}
-                        hover={true}
-                    >
-                        <TableCell align="left" className={classes.name}> {fileName} </TableCell>
-                        <TableCell align="center" className={classes.progressContainer}>
-                            <LinearProgress
-                                className={classes.progress}
-                                color="primary"
-                                variant="determinate"
-                                value={fileProgress}
-                            />
-                        </TableCell>
-                        <TableCell align="right" size="small" className={classes.doneContainer}>
-                            {fileProgress === 0 &&
-                            <Button onClick={() => this.removeFileUpload(i)}> 
+                    <div key={i} className={classes.fileContainer}>
+                        <p className={classes.fileInfo}> {fileName} </p>
+                        <LinearProgress
+                            className={classes.progress}
+                            color="primary"
+                            variant="determinate"
+                            value={fileProgress}
+                        />
+                        {fileProgress === 0 &&
+                            <Button className={classes.status} disableFocusRipple={true} onClick={() => this.removeFileUpload(i)}> 
                                 <CancelIcon color="inherit" />
                             </Button>
-                            }
-                            {fileProgress === 100 && 
-                                <CloudDoneIcon fontSize="large" color="primary" />
-                            }
-                        </TableCell>
-                    </TableRow>
+                        }
+                        {fileProgress === 100 && 
+                            <CloudDoneIcon className={classes.status}  fontSize="large" color="primary" />
+                        }
+                    </div>
                 );
             })
         );
@@ -142,18 +131,14 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
             >
             {({getRootProps, getInputProps}) => {
             return (
-            <section className="container">
+            <section>
                 <div {...getRootProps({className: "dropzone"})}>
                     <input {...getInputProps()} />
-                <DialogContentText>
-                    Drag files here, or click below!
-                </DialogContentText>
+                    <DialogContentText>
+                        Drag files here, or click below!
+                    </DialogContentText>
                     <div className={classes.paper}>
-                        <Table>
-                            <TableBody>
-                                {renderUploadFiles}
-                            </TableBody>
-                        </Table>
+                        {renderUploadFiles}
                     </div>
                 </div>
             </section>
@@ -168,9 +153,9 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                 onBackdropClick={this.closeFileUpload}
                 aria-labelledby="form-dialog-title"
                 fullWidth={true}
-                maxWidth="lg">
+            >
                 <DialogTitle id="form-dialog-title">Upload Files</DialogTitle>
-                <DialogContent className={classes.dialog}>
+                <DialogContent className={classes.baseDrop}>
                 {renderDropzone}
                 </DialogContent>
                 <DialogActions>

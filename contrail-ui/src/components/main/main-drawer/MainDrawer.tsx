@@ -33,10 +33,10 @@ class MainDrawer extends Component<any, any> {
             >
                 <div className={classes.appBarSpacer} />
                 <Button
+                    className={classes.uploadButton}
                     variant="contained"
                     color="primary"
                     size="large"
-                    className={classes.button}
                     onClick={this.openFileUpload}
                 >
                     <CloudUploadIcon className={classes.uploadIcon} />
