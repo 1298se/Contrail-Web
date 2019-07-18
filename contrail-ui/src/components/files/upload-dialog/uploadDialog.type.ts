@@ -1,10 +1,15 @@
-export interface IFilesProgress {
-    [key: string]: number;
+export interface IUploadDialogState {
+    files: File[];
+    filesProgess: Map<string, number>;
 }
 
-export interface IFilesState {
-    files: any;
-    filesProgess: IFilesProgress;
+export interface IUploadDialogStateProps {
+    dialogOpen: boolean;
+    user: firebase.User | null;
 }
 
-export const dict: IFilesProgress = {};
+export interface IUploadDialogDispatchProps {
+    uploadDialogClose: () => void;
+}
+
+export type IUploadDialogProps = IUploadDialogStateProps & IUploadDialogDispatchProps;
