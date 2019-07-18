@@ -6,6 +6,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { IAppProps, IAppStateProps } from "./app.types";
 import Auth from "./components/auth/auth-page/Auth";
 import AuthorizedRoute from "./components/auth/authorized-route/AuthorizedRoute";
+import InitLoadingPage from "./components/feedback/init-loading-page/InitLoadingPage";
 import MainFrame from "./components/main/MainFrame";
 import * as ROUTES from "./routes";
 import { setAuthListener } from "./store/actions/authActions";
@@ -37,7 +38,7 @@ class App extends Component<IAppProps, {}> {
     public render() {
         if (this.props.isLoading) {
             return (
-                <div>LOADING</div>
+                <InitLoadingPage />
             );
         }
         return (

@@ -1,6 +1,6 @@
 export interface IAppUiState {
     readonly isLoading: boolean;
-    readonly loadState: IAppLoadingState;
+    readonly initLoadState: IAppLoadingState;
 }
 
 interface IAppLoadingState {

@@ -5,7 +5,7 @@ import * as types from "./appUiStateReducer.types";
 
 const initialAppUiState: types.IAppUiState = {
     isLoading: true,
-    loadState: {
+    initLoadState: {
         isFetchingUser: true,
     },
 };
@@ -17,19 +17,19 @@ const appUiStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
     switch (action.type) {
         case APP_SET_LOADING_USER_STATE:
             const prevState: types.IAppUiState = state;
-            prevState.loadState.isFetchingUser = action.payload;
+            prevState.initLoadState.isFetchingUser = action.payload;
             let loading = false;
-            for (const isLoading of Object.values(prevState.loadState)) {
+            for (const isLoading of Object.values(prevState.initLoadState)) {
                 if (isLoading) {
                     loading = true;
                 }
             }
-            prevState.loadState.isFetchingUser = action.payload;
+            prevState.initLoadState.isFetchingUser = action.payload;
             return {
                 ...state,
                 isLoading: loading,
                 loadState: {
-                    ...state.loadState,
+                    ...state.initLoadState,
                     isFetchingUser: action.payload,
                 },
             };
