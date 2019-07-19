@@ -87,7 +87,7 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
             this.setState((prevState: IUploadDialogState) => {
                 prevState.filesProgess.delete(selectedFile.name);
                 return {
-                    files:  this.state.files.filter((_, i) => i !== index),
+                    files: this.state.files.filter((_, i) => i !== index),
                     filesProgess: prevState.filesProgess,
                 };
             });
@@ -97,29 +97,37 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     public render() {
         const { classes, dialogOpen } = this.props;
         const { files, filesProgess } = this.state;
+        console.log(this.state)
+        const renderCancelButton = (index: number) => (
+            <Button disableFocusRipple={true} onClick={() => this.removeFileUpload(index)}>
+                <CancelIcon />
+            </Button>
+        );
+
+        const renderDoneButton = (
+            <CloudDoneIcon fontSize="large" color="primary" />
+        );
 
         const renderUploadFiles = (
             files &&  files.map((file: File, i) => {
                 const fileName = file.name;
                 const fileProgress = filesProgess.get(fileName);
                 return (
-                    <div key={i} className={classes.fileContainer}>
-                        <p className={classes.fileInfo}> {fileName} </p>
+                <div key={i} className={classes.fileContainer}>
+                    <div className={classes.fileInfoContainer}>
+                        <p> {fileName} </p>
                         <LinearProgress
                             className={classes.progress}
                             color="primary"
                             variant="determinate"
                             value={fileProgress}
                         />
-                        {fileProgress === 0 &&
-                            <Button className={classes.status} disableFocusRipple={true} onClick={() => this.removeFileUpload(i)}> 
-                                <CancelIcon color="inherit" />
-                            </Button>
-                        }
-                        {fileProgress === 100 && 
-                            <CloudDoneIcon className={classes.status}  fontSize="large" color="primary" />
-                        }
                     </div>
+                    <div className={classes.statusContainer} >
+                        {fileProgress === 0 && renderCancelButton(i)}
+                        {fileProgress === 100 && renderDoneButton}
+                    </div> 
+                </div>
                 );
             })
         );

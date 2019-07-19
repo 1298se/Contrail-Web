@@ -24,9 +24,10 @@ const styles = (theme: Theme) =>
         },
         uploadButton : {
             margin: "10px",
+            borderRadius: "20px",
         },
         uploadIcon : {
-            margin: "0px 1px",
+            margin: "0px 10px",
         },
     });
 

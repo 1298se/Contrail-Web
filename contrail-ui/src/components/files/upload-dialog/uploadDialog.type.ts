@@ -1,5 +1,6 @@
 import { WithStyles } from "@material-ui/core";
 import styles from "./uploadDialogStyles";
+
 export interface IUploadDialogState {
     files: File[] | null;
     filesProgess: Map<string, number>;

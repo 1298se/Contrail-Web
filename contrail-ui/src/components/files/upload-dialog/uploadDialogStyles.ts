@@ -23,25 +23,23 @@ const styles = (theme: Theme) => createStyles({
   progress: {
     backgroundColor: "#b7d0f7",
     borderRadius: 20,
-    width: "80%",
+    width: "100%",
     height: 10,
-    order: 2,
-    marginBottom: "14px",
+    marginBottom: "10px",
   },
   fileContainer : {
     width: "100%",
     display: "flex",
-    flexWrap: "wrap",
-    alignContent: "center",
+    alignItems: "center",
   },
-  status : {
-    alignSelf: "flex-end",
-    order: 1,
+  statusContainer : {
+    alignContent: "flex-end",
+    justifyContent: "flex-end",
   },
-  fileInfo : {
-    alignSelf: "flex-start",
-    order: -1,
-    flex: "1 0 50%",
+  fileInfoContainer : {
+    justifyContent: "flex-start",
+    flex: "0 0 50%",
+    flexGrow: 1,
   },
   baseDrop: {
     margin: '10px',
