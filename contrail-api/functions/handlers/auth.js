@@ -6,6 +6,7 @@ exports.registerUser = (req, res) => {
     if (displayName && email && password) {
         auth.createUser(req.body)
             .then((userRecord) => {
+                console.log('userRecord')
                 return db.collection("users").doc(userRecord.uid).set({
                     displayName: userRecord.displayName,
                     email: userRecord.email,
@@ -13,18 +14,23 @@ exports.registerUser = (req, res) => {
                         owned: [],
                         sharedToUser: [],
                     },
-                }).then(() => {
+                })
+                .then(() => {
                     return auth.createCustomToken(userRecord.uid)
                         .then((customToken) => {
+                            console.log('done')
                             return res.status(201).json({ customToken });
-                        }).catch((error) => {
-                            return res.status(500);
                         })
-                }).catch((error) => {
-                    return res.status(500);
+                        .catch((error) => {
+                            return res.status(500).send();
+                        })
                 })
-            }).catch((error) => {
-                return res.status(500);
+                .catch((error) => {
+                    return res.status(500).send();
+                })
+            })
+            .catch((error) => {
+                return res.status(500).send();
             })
     }
 }
