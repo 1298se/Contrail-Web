@@ -22,8 +22,8 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
             password: "",
         },
         formErrors: {
-            emailError: null,
-            passwordError: null,
+            emailError: "",
+            passwordError: "",
         },
         isFormValid: false,
         loginRequestError: null,
@@ -35,7 +35,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         const { email, password } = this.state.values;
         let valid = true;
 
-        if (email.length === 0 || password.length === 0) {
+        if (email.trim().length === 0 || password.length === 0) {
             valid = false;
         }
 
@@ -55,14 +55,18 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
 
         switch (name) {
             case "email":
-                formErrors.emailError = auth.emailRegex.test(value)
-                    ? null
+                formErrors.emailError = auth.emailRegex.test(value.trim())
+                    ? ""
                     : "Please enter a valid email.";
                 break;
             case "password":
-                formErrors.passwordError = value.length >= auth.minPasswordLength
-                    ? null
+                const passwordLengthError = value.length >= auth.minPasswordLength
+                    ? ""
                     : "Passwords must have a minimum of 6 characters.";
+                const passwordRegexError = auth.passwordRegex.test(value)
+                    ? ""
+                    : "Password must not contain whitespace.";
+                formErrors.passwordError = passwordLengthError.concat(passwordRegexError);
                 break;
             default:
                 break;
@@ -151,7 +155,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                             autoComplete="email"
                             value={email}
                             autoFocus={true}
-                            error={emailError !== null}
+                            error={emailError.length > 0}
                             helperText={emailError}
                             onChange={this.handleChange}
                         />
@@ -166,7 +170,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                             id="password"
                             autoComplete="current-password"
                             value={password}
-                            error={passwordError !== null}
+                            error={passwordError.length > 0}
                             helperText={passwordError}
                             onChange={this.handleChange}
                         />

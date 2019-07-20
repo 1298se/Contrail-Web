@@ -16,9 +16,9 @@ export interface IFormValues {
 }
 
 export interface IFormErrors {
-    [x: string]: string | null;
-    emailError: string | null;
-    passwordError: string | null;
+    [x: string]: string;
+    emailError: string;
+    passwordError: string;
 }
 
 export interface ILoginFormOwnProps extends WithStyles<typeof styles> {

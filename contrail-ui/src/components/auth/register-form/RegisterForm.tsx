@@ -36,7 +36,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         const { displayName, email, password } = this.state.values;
         let valid = true;
 
-        if (displayName.length === 0 || email.length === 0 || password.length === 0) {
+        if (displayName.trim().length === 0 || email.trim().length === 0 || password.length === 0) {
             valid = false;
         }
 
@@ -51,36 +51,40 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         event.preventDefault();
 
         const { name, value } = event.target;
-        const errors: types.IFormErrors = this.state.errors;
+        const formErrors: types.IFormErrors = this.state.errors;
 
         switch (name) {
             case "displayName":
-                errors.displayNameError = value.length >= auth.minDisplayNameLength
+                formErrors.displayNameError = value.trim().length >= auth.minDisplayNameLength
                     ? ""
                     : "Usernames must have a minimum of 4 characters.";
                 break;
             case "email":
-                errors.emailError = auth.emailRegex.test(value)
+                formErrors.emailError = auth.emailRegex.test(value.trim())
                     ? ""
                     : "Please enter a valid email.";
                 break;
             case "password":
-                errors.passwordError = value.length >= auth.minPasswordLength
+                const passwordLengthError = value.length >= auth.minPasswordLength
                     ? ""
                     : "Passwords must have a minimum of 6 characters.";
+                const passwordRegexError = auth.passwordRegex.test(value)
+                    ? ""
+                    : "Password must not contain whitespace.";
+                formErrors.passwordError = passwordLengthError.concat(passwordRegexError);
                 break;
             default:
                 break;
         }
 
-        const isValid: boolean = this.isFormValid(errors);
+        const isValid: boolean = this.isFormValid(formErrors);
 
         this.setState({
             values: {
                 ...this.state.values,
                 [name]: value,
             },
-            errors,
+            errors: formErrors,
             isFormValid: isValid,
         });
     }
