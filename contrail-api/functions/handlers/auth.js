@@ -61,7 +61,7 @@ const verifyEmailandPassword = (email, password) => {
 const verifyRegisterInfo = (displayName, email, password) => {
     let errors = verifyEmailandPassword(email, password);
 
-    if (displayName.trim().length === 0) {
+    if (displayName === null || displayName.trim().length === 0) {
         errors.displayName = "Display name must not be empty."
     } else if (!(displayName.trim().length >= minDisplayNameLength)) {
         errors.displayName = "Display name must contain at least 3 characters."
@@ -83,10 +83,15 @@ const createCustomToken = (uid) => {
 }
 
 exports.registerUser = async (req, res) => {
-    const { displayName, email, password } = req.body;
+    const displayName = req.body.displayName || null;
+    const email = req.body.email || null;
+    const password = req.body.password || null;
+
+    if (displayName === null || email === null || password === null) {
+        return res.status(400).send("Request is missing body parameters.");
+    }
 
     const errors = verifyRegisterInfo(displayName, email, password);
-
     if (Object.values(errors).length > 0) {
         res.status(400).json(errors);
     }
@@ -95,7 +100,7 @@ exports.registerUser = async (req, res) => {
         const userRecord = await auth.createUser(req.body);
         return registerUserDb(userRecord)
             .then(() => {
-                return res.status(201).send(`user ${userRecord.uid} has been created`);
+                return res.status(201).send(`user ${userRecord.uid} has been created.`);
             }).catch((error) => {
                 deleteUser(userRecord.uid);
                 return res.status(500).send(error);
@@ -103,4 +108,23 @@ exports.registerUser = async (req, res) => {
     } catch (error) {
         return res.status(500).send(error);
     }
+}
+
+exports.loginUser = (req, res) => {
+    const email = req.body.email || null;
+    const password = req.body.password || null;
+
+    if (email === null || password === null) {
+        return res.status(400).send("Request is missing body parameters.")
+    }
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(() => {
+        return res.status(200).send("user is logged in");
+    })
+    .catch((error) => {
+        return res.status(500).send(error);
+    })
+
+    return res.status(200).send(req.body);
 }
