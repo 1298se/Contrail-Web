@@ -1,5 +1,5 @@
 
-import Axios, { AxiosAdapter, AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import * as firebase from "firebase/app";
 import { authRef } from "../firebase";
 
@@ -16,57 +16,30 @@ export const minPasswordLength = 6;
 export const minDisplayNameLength = 3;
 
 /**
- * Registers a user to Firebase, then logs in using {@link loginUser}.
- * *NOTE*: {@link initializeFirebase} must be called before this.
+ * Registers a user to the server.
+ * 
  * @param displayName the user's display name received from registration
  * @param email the user's email received from registration.
  * @param password the user's password received from registration.
- * @returns a {@link Promise} that resolves with the current user, or rejects with the error
+ * @returns a {@link Promise} that resolves or rejects with the error.
  */
-export function registerUser(displayName: string, email: string, password: string): Promise<firebase.User | null> {
-    console.log("registering user");
-    return new Promise((resolve, reject) => {
-        authRef.createUserWithEmailAndPassword(email, password).then(() => {
-            const user = authRef.currentUser;
-            if (user === null) {
-                console.error("registration failed: user is null");
-                resolve(null);
-            } else {
-                console.log("registration successful: updating profile");
-                user.updateProfile({
-                    displayName,
-                }).then(() => {
-                    console.log("profile update successful");
-                    loginUser(email, password);
-                    resolve(user);
-                }).catch((error) => {
-                    console.error("profile update failed:  ", error);
-                    reject(error);
-                });
-            }
-        }).catch((error) => {
-            reject(error);
-        });
-    });
-}
 
-export function registerUserDb(user: firebase.User | null): Promise<AxiosResponse | any> {
+export function registerUser(displayName: string, email: string, password: string):
+    Promise<AxiosResponse | AxiosError> {
+    const user = {
+        displayName,
+        email,
+        password,
+    };
 
     return new Promise((resolve, reject) => {
-        if (user !== null) {
-            user.getIdToken()
-                .then((token) => {
-                    Axios.post("http://localhost:5000", token)
-                        .then((response) => {
-                            resolve(response);
-                        }).
-                        catch((error) => {
-                            reject(error);
-                        });
-                }).catch((error) => {
-                    reject(error);
-                });
-        }
+        axios.post("/register", user)
+            .then(() => {
+                resolve();
+            })
+            .catch((error) => {
+                reject(error);
+            });
     });
 }
 
@@ -99,12 +72,12 @@ export function loginUser(email: string, password: string): Promise<firebase.Use
 export function logoutUser(): Promise<string> {
     return new Promise((resolve, reject) => {
         authRef.signOut()
-        .then(() => {
-            resolve("success");
-        })
-        .catch((error) => {
-            reject(error);
-        });
+            .then(() => {
+                resolve("success");
+            })
+            .catch((error) => {
+                reject(error);
+            });
     });
 }
 
@@ -113,7 +86,7 @@ export function logoutUser(): Promise<string> {
  * @returns a {@link Promise} that resolves null if there is no current user or the user's IDToken if there is,
  *  or rejects with error.
  */
-export function getUserToken(): Promise<string|null> {
+export function getUserToken(): Promise<string | null> {
     return new Promise((resolve, reject) => {
         const user = authRef.currentUser;
         if (user === null) {

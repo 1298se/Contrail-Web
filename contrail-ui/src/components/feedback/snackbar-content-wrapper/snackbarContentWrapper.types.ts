@@ -12,7 +12,7 @@ export const variant = {
 
 export interface ISnackbarOwnProps {
     className?: string;
-    message?: string;
+    message: string | null;
     onClose?: () => void;
     variant: keyof typeof variant;
 }

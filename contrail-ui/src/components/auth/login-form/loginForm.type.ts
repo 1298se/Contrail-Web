@@ -22,7 +22,6 @@ export interface IFormErrors {
 }
 
 export interface ILoginFormOwnProps extends WithStyles<typeof styles> {
-    initiateRedirect: () => void;
 }
 
 export type LoginFormProps = ILoginFormOwnProps;

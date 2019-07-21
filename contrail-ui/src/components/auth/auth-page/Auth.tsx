@@ -14,34 +14,18 @@ import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
 class Auth extends Component<types.AuthProps, types.IAuthState> {
-    public state = {
-        shouldRedirect: false,
-    };
-
-    public componentDidMount() {
-        const { authUser, authToken } = this.props;
-        if (authUser && authToken) {
-            this.initiateRedirect();
-        }
-    }
-
-    public initiateRedirect = () => {
-        this.setState({
-            shouldRedirect: true,
-        });
-    }
 
     public render() {
         const { authUser, authToken, classes } = this.props;
 
-        if (authUser && authToken && this.state.shouldRedirect) {
+        if (authUser && authToken) {
             return (
                 <Redirect to={ROUTES.MAIN} />
             );
         }
 
-        const renderLoginForm = () => <LoginForm initiateRedirect={this.initiateRedirect} />;
-        const renderRegisterForm = () => <RegisterForm initiateRedirect={this.initiateRedirect} />;
+        const renderLoginForm = () => <LoginForm />;
+        const renderRegisterForm = () => <RegisterForm />;
         const redirectLogin = () => <Redirect to={ROUTES.LOGIN} />;
 
         return (

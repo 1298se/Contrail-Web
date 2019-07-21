@@ -16,7 +16,7 @@ import * as types from "./registerForm.type";
 
 class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFormState> {
 
-    public state = {
+    public state: types.IRegisterFormState = {
         values: {
             displayName: "",
             email: "",
@@ -27,9 +27,12 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             emailError: "",
             passwordError: "",
         },
+        snackbarDisplay: {
+            snackbarVariant: "error",
+            snackbarMessage: null,
+            shouldDisplaySnackbar: false,
+        },
         isFormValid: false,
-        registerRequestError: null,
-        shouldDisplayError: false,
     };
 
     public isFormValid = (errors: types.IFormErrors): boolean => {
@@ -95,14 +98,20 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         auth.registerUser(displayName, email, password)
             .then((user) => {
                 this.setState({
-                    registerRequestError: null,
-                    shouldDisplayError: false,
+                    snackbarDisplay: {
+                        snackbarVariant: "success",
+                        snackbarMessage: `Registration successful. \
+                        An email has been sent to ${email} for verification.`,
+                        shouldDisplaySnackbar: true,
+                    },
                 });
-                this.props.initiateRedirect();
             }).catch((error) => {
                 this.setState({
-                    registerRequestError: error,
-                    shouldDisplayError: true,
+                    snackbarDisplay: {
+                        snackbarVariant: "error",
+                        snackbarMessage: error.response.data.message,
+                        shouldDisplaySnackbar: true,
+                    },
                 });
             });
     }
@@ -110,17 +119,23 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
     // This function is to handle a bug where the error message of the snackbar
     // changes during exit transition. This function resets the registerRequestError to null
     // after the transition has been completed.
-    public clearRegisterRequestError = () => {
+    public clearSnackbarMessage = () => {
         this.setState({
-            registerRequestError: null,
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                snackbarMessage: null,
+            },
         });
     }
 
     // This function is to handle a bug where the error message of the snackbar
     // changes during exit transition. This function handles closing the snackbar
-    public handleErrorClose = () => {
+    public handleSnackbarClose = () => {
         this.setState({
-            shouldDisplayError: false,
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                shouldDisplaySnackbar: false,
+            },
         });
     }
 
@@ -133,14 +148,14 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             <Container maxWidth="sm">
                 <Snackbar
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={this.state.shouldDisplayError}
-                    onClose={this.handleErrorClose}
-                    onExited={this.clearRegisterRequestError}
+                    open={this.state.snackbarDisplay.shouldDisplaySnackbar}
+                    onClose={this.handleSnackbarClose}
+                    onExited={this.clearSnackbarMessage}
                 >
                     <SnackbarContentWrapper
-                        message={String(this.state.registerRequestError)}
-                        variant="error"
-                        onClose={this.handleErrorClose}
+                        message={String(this.state.snackbarDisplay.snackbarMessage)}
+                        variant={this.state.snackbarDisplay.snackbarVariant}
+                        onClose={this.handleSnackbarClose}
                     />
                 </Snackbar>
                 <Paper className={classes.paper}>
