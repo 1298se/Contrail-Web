@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
@@ -22,7 +23,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             email: "",
             password: "",
         },
-        errors: {
+        formErrors: {
             displayNameError: "",
             emailError: "",
             passwordError: "",
@@ -33,6 +34,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             shouldDisplaySnackbar: false,
         },
         isFormValid: false,
+        isRegisteringUser: false,
     };
 
     public isFormValid = (errors: types.IFormErrors): boolean => {
@@ -54,7 +56,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         event.preventDefault();
 
         const { name, value } = event.target;
-        const formErrors: types.IFormErrors = this.state.errors;
+        const formErrors: types.IFormErrors = this.state.formErrors;
 
         switch (name) {
             case "displayName":
@@ -87,13 +89,16 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                 ...this.state.values,
                 [name]: value,
             },
-            errors: formErrors,
+            formErrors,
             isFormValid: isValid,
         });
     }
 
     public handleSubmit = () => {
         const { displayName, email, password } = this.state.values;
+        this.setState({
+            isRegisteringUser: true,
+        });
 
         auth.registerUser(displayName, email, password)
             .then((user) => {
@@ -104,6 +109,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                         An email has been sent to ${email} for verification.`,
                         shouldDisplaySnackbar: true,
                     },
+                    isRegisteringUser: false,
                 });
             }).catch((error) => {
                 this.setState({
@@ -112,6 +118,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                         snackbarMessage: error.response.data.message,
                         shouldDisplaySnackbar: true,
                     },
+                    isRegisteringUser: false,
                 });
             });
     }
@@ -142,7 +149,10 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
     public render() {
         const { classes } = this.props;
         const { displayName, email, password } = this.state.values;
-        const { displayNameError, emailError, passwordError } = this.state.errors;
+        const { displayNameError, emailError, passwordError } = this.state.formErrors;
+        const buttonContent = this.state.isRegisteringUser ?
+        <CircularProgress size={20} className={classes.circleProgress} /> :
+        "Sign Up";
 
         return (
             <Container maxWidth="sm">
@@ -213,10 +223,10 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                             variant="contained"
                             color="primary"
                             className={classes.submit}
-                            disabled={!this.state.isFormValid}
+                            disabled={!this.state.isFormValid || this.state.isRegisteringUser}
                             onClick={this.handleSubmit}
                         >
-                            Sign Up
+                            {buttonContent}
                         </Button>
                         <Grid container={true}>
                             <Grid item={true}>

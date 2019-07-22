@@ -1,3 +1,4 @@
+import { CircularProgress } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -28,6 +29,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         isFormValid: false,
         loginRequestError: null,
         shouldDisplayError: false,
+        isLoggingInUser: false,
     };
 
     // Checks if the form is valid by checking form values and errors
@@ -40,7 +42,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         }
 
         Object.values(errors).forEach((val) => {
-            return (val !== null && (valid = false));
+            return (val.length > 0 && (valid = false));
         });
 
         return valid;
@@ -87,17 +89,22 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
     // For logging in the user on button click. On a successful login, reset the error state
     // for the snackbar
     public handleSubmit = () => {
+        this.setState({
+            isLoggingInUser: true,
+        });
         const { email, password } = this.state.values;
         auth.loginUser(email, password)
         .then(() => {
             this.setState({
                 loginRequestError: null,
                 shouldDisplayError: false,
+                isLoggingInUser: false,
             });
         }).catch((error) => {
             this.setState({
                 loginRequestError: error,
                 shouldDisplayError: true,
+                isLoggingInUser: false,
             });
         });
     }
@@ -123,6 +130,9 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         const { classes } = this.props;
         const { email, password } = this.state.values;
         const { emailError, passwordError } = this.state.formErrors;
+        const buttonContent = this.state.isLoggingInUser ?
+        <CircularProgress size={20} className={classes.circleProgress} /> :
+        "Log In";
 
         return (
             <Container maxWidth="sm">
@@ -179,10 +189,10 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                             variant="contained"
                             color="primary"
                             className={classes.submit}
-                            disabled={!this.state.isFormValid}
+                            disabled={!this.state.isFormValid || this.state.isLoggingInUser}
                             onClick={this.handleSubmit}
                         >
-                            Log In
+                            {buttonContent}
                         </Button>
                         <Grid container={true}>
                             <Grid item={true}>

@@ -7,6 +7,7 @@ export interface ILoginFormState {
     isFormValid: boolean;
     loginRequestError: any;
     shouldDisplayError: boolean;
+    isLoggingInUser: boolean;
 }
 
 export interface IFormValues {

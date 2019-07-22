@@ -4,9 +4,10 @@ import styles from "../authStyles";
 
 export interface IRegisterFormState {
     values: IFormValues;
-    errors: IFormErrors;
+    formErrors: IFormErrors;
     snackbarDisplay: ISnackbarDisplay;
     isFormValid: boolean;
+    isRegisteringUser: boolean;
 }
 
 export interface ISnackbarDisplay {
