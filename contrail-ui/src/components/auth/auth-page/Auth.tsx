@@ -35,7 +35,8 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
         return (
             <Router>
                 <DialogWrapper
-                    title={notEmailVerifiedMessage}
+                    title={"Email Verification Required"}
+                    contentText={notEmailVerifiedMessage}
                     isOpen={authUser ? !authUser.emailVerified : false}
                 />
                 <Grid container={true} component="main" className={classes.root}>

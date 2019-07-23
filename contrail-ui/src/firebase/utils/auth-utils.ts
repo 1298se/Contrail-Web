@@ -1,5 +1,5 @@
 
-import axios, { AxiosResponse, AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import * as firebase from "firebase/app";
 import { authRef } from "../firebase";
 
@@ -17,7 +17,7 @@ export const minDisplayNameLength = 3;
 
 /**
  * Registers a user to the server.
- * 
+ *
  * @param displayName the user's display name received from registration
  * @param email the user's email received from registration.
  * @param password the user's password received from registration.
