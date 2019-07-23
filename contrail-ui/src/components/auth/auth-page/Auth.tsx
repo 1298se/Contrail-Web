@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import * as ROUTES from "../../../routes";
 import { IAppReduxState } from "../../../store/store.types";
+import DialogWrapper from "../../feedback/dialog-wrapper/DialogWrapper";
 import styles from "../authStyles";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
@@ -18,7 +19,7 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
     public render() {
         const { authUser, authToken, classes } = this.props;
 
-        if (authUser && authToken) {
+        if (authUser && authToken && authUser.emailVerified) {
             return (
                 <Redirect to={ROUTES.MAIN} />
             );
@@ -28,8 +29,15 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
         const renderRegisterForm = () => <RegisterForm />;
         const redirectLogin = () => <Redirect to={ROUTES.LOGIN} />;
 
+        const notEmailVerifiedMessage = "You have not yet verified your email address.\
+        Please verify it in order to continue logging in.";
+
         return (
             <Router>
+                <DialogWrapper
+                    title={notEmailVerifiedMessage}
+                    isOpen={authUser ? !authUser.emailVerified : false}
+                />
                 <Grid container={true} component="main" className={classes.root}>
                     <CssBaseline />
                     <Grid item={true} xs={false} sm={5} md={7} className={classes.image}>
@@ -40,8 +48,8 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
                     </Grid>
                     <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
                         <Switch>
-                            <Route path={ROUTES.LOGIN} exact={true} render={renderLoginForm}/>
-                            <Route path={ROUTES.REGISTER} exact={true} render={renderRegisterForm}/>
+                            <Route path={ROUTES.LOGIN} exact={true} render={renderLoginForm} />
+                            <Route path={ROUTES.REGISTER} exact={true} render={renderRegisterForm} />
                             <Route path={ROUTES.ROOT} exact={true} render={redirectLogin} />
                         </Switch>
                     </Grid>

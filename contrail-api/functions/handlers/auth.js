@@ -1,5 +1,9 @@
 const { auth, db } = require("../utils/firebaseUtils");
 const { validateRegisterInfo } = require("../utils/validation/authValidation");
+const firebase = require('firebase');
+const firebaseConfig = require("../config/firebaseConfig");
+
+firebase.initializeApp(firebaseConfig)
 
 const registerUserDb = (userRecord) => {
     return new Promise((resolve, reject) => {
@@ -38,7 +42,7 @@ exports.registerUser = async (req, res) => {
     const password = req.body.password || null;
 
     if (displayName === null || email === null || password === null) {
-        return res.status(400).send("Request is missing body parameters.");
+        return res.status(400).json({code: "missing-request-parameters", message: "Request is missing body parameters."})
     }
 
     const errors = validateRegisterInfo(displayName, email, password);
@@ -49,8 +53,15 @@ exports.registerUser = async (req, res) => {
     try {
         const userRecord = await auth.createUser(req.body);
         return registerUserDb(userRecord)
-            .then(() => {
-                return res.status(201).send(`user ${userRecord.uid} has been created.`);
+            .then(async () => {
+                try {
+                    const userCredentials = await firebase.auth().signInWithEmailAndPassword(email, password);
+                    await userCredentials.user.sendEmailVerification();
+                    return res.status(201).send(`user ${userRecord.uid} has been created.`);
+                }
+                catch (error) {
+                    return res.status(500).send(error);
+                }
             }).catch((error) => {
                 deleteUser(userRecord.uid);
                 return res.status(500).send(error);
