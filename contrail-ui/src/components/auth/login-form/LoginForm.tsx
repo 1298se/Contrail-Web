@@ -17,7 +17,7 @@ import * as types from "./loginForm.type";
 
 class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
 
-    public state = {
+    public state: types.ILoginFormState = {
         values: {
             email: "",
             password: "",
@@ -26,9 +26,12 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
             emailError: "",
             passwordError: "",
         },
+        snackbarDisplay: {
+            snackbarVariant: "error",
+            snackbarMessage: null,
+            shouldDisplaySnackbar: false,
+        },
         isFormValid: false,
-        loginRequestError: null,
-        shouldDisplayError: false,
         isLoggingInUser: false,
     };
 
@@ -96,14 +99,15 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         auth.loginUser(email, password)
         .then(() => {
             this.setState({
-                loginRequestError: null,
-                shouldDisplayError: false,
                 isLoggingInUser: false,
             });
         }).catch((error) => {
             this.setState({
-                loginRequestError: error,
-                shouldDisplayError: true,
+                snackbarDisplay: {
+                    snackbarVariant: "error",
+                    snackbarMessage: error,
+                    shouldDisplaySnackbar: true,
+                },
                 isLoggingInUser: false,
             });
         });
@@ -111,18 +115,24 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
 
     // This function is to handle a bug where the error message of the snackbar
     // changes during exit transition. This function handles closing the snackbar
-    public handleErrorClose = () => {
+    public handleSnackbarClose = () => {
         this.setState({
-            shouldDisplayError: false,
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                shouldDisplaySnackbar: false,
+            },
         });
     }
 
     // This function is to handle a bug where the error message of the snackbar
     // changes during exit transition. This function resets the loginRequestError to null
     // after the transition has been completed.
-    public clearLoginRequestError = () => {
+    public clearSnackbarMessage = () => {
         this.setState({
-            loginRequestError: null,
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                snackbarMessage: null,
+            },
         });
     }
 
@@ -130,6 +140,8 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         const { classes } = this.props;
         const { email, password } = this.state.values;
         const { emailError, passwordError } = this.state.formErrors;
+        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
+
         const buttonContent = this.state.isLoggingInUser ?
         <CircularProgress size={20} className={classes.circleProgress} /> :
         "Log In";
@@ -138,14 +150,14 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
             <Container maxWidth="sm">
                 <Snackbar
                     anchorOrigin={{vertical: "bottom", horizontal: "center"}}
-                    open={this.state.shouldDisplayError}
-                    onClose={this.handleErrorClose}
-                    onExited={this.clearLoginRequestError}
+                    open={shouldDisplaySnackbar}
+                    onClose={this.handleSnackbarClose}
+                    onExited={this.clearSnackbarMessage}
                 >
                     <SnackbarContentWrapper
-                        message={String(this.state.loginRequestError)}
-                        variant="error"
-                        onClose={this.handleErrorClose}
+                        message={String(snackbarMessage)}
+                        variant={snackbarVariant}
+                        onClose={this.handleSnackbarClose}
                     />
                 </Snackbar>
                 <Paper className={classes.paper}>

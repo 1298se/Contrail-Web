@@ -100,3 +100,17 @@ export function getUserToken(): Promise<string | null> {
         }
     });
 }
+
+export function sendEmailVerification(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const user = authRef.currentUser;
+        if (user === null) {
+            reject();
+        } else {
+            user.sendEmailVerification()
+            .then(() => {
+                resolve();
+            });
+        }
+    });
+}

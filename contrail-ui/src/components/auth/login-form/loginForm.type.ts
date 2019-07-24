@@ -1,12 +1,12 @@
 import { WithStyles } from "@material-ui/core";
+import { ISnackbarDisplay } from "../auth-page/auth.type";
 import styles from "../authStyles";
 
 export interface ILoginFormState {
     values: IFormValues;
     formErrors: IFormErrors;
+    snackbarDisplay: ISnackbarDisplay;
     isFormValid: boolean;
-    loginRequestError: any;
-    shouldDisplayError: boolean;
     isLoggingInUser: boolean;
 }
 

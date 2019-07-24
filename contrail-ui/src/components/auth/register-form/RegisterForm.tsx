@@ -150,6 +150,8 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         const { classes } = this.props;
         const { displayName, email, password } = this.state.values;
         const { displayNameError, emailError, passwordError } = this.state.formErrors;
+        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
+
         const buttonContent = this.state.isRegisteringUser ?
         <CircularProgress size={20} className={classes.circleProgress} /> :
         "Sign Up";
@@ -158,13 +160,13 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             <Container maxWidth="sm">
                 <Snackbar
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={this.state.snackbarDisplay.shouldDisplaySnackbar}
+                    open={shouldDisplaySnackbar}
                     onClose={this.handleSnackbarClose}
                     onExited={this.clearSnackbarMessage}
                 >
                     <SnackbarContentWrapper
-                        message={String(this.state.snackbarDisplay.snackbarMessage)}
-                        variant={this.state.snackbarDisplay.snackbarVariant}
+                        message={String(snackbarMessage)}
+                        variant={snackbarVariant}
                         onClose={this.handleSnackbarClose}
                     />
                 </Snackbar>

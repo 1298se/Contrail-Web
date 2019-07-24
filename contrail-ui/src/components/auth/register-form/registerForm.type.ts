@@ -1,5 +1,5 @@
 import { WithStyles } from "@material-ui/core";
-import { variant } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
+import { ISnackbarDisplay } from "../auth-page/auth.type";
 import styles from "../authStyles";
 
 export interface IRegisterFormState {
@@ -10,11 +10,6 @@ export interface IRegisterFormState {
     isRegisteringUser: boolean;
 }
 
-export interface ISnackbarDisplay {
-    snackbarVariant: keyof typeof variant;
-    snackbarMessage: string | null;
-    shouldDisplaySnackbar: boolean;
-}
 export interface IFormValues {
     [x: string]: string;
     displayName: string;
