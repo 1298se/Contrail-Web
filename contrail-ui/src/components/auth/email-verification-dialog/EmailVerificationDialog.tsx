@@ -1,6 +1,6 @@
 import Button from "@material-ui/core/Button";
 import React from "react";
-import * as auth from "../../../firebase/utils/auth-utils";
+import * as auth from "../../../firebase/controllers/authController";
 import DialogWrapper from "../../feedback/dialog-wrapper/DialogWrapper";
 import { EmailVerificationDialogProps } from "./emailVerificationDialog.types";
 
