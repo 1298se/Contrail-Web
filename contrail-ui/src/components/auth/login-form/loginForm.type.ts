@@ -1,11 +1,13 @@
 import { WithStyles } from "@material-ui/core";
 import { ISnackbarDisplay } from "../auth-page/auth.type";
 import styles from "../authStyles";
+import { IEmailVerificationDialogOwnProps } from "../email-verification-dialog/emailVerificationDialog.types";
 
 export interface ILoginFormState {
     values: IFormValues;
     formErrors: IFormErrors;
     snackbarDisplay: ISnackbarDisplay;
+    shouldDisplayDialog: boolean;
     isFormValid: boolean;
     isLoggingInUser: boolean;
 }

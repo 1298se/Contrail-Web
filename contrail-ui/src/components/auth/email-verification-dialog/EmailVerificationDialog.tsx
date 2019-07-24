@@ -22,7 +22,11 @@ const EmailVerificationDialog = (props: EmailVerificationDialogProps) => {
 
     const handleDismissClick = () => {
         auth.logoutUser()
+        .then(() => {
+            props.handleDialogClose();
+        })
         .catch((error) => {
+            props.handleDialogClose();
             props.setSnackbarError(error);
         });
     };

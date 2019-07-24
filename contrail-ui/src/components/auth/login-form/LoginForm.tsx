@@ -13,6 +13,7 @@ import { Link as RouterLink } from "react-router-dom";
 import * as auth from "../../../firebase/utils/auth-utils";
 import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "../authStyles";
+import EmailVerificationDialog from "../email-verification-dialog/EmailVerificationDialog";
 import * as types from "./loginForm.type";
 
 class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
@@ -31,6 +32,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
             snackbarMessage: null,
             shouldDisplaySnackbar: false,
         },
+        shouldDisplayDialog: false,
         isFormValid: false,
         isLoggingInUser: false,
     };
@@ -97,19 +99,38 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         });
         const { email, password } = this.state.values;
         auth.loginUser(email, password)
-        .then(() => {
-            this.setState({
-                isLoggingInUser: false,
-            });
+        .then((user) => {
+            if (user && !user.emailVerified) {
+                this.setState({
+                    shouldDisplayDialog: true,
+                    isLoggingInUser: false,
+                });
+            } else {
+                this.setState({
+                    isLoggingInUser: false,
+                });
+            }
         }).catch((error) => {
+            this.setSnackbarError(error);
             this.setState({
-                snackbarDisplay: {
-                    snackbarVariant: "error",
-                    snackbarMessage: error,
-                    shouldDisplaySnackbar: true,
-                },
                 isLoggingInUser: false,
             });
+        });
+    }
+
+    public handleDialogClose = () => {
+        this.setState({
+            shouldDisplayDialog: false,
+        });
+    }
+
+    public setSnackbarError = (errorMessage: any) => {
+        this.setState({
+            snackbarDisplay: {
+                snackbarVariant: "error",
+                snackbarMessage: errorMessage,
+                shouldDisplaySnackbar: true,
+            },
         });
     }
 
@@ -148,6 +169,11 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
 
         return (
             <Container maxWidth="sm">
+                <EmailVerificationDialog
+                    shouldDisplayDialog={this.state.shouldDisplayDialog}
+                    handleDialogClose={this.handleDialogClose}
+                    setSnackbarError={this.setSnackbarError}
+                />
                 <Snackbar
                     anchorOrigin={{vertical: "bottom", horizontal: "center"}}
                     open={shouldDisplaySnackbar}

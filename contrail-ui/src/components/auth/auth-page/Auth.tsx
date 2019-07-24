@@ -16,50 +16,9 @@ import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
-class Auth extends Component<types.AuthProps, types.IAuthState> {
-    public state: types.IAuthState = {
-        snackbarDisplay: {
-            snackbarVariant: "error",
-            snackbarMessage: null,
-            shouldDisplaySnackbar: false,
-        },
-    };
-
-    public setSnackbarError = (error: any) => {
-        this.setState({
-            snackbarDisplay: {
-                snackbarVariant: "error",
-                snackbarMessage: error,
-                shouldDisplaySnackbar: true,
-            },
-        });
-    }
-
-    // This function is to handle a bug where the error message of the snackbar
-    // changes during exit transition. This function handles closing the snackbar
-    public handleSnackbarClose = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                shouldDisplaySnackbar: false,
-            },
-        });
-    }
-
-    // This function is to handle a bug where the error message of the snackbar
-    // changes during exit transition. This function resets the loginRequestError to null
-    // after the transition has been completed.
-    public clearSnackbarMessage = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                snackbarMessage: null,
-            },
-        });
-    }
+class Auth extends Component<types.AuthProps, {}> {
 
     public render() {
-        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
         const { authUser, authToken, classes } = this.props;
 
         if (authUser && authToken && authUser.emailVerified) {
@@ -74,22 +33,6 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
 
         return (
             <Router>
-                <EmailVerificationDialog
-                    setSnackbarError={this.setSnackbarError}
-                    shouldDisplayDialog={authUser ? !authUser.emailVerified : false}
-                />
-                <Snackbar
-                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={shouldDisplaySnackbar}
-                    onClose={this.handleSnackbarClose}
-                    onExited={this.clearSnackbarMessage}
-                >
-                    <SnackbarContentWrapper
-                        message={snackbarMessage}
-                        variant={snackbarVariant}
-                        onClose={this.handleSnackbarClose}
-                    />
-                </Snackbar>
                 <Grid container={true} component="main" className={classes.root}>
                     <CssBaseline />
                     <Grid item={true} xs={false} sm={5} md={7} className={classes.image}>
