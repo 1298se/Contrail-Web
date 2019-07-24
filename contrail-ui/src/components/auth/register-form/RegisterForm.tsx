@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
@@ -9,34 +10,38 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import * as auth from "../../../firebase/utils/auth-utils";
+import * as auth from "../../../firebase/controllers/authController";
 import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "../authStyles";
 import * as types from "./registerForm.type";
 
 class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFormState> {
 
-    public state = {
+    public state: types.IRegisterFormState = {
         values: {
             displayName: "",
             email: "",
             password: "",
         },
-        errors: {
+        formErrors: {
             displayNameError: "",
             emailError: "",
             passwordError: "",
         },
+        snackbarDisplay: {
+            snackbarVariant: "error",
+            snackbarMessage: null,
+            shouldDisplaySnackbar: false,
+        },
         isFormValid: false,
-        registerRequestError: null,
-        shouldDisplayError: false,
+        isRegisteringUser: false,
     };
 
     public isFormValid = (errors: types.IFormErrors): boolean => {
         const { displayName, email, password } = this.state.values;
         let valid = true;
 
-        if (displayName.length === 0 || email.length === 0 || password.length === 0) {
+        if (displayName.trim().length === 0 || email.trim().length === 0 || password.length === 0) {
             valid = false;
         }
 
@@ -51,54 +56,69 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         event.preventDefault();
 
         const { name, value } = event.target;
-        const errors: types.IFormErrors = this.state.errors;
+        const formErrors: types.IFormErrors = this.state.formErrors;
 
         switch (name) {
             case "displayName":
-                errors.displayNameError = value.length >= auth.minDisplayNameLength
+                formErrors.displayNameError = value.trim().length >= auth.minDisplayNameLength
                     ? ""
                     : "Usernames must have a minimum of 4 characters.";
                 break;
             case "email":
-                errors.emailError = auth.emailRegex.test(value)
+                formErrors.emailError = auth.emailRegex.test(value.trim())
                     ? ""
                     : "Please enter a valid email.";
                 break;
             case "password":
-                errors.passwordError = value.length >= auth.minPasswordLength
+                const passwordLengthError = value.length >= auth.minPasswordLength
                     ? ""
                     : "Passwords must have a minimum of 6 characters.";
+                const passwordRegexError = auth.passwordRegex.test(value)
+                    ? ""
+                    : "Password must not contain whitespace.";
+                formErrors.passwordError = passwordLengthError.concat(passwordRegexError);
                 break;
             default:
                 break;
         }
 
-        const isValid: boolean = this.isFormValid(errors);
+        const isValid: boolean = this.isFormValid(formErrors);
 
         this.setState({
             values: {
                 ...this.state.values,
                 [name]: value,
             },
-            errors,
+            formErrors,
             isFormValid: isValid,
         });
     }
 
     public handleSubmit = () => {
         const { displayName, email, password } = this.state.values;
+        this.setState({
+            isRegisteringUser: true,
+        });
 
         auth.registerUser(displayName, email, password)
             .then((user) => {
                 this.setState({
-                    registerRequestError: null,
-                    shouldDisplayError: false,
+                    snackbarDisplay: {
+                        snackbarVariant: "success",
+                        snackbarMessage: `Registration successful. \
+                        An email has been sent to ${email} for verification.`,
+                        shouldDisplaySnackbar: true,
+                    },
+                    isRegisteringUser: false,
                 });
-                this.props.initiateRedirect();
             }).catch((error) => {
                 this.setState({
-                    registerRequestError: error,
-                    shouldDisplayError: true,
+                    snackbarDisplay: {
+                        snackbarVariant: "error",
+                        snackbarMessage: error.response.data.message,
+                        shouldDisplaySnackbar: true,
+                    },
+                    isRegisteringUser: false,
                 });
             });
     }
@@ -106,37 +126,48 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
     // This function is to handle a bug where the error message of the snackbar
     // changes during exit transition. This function resets the registerRequestError to null
     // after the transition has been completed.
-    public clearRegisterRequestError = () => {
+    public clearSnackbarMessage = () => {
         this.setState({
-            registerRequestError: null,
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                snackbarMessage: null,
+            },
         });
     }
 
     // This function is to handle a bug where the error message of the snackbar
     // changes during exit transition. This function handles closing the snackbar
-    public handleErrorClose = () => {
+    public handleSnackbarClose = () => {
         this.setState({
-            shouldDisplayError: false,
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                shouldDisplaySnackbar: false,
+            },
         });
     }
 
     public render() {
         const { classes } = this.props;
         const { displayName, email, password } = this.state.values;
-        const { displayNameError, emailError, passwordError } = this.state.errors;
+        const { displayNameError, emailError, passwordError } = this.state.formErrors;
+        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
+
+        const buttonContent = this.state.isRegisteringUser ?
+        <CircularProgress size={20} className={classes.circleProgress} /> :
+        "Sign Up";
 
         return (
             <Container maxWidth="sm">
                 <Snackbar
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={this.state.shouldDisplayError}
-                    onClose={this.handleErrorClose}
-                    onExited={this.clearRegisterRequestError}
+                    open={shouldDisplaySnackbar}
+                    onClose={this.handleSnackbarClose}
+                    onExited={this.clearSnackbarMessage}
                 >
                     <SnackbarContentWrapper
-                        message={String(this.state.registerRequestError)}
-                        variant="error"
-                        onClose={this.handleErrorClose}
+                        message={String(snackbarMessage)}
+                        variant={snackbarVariant}
+                        onClose={this.handleSnackbarClose}
                     />
                 </Snackbar>
                 <Paper className={classes.paper}>
@@ -194,10 +225,10 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                             variant="contained"
                             color="primary"
                             className={classes.submit}
-                            disabled={!this.state.isFormValid}
+                            disabled={!this.state.isFormValid || this.state.isRegisteringUser}
                             onClick={this.handleSubmit}
                         >
-                            Sign Up
+                            {buttonContent}
                         </Button>
                         <Grid container={true}>
                             <Grid item={true}>

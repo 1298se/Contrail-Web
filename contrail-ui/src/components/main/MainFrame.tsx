@@ -17,7 +17,7 @@ class MainFrame extends Component <types.MainFrameProps, {}> {
         return (
             <div className={classes.root}>
                 <DialogWrapper
-                    message={"Network Disconnected. Attempting to Reconnect..."}
+                    title={"Network Disconnected. Attempting to Reconnect..."}
                     isOpen={!this.props.hasInternetConnection}
                 />
                 <UploadDialog />

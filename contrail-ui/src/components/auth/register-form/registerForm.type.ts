@@ -1,12 +1,13 @@
 import { WithStyles } from "@material-ui/core";
+import { ISnackbarDisplay } from "../auth-page/auth.type";
 import styles from "../authStyles";
 
 export interface IRegisterFormState {
     values: IFormValues;
-    errors: IFormErrors;
+    formErrors: IFormErrors;
+    snackbarDisplay: ISnackbarDisplay;
     isFormValid: boolean;
-    registerRequestError: any;
-    shouldDisplayError: boolean;
+    isRegisteringUser: boolean;
 }
 
 export interface IFormValues {
@@ -23,7 +24,6 @@ export interface IFormErrors {
     passwordError: string;
 }
 export interface IRegisterFormOwnProps extends WithStyles<typeof styles> {
-    initiateRedirect: () => void;
 }
 
 export type RegisterFormProps = IRegisterFormOwnProps;

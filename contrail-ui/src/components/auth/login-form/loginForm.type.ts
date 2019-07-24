@@ -1,12 +1,15 @@
 import { WithStyles } from "@material-ui/core";
+import { ISnackbarDisplay } from "../auth-page/auth.type";
 import styles from "../authStyles";
+import { IEmailVerificationDialogOwnProps } from "../email-verification-dialog/emailVerificationDialog.types";
 
 export interface ILoginFormState {
     values: IFormValues;
     formErrors: IFormErrors;
+    snackbarDisplay: ISnackbarDisplay;
+    shouldDisplayDialog: boolean;
     isFormValid: boolean;
-    loginRequestError: any;
-    shouldDisplayError: boolean;
+    isLoggingInUser: boolean;
 }
 
 export interface IFormValues {
@@ -16,13 +19,12 @@ export interface IFormValues {
 }
 
 export interface IFormErrors {
-    [x: string]: string | null;
-    emailError: string | null;
-    passwordError: string | null;
+    [x: string]: string;
+    emailError: string;
+    passwordError: string;
 }
 
 export interface ILoginFormOwnProps extends WithStyles<typeof styles> {
-    initiateRedirect: () => void;
 }
 
 export type LoginFormProps = ILoginFormOwnProps;

@@ -1,5 +1,6 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
+import Snackbar from "@material-ui/core/Snackbar";
 import Typography from "@material-ui/core/Typography";
 import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { withStyles } from "@material-ui/styles";
@@ -8,40 +9,26 @@ import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import * as ROUTES from "../../../routes";
 import { IAppReduxState } from "../../../store/store.types";
+import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "../authStyles";
+import EmailVerificationDialog from "../email-verification-dialog/EmailVerificationDialog";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";
 
-class Auth extends Component<types.AuthProps, types.IAuthState> {
-    public state = {
-        shouldRedirect: false,
-    };
-
-    public componentDidMount() {
-        const { authUser, authToken } = this.props;
-        if (authUser && authToken) {
-            this.initiateRedirect();
-        }
-    }
-
-    public initiateRedirect = () => {
-        this.setState({
-            shouldRedirect: true,
-        });
-    }
+class Auth extends Component<types.AuthProps, {}> {
 
     public render() {
         const { authUser, authToken, classes } = this.props;
 
-        if (authUser && authToken && this.state.shouldRedirect) {
+        if (authUser && authToken && authUser.emailVerified) {
             return (
                 <Redirect to={ROUTES.MAIN} />
             );
         }
 
-        const renderLoginForm = () => <LoginForm initiateRedirect={this.initiateRedirect} />;
-        const renderRegisterForm = () => <RegisterForm initiateRedirect={this.initiateRedirect} />;
+        const renderLoginForm = () => <LoginForm />;
+        const renderRegisterForm = () => <RegisterForm />;
         const redirectLogin = () => <Redirect to={ROUTES.LOGIN} />;
 
         return (
@@ -56,8 +43,8 @@ class Auth extends Component<types.AuthProps, types.IAuthState> {
                     </Grid>
                     <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
                         <Switch>
-                            <Route path={ROUTES.LOGIN} exact={true} render={renderLoginForm}/>
-                            <Route path={ROUTES.REGISTER} exact={true} render={renderRegisterForm}/>
+                            <Route path={ROUTES.LOGIN} exact={true} render={renderLoginForm} />
+                            <Route path={ROUTES.REGISTER} exact={true} render={renderRegisterForm} />
                             <Route path={ROUTES.ROOT} exact={true} render={redirectLogin} />
                         </Switch>
                     </Grid>
