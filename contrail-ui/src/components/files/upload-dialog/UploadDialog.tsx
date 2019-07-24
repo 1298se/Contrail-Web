@@ -75,6 +75,10 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                         }));
                     }, (error) => {
                         console.log(error);
+                    }, () => {
+                        console.log(uploadTask.snapshot)
+                        const { name, contentType, size, timeCreated, generation } = uploadTask.snapshot.metadata;
+                        
                     });
                 }
             });
