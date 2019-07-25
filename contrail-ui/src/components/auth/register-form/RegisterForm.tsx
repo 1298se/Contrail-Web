@@ -37,6 +37,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         isRegisteringUser: false,
     };
 
+    // Checks if the input to the form is valid. If so, enable the signup button.
     public isFormValid = (errors: types.IFormErrors): boolean => {
         const { displayName, email, password } = this.state.values;
         let valid = true;
@@ -52,6 +53,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         return valid;
     }
 
+    // On-text-change listener to set any form errors.
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         event.preventDefault();
 
@@ -94,6 +96,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         });
     }
 
+    // Handle the signup button click.
     public handleSubmit = () => {
         const { displayName, email, password } = this.state.values;
         this.setState({
@@ -101,7 +104,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
         });
 
         auth.registerUser(displayName, email, password)
-            .then((user) => {
+            .then(() => {
                 this.setState({
                     snackbarDisplay: {
                         snackbarVariant: "success",
@@ -115,7 +118,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                 this.setState({
                     snackbarDisplay: {
                         snackbarVariant: "error",
-                        snackbarMessage: error.response.data.message,
+                        snackbarMessage: error,
                         shouldDisplaySnackbar: true,
                     },
                     isRegisteringUser: false,
@@ -123,25 +126,22 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             });
     }
 
-    // This function is to handle a bug where the error message of the snackbar
-    // changes during exit transition. This function resets the registerRequestError to null
-    // after the transition has been completed.
-    public clearSnackbarMessage = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                snackbarMessage: null,
-            },
-        });
-    }
-
-    // This function is to handle a bug where the error message of the snackbar
-    // changes during exit transition. This function handles closing the snackbar
+    // Closes the snackbar. This must be executed before clearing the snackbar message.
     public handleSnackbarClose = () => {
         this.setState({
             snackbarDisplay: {
                 ...this.state.snackbarDisplay,
                 shouldDisplaySnackbar: false,
+            },
+        });
+    }
+
+    // Clears the snackbar message.
+    public clearSnackbarMessage = () => {
+        this.setState({
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                snackbarMessage: null,
             },
         });
     }

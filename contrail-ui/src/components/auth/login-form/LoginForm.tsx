@@ -37,7 +37,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         isLoggingInUser: false,
     };
 
-    // Checks if the form is valid by checking form values and errors
+    // Checks if the form input is valid. If so, enable the login button.
     public isFormValid = (errors: types.IFormErrors): boolean => {
         const { email, password } = this.state.values;
         let valid = true;
@@ -53,7 +53,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         return valid;
     }
 
-    // On-Text-Change listener to set form errors
+    // On-text-change listener to set any form errors that occur.
     public handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         event.preventDefault();
 
@@ -92,7 +92,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
     }
 
     // For logging in the user on button click. On a successful login, reset the error state
-    // for the snackbar
+    // for the snackbar. If the user is not verified, show a dialog prompting user to verify email.
     public handleSubmit = () => {
         this.setState({
             isLoggingInUser: true,
@@ -134,8 +134,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         });
     }
 
-    // This function is to handle a bug where the error message of the snackbar
-    // changes during exit transition. This function handles closing the snackbar
+    // For closing an opened Snackbar. Must be executed first before clearing the snackbar message.
     public handleSnackbarClose = () => {
         this.setState({
             snackbarDisplay: {
@@ -145,9 +144,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         });
     }
 
-    // This function is to handle a bug where the error message of the snackbar
-    // changes during exit transition. This function resets the loginRequestError to null
-    // after the transition has been completed.
+    // Clears the snackbar message.
     public clearSnackbarMessage = () => {
         this.setState({
             snackbarDisplay: {

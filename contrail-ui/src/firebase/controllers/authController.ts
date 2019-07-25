@@ -1,9 +1,11 @@
 
-import axios, { AxiosError, AxiosResponse } from "axios";
 import * as firebase from "firebase/app";
 import { authRef } from "../firebase";
 
-// tslint:disable: no-console
+/**
+ * A class for handling all things involving authentication that requires {@link firebase}
+ * *Note*: Firebase must be initialized before calling any of these functions.
+ */
 
 /**
  * Regex for email
@@ -16,7 +18,8 @@ export const minPasswordLength = 6;
 export const minDisplayNameLength = 3;
 
 /**
- * Registers a user to the server.
+ * Registers a user to Firebase with their email and password. Then, updates their firebase
+ * display name and sends a verification email to the user.
  *
  * @param displayName the user's display name received from registration
  * @param email the user's email received from registration.
@@ -25,45 +28,43 @@ export const minDisplayNameLength = 3;
  */
 
 export function registerUser(displayName: string, email: string, password: string):
-    Promise<AxiosResponse | AxiosError> {
-    const user = {
-        displayName,
-        email,
-        password,
-    };
+    Promise<any> {
 
-    return new Promise((resolve, reject) => {
-        axios.post("/register", user)
-            .then(() => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const userCredentials = await authRef.createUserWithEmailAndPassword(email, password);
+            const currentUser = userCredentials.user;
+            if (currentUser == null) {
+                reject("The current user is null.");
+            } else {
+                await currentUser.updateProfile({ displayName });
+                await currentUser.sendEmailVerification();
+                await authRef.signOut();
                 resolve();
-            })
-            .catch((error) => {
-                reject(error);
-            });
+            }
+        } catch (error) {
+            reject(error);
+        }
     });
 }
 
 /**
  * Logins a user to Firebase.
- * *NOTE* {@link initializeFirebase} must be called before this.
+ *
  * @param email the user's email received from login
  * @param password the user's password received from login
  * @return a {@link Promise} that resolves with the current user, or rejects with the error
  */
 export function loginUser(email: string, password: string): Promise<firebase.User | null> {
-    console.log("logging in user");
     return new Promise((resolve, reject) => {
         authRef.signInWithEmailAndPassword(email, password).then(() => {
-            console.log("login successful");
             const user = authRef.currentUser;
             if (user === null) {
-                console.error("login failed: user is null");
                 resolve(null);
             } else {
                 resolve(user);
             }
         }).catch((error) => {
-            console.error("login failed: ", error);
             reject(error);
         });
     });
@@ -82,7 +83,8 @@ export function logoutUser(): Promise<string> {
 }
 
 /**
- * Gets the ID Token of a current user, or null
+ * Gets the ID Token of a current user, or null.
+ *
  * @returns a {@link Promise} that resolves null if there is no current user or the user's IDToken if there is,
  *  or rejects with error.
  */
@@ -101,6 +103,11 @@ export function getUserToken(): Promise<string | null> {
     });
 }
 
+/**
+ * Sends a verification email to the current authenticated user.
+ *
+ * @returns a {@link Promise} that resolve or rejects with the error.
+ */
 export function sendEmailVerification(): Promise<void> {
     return new Promise((resolve, reject) => {
         const user = authRef.currentUser;
