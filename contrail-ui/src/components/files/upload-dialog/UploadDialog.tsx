@@ -13,12 +13,12 @@ import React, { Component } from "react";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import * as filesController from "../../../firebase/controllers/filesController";
 import { uploadDialogCloseAction } from "../../../store/actions/uploadDialogActions";
 import * as actions from "../../../store/actions/uploadDialogActions.types";
 import { IAppReduxState } from "../../../store/store.types";
 import { IUploadDialogDispatchProps, IUploadDialogProps, IUploadDialogState, IUploadDialogStateProps } from "./uploadDialog.type";
 import styles from "./uploadDialogStyles";
-import Divider from "@material-ui/core/Divider";
 
 class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     public state = {
@@ -59,18 +59,13 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
         this.props.uploadDialogClose();
     }
 
-    public writeFileDataInUser(userId: string, name: string, size: number, timeCreated: string, generation: string) {
-        
-    }
-
     public uploadFiles = () => {
         if (this.props.user && this.state.files.length) {
             const userID = this.props.user.uid;
-            const storageRef = firebase.storage().ref();
             this.state.files.map((file: File) => {
                 const filename = file && file.name;
                 if (this.state.filesProgess.get(filename) === 0) {
-                    const uploadTask = storageRef.child(userID + "/" + filename).put(file);
+                    const uploadTask = filesController.uploadFiletoStorage(file, userID);
                     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
                     (snapshot) => {
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -80,9 +75,7 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                     }, (error) => {
                         console.log(error);
                     }, () => {
-                        console.log(uploadTask.snapshot)
-                        const { name, size, timeCreated, generation } = uploadTask.snapshot.metadata;
-
+                        filesController.writeFileToDB(uploadTask, userID);
                     });
                 }
             });
@@ -105,7 +98,7 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     public render() {
         const { classes, dialogOpen } = this.props;
         const { files, filesProgess } = this.state;
-        console.log(this.state)
+
         const renderCancelButton = (index: number) => (
             <Button disableFocusRipple={true} onClick={() => this.removeFileUpload(index)}>
                 <CancelIcon />
@@ -134,7 +127,7 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                     <div className={classes.statusContainer} >
                         {fileProgress === 0 && renderCancelButton(i)}
                         {fileProgress === 100 && renderDoneButton}
-                    </div> 
+                    </div>
                 </div>
                 );
             })
