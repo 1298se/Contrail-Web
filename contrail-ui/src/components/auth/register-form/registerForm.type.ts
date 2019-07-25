@@ -1,5 +1,5 @@
 import { WithStyles } from "@material-ui/core";
-import { ISnackbarDisplay } from "../auth-page/auth.type";
+import { ISnackbarDisplay } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
 import styles from "../authStyles";
 
 export interface IRegisterFormState {

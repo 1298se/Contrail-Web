@@ -10,6 +10,12 @@ export const variant = {
     info: InfoIcon,
 };
 
+export interface ISnackbarDisplay {
+    snackbarVariant: keyof typeof variant;
+    snackbarMessage: string | null;
+    shouldDisplaySnackbar: boolean;
+}
+
 export interface ISnackbarOwnProps {
     className?: string;
     message: string | null;
