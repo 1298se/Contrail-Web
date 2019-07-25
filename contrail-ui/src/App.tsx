@@ -1,4 +1,4 @@
-import Axios from "axios";
+import axios from "axios";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
@@ -24,7 +24,7 @@ class App extends Component<IAppProps, {}> {
     public handleConnectionChange = () => {
         const networkCondition = navigator.onLine ? "online" : "offline";
         if (networkCondition === "online") {
-            Axios.get("/")
+            axios.get("/")
             .then(() => {
                 this.props.setNetworkState(true);
             }).catch(() => {

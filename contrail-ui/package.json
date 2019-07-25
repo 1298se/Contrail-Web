@@ -30,7 +30,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:5000",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -49,5 +48,6 @@
   "devDependencies": {
     "tslint": "^5.18.0",
     "tslint-react": "^4.0.0"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }

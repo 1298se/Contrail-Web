@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: "flex",
         alignItems: "center",
     },
+    root: {
+        maxWidth: 600,
+    },
 }));
 
 export default useStyles;

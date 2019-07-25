@@ -1,6 +1,5 @@
-import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
-import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
 import * as types from "./snackbarContentWrapper.types";
 import useStyles from "./snackbarContentWrapperStyles";
@@ -14,24 +13,26 @@ function SnackbarContentWrapper(props: types.SnackbarProps) {
     const Icon = types.variant[variant];
 
     const renderMessage = (
-        <span className={classes.message}>
-            <Icon className={classes.icon} />
+        <div className={classes.message}>
+        <Icon className={classes.icon} />
             {message}
-        </span>
+        </div>
     );
 
     const renderActionClose = (
-        <IconButton key="close" color="inherit" onClick={onClose}>
-            <CloseIcon className={classes.icon} />
-        </IconButton>
+        <Button key="close" color="secondary" onClick={onClose} size="small">
+            Dismiss
+        </Button>
     );
 
     return (
-        <SnackbarContent
-            className={classes[variant]}
-            message={renderMessage}
-            action={[renderActionClose]}
-        />
+        <div className={classes.root}>
+            <SnackbarContent
+                className={classes[variant]}
+                message={renderMessage}
+                action={[renderActionClose]}
+            />
+        </div>
     );
 }
 
