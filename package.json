@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install": "npm run-script installApi && npm run-script installUi",
-    "installApi": "cd contrail-api && npm install",
+    "installApi": "cd contrail-api && cd functions && npm install",
     "installUi": "cd contrail-ui && npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"cd contrail-ui && npm start\" \"cd contrail-api && npm start\""
@@ -20,6 +20,5 @@
     "url": "https://github.com/1298se/Contrail-Web/issues"
   },
   "homepage": "https://github.com/1298se/Contrail-Web#readme",
-  "dependencies": {
-  }
+  "dependencies": {}
 }
