@@ -38,10 +38,24 @@ export function registerUser(displayName: string, email: string, password: strin
                 reject("The current user is null.");
             } else {
                 await currentUser.updateProfile({ displayName });
-                await addUserToDb(currentUser);
-                await currentUser.sendEmailVerification();
-                await authRef.signOut();
-                resolve();
+                addUserToDb(currentUser)
+                .then(async () => {
+                    try {
+                        await currentUser.sendEmailVerification();
+                        await authRef.signOut();
+                        resolve();
+                    } catch (error) {
+                        reject(error);
+                    }
+                })
+                .catch(async (error) => {
+                    try {
+                        await currentUser.delete();
+                        reject(error);
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
             }
         } catch (error) {
             reject(error);
