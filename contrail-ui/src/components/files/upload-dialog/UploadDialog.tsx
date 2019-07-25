@@ -59,26 +59,30 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
         this.props.uploadDialogClose();
     }
 
+    public writeFileDataInUser(userId: string, name: string, size: number, timeCreated: string, generation: string) {
+        
+    }
+
     public uploadFiles = () => {
         if (this.props.user && this.state.files.length) {
             const userID = this.props.user.uid;
             const storageRef = firebase.storage().ref();
             this.state.files.map((file: File) => {
-                const name = file && file.name;
-                if (this.state.filesProgess.get(name) === 0) {
-                    const uploadTask = storageRef.child(userID + "/" + name).put(file);
+                const filename = file && file.name;
+                if (this.state.filesProgess.get(filename) === 0) {
+                    const uploadTask = storageRef.child(userID + "/" + filename).put(file);
                     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
                     (snapshot) => {
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                         this.setState((prevState: IUploadDialogState) => ({
-                            filesProgess: prevState.filesProgess.set(name, progress),
+                            filesProgess: prevState.filesProgess.set(filename, progress),
                         }));
                     }, (error) => {
                         console.log(error);
                     }, () => {
                         console.log(uploadTask.snapshot)
-                        const { name, contentType, size, timeCreated, generation } = uploadTask.snapshot.metadata;
-                        
+                        const { name, size, timeCreated, generation } = uploadTask.snapshot.metadata;
+
                     });
                 }
             });

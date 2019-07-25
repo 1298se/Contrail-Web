@@ -4,3 +4,4 @@ import { FirebaseConfig } from "./config/dev-config";
 firebase.initializeApp(FirebaseConfig);
 
 export const authRef = firebase.auth();
+export const dbRef = firebase.firestore();
