@@ -1,6 +1,6 @@
 
 import * as firebase from "firebase/app";
-import { authRef } from "../firebase";
+import { authRef, dbRef } from "../firebase";
 
 /**
  * A class for handling all things involving authentication that requires {@link firebase}
@@ -38,6 +38,7 @@ export function registerUser(displayName: string, email: string, password: strin
                 reject("The current user is null.");
             } else {
                 await currentUser.updateProfile({ displayName });
+                await addUserToDb(currentUser);
                 await currentUser.sendEmailVerification();
                 await authRef.signOut();
                 resolve();
@@ -45,6 +46,24 @@ export function registerUser(displayName: string, email: string, password: strin
         } catch (error) {
             reject(error);
         }
+    });
+}
+
+export function addUserToDb(user: firebase.User): Promise<any> {
+    return new Promise((resolve, reject) => {
+        dbRef.collection("users").doc(user.uid).collection("resources").doc("root").set({
+            rootFiles: [],
+            favourites: [],
+            trash: [],
+            sharedTo: [],
+            sharedBy: [],
+        })
+        .then(() => {
+            resolve();
+        })
+        .catch((error) => {
+            reject(error);
+        });
     });
 }
 
