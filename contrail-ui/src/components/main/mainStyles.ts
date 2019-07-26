@@ -22,13 +22,6 @@ const styles = (theme: Theme) =>
         root: {
             display: "flex",
         },
-        uploadButton : {
-            margin: "10px",
-            borderRadius: "20px",
-        },
-        uploadIcon : {
-            margin: "0px 10px",
-        },
     });
 
 export default styles;
