@@ -10,9 +10,9 @@ import { dbRef, storageRef } from "../firebase";
  * @returns a uploadTask object of the uploaded File
  */
 
-export function uploadFiletoStorage(file: File, userID: string): firebase.storage.UploadTask {
+export const uploadFiletoStorage = (file: File, userID: string): firebase.storage.UploadTask => {
     return storageRef.child(userID + "/" + file.name).put(file);
-}
+};
 
 /**
  * Add the document to the specfic users document
@@ -24,8 +24,8 @@ export function uploadFiletoStorage(file: File, userID: string): firebase.storag
  * @returns a {@link Promise} that resolves or rejects with the error.
  */
 
-export function writeFileToDB(upload: firebase.storage.UploadTask, userID: string, displayName: string | null):
-Promise<any> {
+export const writeFileToDB =
+(upload: firebase.storage.UploadTask, uid: string, displayName: string | null, email: string | null): Promise<any> => {
     return new Promise((resolve, reject) => {
         const { name, size, timeCreated, generation, fullPath, updated } = upload.snapshot.metadata;
 
@@ -36,7 +36,7 @@ Promise<any> {
             name,
             path: fullPath,
             permissions: {
-                [userID]: "owner",
+                [uid]: "owner",
             },
             createdBy: displayName,
             size,
@@ -44,17 +44,18 @@ Promise<any> {
             updated,
         });
         const owner = {
+            uid,
             displayName,
-            userID,
+            email,
         };
         const newDoc = {
             name,
             generation,
             size,
-            timeCreated,
             owner,
+            timeCreated,
         };
-        const userDocRef = dbRef.collection("users").doc(userID).collection("resources").doc("root");
+        const userDocRef = dbRef.collection("users").doc(uid).collection("resources").doc("root");
         batch.update(userDocRef, {
             rootFiles: firebase.firestore.FieldValue.arrayUnion(newDoc),
         });
@@ -67,4 +68,4 @@ Promise<any> {
             reject(error);
         });
     });
-}
+};

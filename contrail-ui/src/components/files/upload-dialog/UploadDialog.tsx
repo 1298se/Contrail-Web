@@ -74,43 +74,46 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
     }
 
     public onUploadTask =
-    (uploadTask: firebase.storage.UploadTask, uid: string, displayName: string | null, filename: string) => {
-        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-            (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                this.setState((prevState: types.IUploadDialogState) => ({
-                    uploadProgress: prevState.uploadProgress.set(filename, progress),
-                    uploadState: prevState.uploadState.set(filename, "uploading"),
-                }));
-            }, (error) => {
-                this.setState((prevState: types.IUploadDialogState) => ({
-                    uploadState: prevState.uploadState.set(filename, "error"),
-                }));
-                this.setSnackbarError(error);
-            }, () => {
-                filesController.writeFileToDB(uploadTask, uid, displayName)
-                .then(() => {
+    (uploadTask: firebase.storage.UploadTask, filename: string) => {
+        if (this.props.user) {
+            const { uid, displayName, email } = this.props.user;
+            uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     this.setState((prevState: types.IUploadDialogState) => ({
-                        uploadState: prevState.uploadState.set(filename, "success"),
+                        uploadProgress: prevState.uploadProgress.set(filename, progress),
+                        uploadState: prevState.uploadState.set(filename, "uploading"),
                     }));
-                })
-                .catch((error) => {
+                }, (error) => {
                     this.setState((prevState: types.IUploadDialogState) => ({
                         uploadState: prevState.uploadState.set(filename, "error"),
                     }));
                     this.setSnackbarError(error);
-                });
-        });
+                }, () => {
+                    filesController.writeFileToDB(uploadTask, uid, displayName, email)
+                    .then(() => {
+                        this.setState((prevState: types.IUploadDialogState) => ({
+                            uploadState: prevState.uploadState.set(filename, "success"),
+                        }));
+                    })
+                    .catch((error) => {
+                        this.setState((prevState: types.IUploadDialogState) => ({
+                            uploadState: prevState.uploadState.set(filename, "error"),
+                        }));
+                        this.setSnackbarError(error);
+                    });
+            });
+        }
     }
 
     public uploadFiles = () => {
         if (this.props.user && this.state.files) {
-            const { uid, displayName }  = this.props.user;
+            const { uid }  = this.props.user;
             this.state.files.map((file: File) => {
                 const filename = file && file.name;
                 if (this.state.uploadProgress.get(filename) === 0) {
                     const uploadTask = filesController.uploadFiletoStorage(file, uid);
-                    this.onUploadTask(uploadTask, uid, displayName, filename);
+                    this.onUploadTask(uploadTask, filename);
                 }
             });
         }
