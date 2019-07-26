@@ -36,7 +36,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
     };
 
     public handleFileDrop = (newFiles: File[]) => {
-        this.setState((prevState) => {
+        this.setState((prevState: types.IUploadDialogState) => {
             newFiles.forEach((file) => {
                 prevState.uploadProgress.set(file.name, 0);
                 prevState.uploadState.set(file.name, "added");
@@ -73,6 +73,36 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
         this.props.uploadDialogClose();
     }
 
+    public onUploadTask =
+    (uploadTask: firebase.storage.UploadTask, uid: string, displayName: string | null, filename: string) => {
+        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                this.setState((prevState: types.IUploadDialogState) => ({
+                    uploadProgress: prevState.uploadProgress.set(filename, progress),
+                    uploadState: prevState.uploadState.set(filename, "uploading"),
+                }));
+            }, (error) => {
+                this.setState((prevState: types.IUploadDialogState) => ({
+                    uploadState: prevState.uploadState.set(filename, "error"),
+                }));
+                this.setSnackbarError(error);
+            }, () => {
+                filesController.writeFileToDB(uploadTask, uid, displayName)
+                .then(() => {
+                    this.setState((prevState: types.IUploadDialogState) => ({
+                        uploadState: prevState.uploadState.set(filename, "success"),
+                    }));
+                })
+                .catch((error) => {
+                    this.setState((prevState: types.IUploadDialogState) => ({
+                        uploadState: prevState.uploadState.set(filename, "error"),
+                    }));
+                    this.setSnackbarError(error);
+                });
+        });
+    }
+
     public uploadFiles = () => {
         if (this.props.user && this.state.files) {
             const { uid, displayName }  = this.props.user;
@@ -80,32 +110,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                 const filename = file && file.name;
                 if (this.state.uploadProgress.get(filename) === 0) {
                     const uploadTask = filesController.uploadFiletoStorage(file, uid);
-                    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        this.setState((prevState: types.IUploadDialogState) => ({
-                            uploadProgress: prevState.uploadProgress.set(filename, progress),
-                            uploadState: prevState.uploadState.set(filename, "uploading"),
-                        }));
-                    }, (error) => {
-                        this.setState((prevState: types.IUploadDialogState) => ({
-                            uploadState: prevState.uploadState.set(filename, "error"),
-                        }));
-                        this.setSnackbarError(error);
-                    }, () => {
-                        filesController.writeFileToDB(uploadTask, uid, displayName)
-                        .then(() => {
-                            this.setState((prevState: types.IUploadDialogState) => ({
-                                uploadState: prevState.uploadState.set(filename, "success"),
-                            }));
-                        })
-                        .catch((error) => {
-                            this.setState((prevState: types.IUploadDialogState) => ({
-                                uploadState: prevState.uploadState.set(filename, "error"),
-                            }));
-                            this.setSnackbarError(error);
-                        });
-                    });
+                    this.onUploadTask(uploadTask, uid, displayName, filename);
                 }
             });
         }
@@ -163,25 +168,31 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
         const uploading = [...uploadState.values()].some((value) => value === "uploading");
         const toUpload = [...uploadState.values()].some((value) => value === "added");
 
-        const renderCancelButton = (index: number, disabled: boolean) => (
-            <Button disableFocusRipple={true} disabled={disabled} onClick={() => this.removeFileUpload(index)}>
-                <CancelIcon fontSize="large"/>
-            </Button>
-        );
-
-        const renderDoneButton = (
-            <CloudDoneIcon fontSize="large" color="primary" />
-        );
-
-        const renderErrorButton = (
-            <Error fontSize="large" color="error" />
-        );
+        const handleAddEvent = (e: React.ChangeEvent<any>) => this.handleAddFile(e.target.files);
 
         const renderUploadFiles = (
             files &&  files.map((file: File, i) => {
                 const fileName = file.name;
                 const fileProgress = uploadProgress.get(fileName);
                 const fileState = uploadState.get(fileName);
+
+                const handleCancelClick = (event: React.MouseEvent<unknown>) => {
+                    this.removeFileUpload(i);
+                };
+
+                const renderCancelButton = (disabled: boolean) => (
+                    <Button disableFocusRipple={true} disabled={disabled} onClick={handleCancelClick}>
+                        <CancelIcon fontSize="large"/>
+                    </Button>
+                );
+
+                const renderDoneButton = (
+                    <CloudDoneIcon fontSize="large" color="primary" />
+                );
+
+                const renderErrorButton = (
+                    <Error fontSize="large" color="error" />
+                );
 
                 return (
                 <div key={i} className={classes.fileContainer}>
@@ -194,8 +205,8 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                         />
                     </div>
                     <div className={classes.statusContainer} >
-                        {fileState === "added" && renderCancelButton(i, false)}
-                        {fileState === "uploading" && renderCancelButton(i, true)}
+                        {fileState === "added" && renderCancelButton(false)}
+                        {fileState === "uploading" && renderCancelButton(true)}
                         {fileState === "success" && renderDoneButton}
                         {fileState === "error" && renderErrorButton}
                     </div>
@@ -256,7 +267,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                     id="raised-button-file"
                     multiple={true}
                     type="file"
-                    onChange={(e) => this.handleAddFile(e.target.files)}
+                    onChange={handleAddEvent}
                 />
                 <label htmlFor="raised-button-file">
                 <Button

@@ -7,7 +7,7 @@ import { dbRef, storageRef } from "../firebase";
  *
  * @param file the file needed to be uploaded
  * @param userID the user's email unique id.
- * @returns uploadTask of the uploaded File
+ * @returns a uploadTask object of the uploaded File
  */
 
 export function uploadFiletoStorage(file: File, userID: string): firebase.storage.UploadTask {
@@ -15,9 +15,10 @@ export function uploadFiletoStorage(file: File, userID: string): firebase.storag
 }
 
 /**
- * Add the document to users document subcollection and document collection
+ * Add the document to the specfic users document
+ * subcollection and document collection
  *
- * @param upload the upload task of the file.
+ * @param upload the uploadTask of the uploaded file.
  * @param userID the user's email unique id.
  * @param displayName the user's display name.
  * @returns a {@link Promise} that resolves or rejects with the error.
