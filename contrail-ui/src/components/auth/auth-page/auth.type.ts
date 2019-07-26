@@ -12,10 +12,4 @@ export interface IAuthStateProps {
     authUser: firebase.User | null;
 }
 
-export interface ISnackbarDisplay {
-    snackbarVariant: keyof typeof variant;
-    snackbarMessage: string | null;
-    shouldDisplaySnackbar: boolean;
-}
-
 export type AuthProps = IAuthOwnProps & IAuthStateProps;
