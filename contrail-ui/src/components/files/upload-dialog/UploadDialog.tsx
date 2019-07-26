@@ -306,7 +306,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
 
 const mapStateToProps = (state: IAppReduxState): types.IUploadDialogStateProps => {
     return {
-        dialogOpen: state.appUiState.dialogState.uploadDialogDisplay,
+        dialogOpen: state.appUiState.dialogState.uploadDialogOpen,
         user: state.authState.authUser,
     };
 };

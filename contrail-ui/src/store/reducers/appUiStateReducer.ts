@@ -9,7 +9,7 @@ const initialAppUiState: types.IAppUiState = {
         isFetchingUser: true,
     },
     dialogState: {
-        uploadDialogDisplay: false,
+        uploadDialogOpen: false,
     },
 };
 
@@ -41,7 +41,7 @@ const appUiStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
                 ...state,
                 dialogState: {
                     ...state.dialogState,
-                    uploadDialogDisplay: action.payload,
+                    uploadDialogOpen: action.payload,
                 },
             };
 

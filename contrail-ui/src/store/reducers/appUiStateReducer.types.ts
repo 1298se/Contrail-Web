@@ -5,7 +5,7 @@ export interface IAppUiState {
 }
 
 interface IAppDialogState {
-    uploadDialogDisplay: boolean;
+    uploadDialogOpen: boolean;
 }
 
 interface IAppLoadingState {
