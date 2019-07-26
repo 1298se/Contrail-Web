@@ -4,7 +4,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { IAppReduxState } from "../../store/store.types";
 import DialogWrapper from "../feedback/dialog-wrapper/DialogWrapper";
-import UploadDialog from "../files/upload-dialog/UploadDialog";
 import MainAppBar from "./main-app-bar/MainAppBar";
 import MainDrawer from "./main-drawer/MainDrawer";
 import MainView from "./main-view/MainView";
@@ -21,7 +20,6 @@ class MainFrame extends Component <types.MainFrameProps, {}> {
                     isOpen={!this.props.hasInternetConnection}
                     shouldDisplayLoading={true}
                 />
-                <UploadDialog />
                 <CssBaseline />
                 <MainAppBar />
                 <MainDrawer />

@@ -103,7 +103,7 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
                             <MenuIcon />
                         </IconButton>
                         <Typography className={classes.appBarTitle} variant="h6" noWrap={true}>
-                            Contrail
+                            Contrail Web
                     </Typography>
                         <IconButton edge="end" color="inherit" onClick={this.handleMenuOpen}>
                             <AccountCircle />
