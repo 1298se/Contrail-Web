@@ -14,10 +14,10 @@ import * as firebase from "firebase/app";
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 import * as filesController from "../../../firebase/controllers/filesController";
-import { uploadDialogCloseAction } from "../../../store/actions/uploadDialogActions";
-import * as actions from "../../../store/actions/uploadDialogActions.types";
+import { setAppUploadDialogOpen } from "../../../store/actions/appUiStateActions";
+import { IAppSetUploadDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
 import { IAppReduxState } from "../../../store/store.types";
 import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import * as types from "./uploadDialog.type";
@@ -70,7 +70,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
             uploadProgress: new Map<string, number>(),
             uploadState: new Map<string, string>(),
         });
-        this.props.uploadDialogClose();
+        this.props.setDialogOpen(false);
     }
 
     public onUploadTask =
@@ -306,14 +306,15 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
 
 const mapStateToProps = (state: IAppReduxState): types.IUploadDialogStateProps => {
     return {
-        dialogOpen: state.uploadDialogState.dialogOpen,
+        dialogOpen: state.appUiState.dialogState.uploadDialogDisplay,
         user: state.authState.authUser,
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.IUploadDialogCloseAction>): types.IUploadDialogDispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetUploadDialogOpenAction>):
+types.IUploadDialogDispatchProps => {
     return {
-        uploadDialogClose: () => dispatch(uploadDialogCloseAction()),
+        setDialogOpen: (shouldDisplay: boolean) => dispatch(setAppUploadDialogOpen(shouldDisplay)),
     };
 };
 

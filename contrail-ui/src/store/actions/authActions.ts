@@ -2,8 +2,8 @@ import { ThunkAction } from "redux-thunk";
 import * as auth from "../../firebase/controllers/authController";
 import { authRef } from "../../firebase/firebase";
 import * as constants from "../constants";
-import { setAppLoadingState } from "./appUiStateActions";
-import { IAppSetLoadingStateAction } from "./appUiStateActions.types";
+import { setAppUserLoadingState } from "./appUiStateActions";
+import { IAppSetUserLoadingAction } from "./appUiStateActions.types";
 import * as actions from "./authActions.types";
 
 /**
@@ -13,9 +13,9 @@ import * as actions from "./authActions.types";
  * after the listener initiates.
  */
 export const setAuthListener =
-    (): ThunkAction<void, {}, null, actions.IAuthFetchUserAction | IAppSetLoadingStateAction> =>
+    (): ThunkAction<void, {}, null, actions.IAuthFetchUserAction | IAppSetUserLoadingAction> =>
         (dispatch) => {
-            dispatch(setAppLoadingState(true));
+            dispatch(setAppUserLoadingState(true));
             authRef.onAuthStateChanged((user) => {
                 if (user) {
                     auth.getUserToken().then((token) => {
@@ -24,7 +24,7 @@ export const setAuthListener =
                             authUser: user,
                             authToken: token,
                         });
-                        dispatch(setAppLoadingState(false));
+                        dispatch(setAppUserLoadingState(false));
                     });
                 } else {
                     dispatch({
@@ -32,7 +32,7 @@ export const setAuthListener =
                         authUser: null,
                         authToken: null,
                     });
-                    dispatch(setAppLoadingState(false));
+                    dispatch(setAppUserLoadingState(false));
                 }
             });
         };
