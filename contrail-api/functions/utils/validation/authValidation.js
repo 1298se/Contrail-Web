@@ -1,3 +1,5 @@
+const { auth } = require("../firebaseUtils")
+
 const emailRegex = RegExp(/^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 const passwordRegex = RegExp(/^\S*$/);
 const minDisplayNameLength = 3;
@@ -30,4 +32,19 @@ exports.validateRegisterInfo = (displayName, email, password) => {
     }
 
     return errors;
+}
+
+exports.authMiddleware = (req, res, next) => {
+    const idToken = req.headers && req.headers.authorization;
+    if (idToken) {
+        auth.verifyIdToken(idToken)
+            .then((decodedToken) => {
+                req.uid = decodedToken.uid;
+                return next();
+            }).catch((error) => {
+                return res.status(500).send(error);
+            });
+    } else {
+        return res.status(500).send("No token found");
+    }
 }
