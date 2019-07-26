@@ -1,22 +1,17 @@
 import { withStyles } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, {Component} from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { uploadDialogOpenAction } from "../../../store/actions/uploadDialogActions";
-import { IUploadDialogOpenAction } from "../../../store/actions/uploadDialogActions.types";
+import UploadButton from "../../files/upload-button/UploadButton";
+
 import styles from "../mainStyles";
-import * as types from "./mainDrawer.type";
 
 class MainDrawer extends Component<any, any> {
     public openFileUpload = () => {
@@ -32,16 +27,7 @@ class MainDrawer extends Component<any, any> {
                 classes={{paper: classes.drawerPaper}}
             >
                 <div className={classes.appBarSpacer} />
-                <Button
-                    className={classes.uploadButton}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    onClick={this.openFileUpload}
-                >
-                    <CloudUploadIcon className={classes.uploadIcon} />
-                    Upload
-                </Button>
+                <UploadButton />
                 <List>
                     <ListItem button={true} key="Files">
                         <ListItemIcon>
@@ -73,10 +59,4 @@ class MainDrawer extends Component<any, any> {
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<IUploadDialogOpenAction>): types.IMainDrawerDispatchProps => {
-    return {
-        uploadDialogOpen: () => dispatch(uploadDialogOpenAction()),
-    };
-};
-
-export default connect(null, mapDispatchToProps)(withStyles(styles)(MainDrawer));
+export default withStyles(styles)(MainDrawer);

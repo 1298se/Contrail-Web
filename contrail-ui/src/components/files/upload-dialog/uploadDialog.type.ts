@@ -15,7 +15,7 @@ export interface IUploadDialogStateProps {
 }
 
 export interface IUploadDialogDispatchProps {
-    uploadDialogClose: () => void;
+    setDialogOpen: (shouldDisplay: boolean) => void;
 }
 
 export interface IUploadDialogOwnProps extends WithStyles<typeof styles> {

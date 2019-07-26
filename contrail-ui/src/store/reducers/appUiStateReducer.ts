@@ -1,12 +1,15 @@
 import { Reducer } from "redux";
 import { AppUiStateActions } from "../actions/appUiStateActions.types";
-import { APP_SET_LOADING_USER_STATE } from "../constants";
+import * as constants from "../constants";
 import * as types from "./appUiStateReducer.types";
 
 const initialAppUiState: types.IAppUiState = {
     isLoading: true,
     initLoadState: {
         isFetchingUser: true,
+    },
+    dialogState: {
+        uploadDialogOpen: false,
     },
 };
 
@@ -15,7 +18,7 @@ const appUiStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
     action,
 ) => {
     switch (action.type) {
-        case APP_SET_LOADING_USER_STATE:
+        case constants.APP_SET_LOADING_USER_STATE:
             const prevState: types.IAppUiState = state;
             prevState.initLoadState.isFetchingUser = action.payload;
             let loading = false;
@@ -28,9 +31,17 @@ const appUiStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
             return {
                 ...state,
                 isLoading: loading,
-                loadState: {
+                initLoadState: {
                     ...state.initLoadState,
                     isFetchingUser: action.payload,
+                },
+            };
+        case constants.APP_SET_UPLOAD_DIALOG_OPEN:
+            return {
+                ...state,
+                dialogState: {
+                    ...state.dialogState,
+                    uploadDialogOpen: action.payload,
                 },
             };
 
