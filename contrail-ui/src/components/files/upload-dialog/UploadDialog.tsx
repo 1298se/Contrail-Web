@@ -75,8 +75,6 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
 
     public onUploadTask =
     (uploadTask: firebase.storage.UploadTask, filename: string) => {
-        if (this.props.user) {
-            const { uid, displayName, email } = this.props.user;
             uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -90,20 +88,21 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                     }));
                     this.setSnackbarError(error);
                 }, () => {
-                    filesController.writeFileToDB(uploadTask, uid, displayName, email)
-                    .then(() => {
-                        this.setState((prevState: types.IUploadDialogState) => ({
-                            uploadState: prevState.uploadState.set(filename, "success"),
-                        }));
-                    })
-                    .catch((error) => {
-                        this.setState((prevState: types.IUploadDialogState) => ({
-                            uploadState: prevState.uploadState.set(filename, "error"),
-                        }));
-                        this.setSnackbarError(error);
-                    });
+                    if (this.props.user) {
+                        filesController.writeFileToDB(uploadTask, this.props.user)
+                        .then(() => {
+                            this.setState((prevState: types.IUploadDialogState) => ({
+                                uploadState: prevState.uploadState.set(filename, "success"),
+                            }));
+                        })
+                        .catch((error) => {
+                            this.setState((prevState: types.IUploadDialogState) => ({
+                                uploadState: prevState.uploadState.set(filename, "error"),
+                            }));
+                            this.setSnackbarError(error);
+                        });
+                    }
             });
-        }
     }
 
     public uploadFiles = () => {

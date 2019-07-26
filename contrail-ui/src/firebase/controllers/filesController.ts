@@ -25,9 +25,10 @@ export const uploadFiletoStorage = (file: File, userID: string): firebase.storag
  */
 
 export const writeFileToDB =
-(upload: firebase.storage.UploadTask, uid: string, displayName: string | null, email: string | null): Promise<any> => {
+(upload: firebase.storage.UploadTask, user: firebase.User): Promise<any> => {
     return new Promise((resolve, reject) => {
         const { name, size, timeCreated, generation, fullPath, updated } = upload.snapshot.metadata;
+        const { uid, displayName, email } = user;
 
         const batch = dbRef.batch();
         const documentsRef = dbRef.collection("documents").doc(generation);
