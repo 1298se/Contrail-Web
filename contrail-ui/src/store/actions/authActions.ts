@@ -1,7 +1,6 @@
-
 import { ThunkAction } from "redux-thunk";
-import { authRef } from "../../firebase/firebase";
 import * as auth from "../../firebase/controllers/authController";
+import { authRef } from "../../firebase/firebase";
 import * as constants from "../constants";
 import { setAppLoadingState } from "./appUiStateActions";
 import { IAppSetLoadingStateAction } from "./appUiStateActions.types";
