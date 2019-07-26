@@ -43,13 +43,16 @@ Promise<any> {
             timeCreated,
             updated,
         });
-
+        const owner = {
+            displayName,
+            userID,
+        };
         const newDoc = {
             name,
             generation,
             size,
             timeCreated,
-            owner: displayName,
+            owner,
         };
         const userDocRef = dbRef.collection("users").doc(userID).collection("resources").doc("root");
         batch.update(userDocRef, {

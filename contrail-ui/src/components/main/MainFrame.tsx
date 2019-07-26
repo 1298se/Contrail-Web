@@ -12,6 +12,23 @@ import * as types from "./mainFrame.type";
 import styles from "./mainStyles";
 
 class MainFrame extends Component <types.MainFrameProps, {}> {
+    /*
+    public componentDidMount() {
+        const config = {
+            headers: {
+                "Authorization": authToken;
+            };
+        };
+
+        Axios.get("http://localhost:5000/contrail-fbase/us-central1/api/files", config)
+        .then((response) => {
+          console.log(response);
+        }).catch((error) => {
+          console.log(error);
+        });
+    }
+    */
+
     public render() {
         const { classes } = this.props;
         return (
