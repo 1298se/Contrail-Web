@@ -6,8 +6,10 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Snackbar from "@material-ui/core/Snackbar";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CloudDoneIcon from "@material-ui/icons/CloudDone";
+import Error from "@material-ui/icons/Error";
 import * as firebase from "firebase/app";
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
@@ -17,23 +19,32 @@ import * as filesController from "../../../firebase/controllers/filesController"
 import { uploadDialogCloseAction } from "../../../store/actions/uploadDialogActions";
 import * as actions from "../../../store/actions/uploadDialogActions.types";
 import { IAppReduxState } from "../../../store/store.types";
-import { IUploadDialogDispatchProps, IUploadDialogProps, IUploadDialogState, IUploadDialogStateProps } from "./uploadDialog.type";
+import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
+import * as types from "./uploadDialog.type";
 import styles from "./uploadDialogStyles";
 
-class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
-    public state = {
+class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDialogState> {
+    public state: types.IUploadDialogState = {
         files: [] as File[],
-        filesProgess: new Map<string, number>(),
+        uploadProgress: new Map<string, number>(),
+        uploadState: new Map<string, string>(),
+        snackbarDisplay: {
+            snackbarVariant: "error",
+            snackbarMessage: null,
+            shouldDisplaySnackbar: false,
+        },
     };
 
     public handleFileDrop = (newFiles: File[]) => {
         this.setState((prevState) => {
             newFiles.forEach((file) => {
-                prevState.filesProgess.set(file.name, 0);
+                prevState.uploadProgress.set(file.name, 0);
+                prevState.uploadState.set(file.name, "added");
             });
             return {
                 files: prevState.files ? prevState.files.concat(newFiles) : newFiles,
-                filesProgess: prevState.filesProgess,
+                uploadProgress: prevState.uploadProgress,
+                uploadState: prevState.uploadState,
             };
         });
     }
@@ -42,11 +53,13 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
         const newFiles = [...newFileList];
         this.setState((prevState) => {
             newFiles.forEach((file) => {
-                prevState.filesProgess.set(file.name, 0);
+                prevState.uploadProgress.set(file.name, 0);
+                prevState.uploadState.set(file.name, "added");
             });
             return {
                 files: prevState.files ? prevState.files.concat(newFiles) : newFiles,
-                filesProgess: prevState.filesProgess,
+                uploadProgress: prevState.uploadProgress,
+                uploadState: prevState.uploadState,
             };
         });
     }
@@ -54,28 +67,44 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     public closeFileUpload = () => {
         this.setState({
             files: [] as File[],
-            filesProgess: new Map<string, number>(),
+            uploadProgress: new Map<string, number>(),
+            uploadState: new Map<string, string>(),
         });
         this.props.uploadDialogClose();
     }
 
     public uploadFiles = () => {
-        if (this.props.user && this.state.files.length) {
-            const userID = this.props.user.uid;
+        if (this.props.user && this.state.files) {
+            const { uid, displayName }  = this.props.user;
             this.state.files.map((file: File) => {
                 const filename = file && file.name;
-                if (this.state.filesProgess.get(filename) === 0) {
-                    const uploadTask = filesController.uploadFiletoStorage(file, userID);
+                if (this.state.uploadProgress.get(filename) === 0) {
+                    const uploadTask = filesController.uploadFiletoStorage(file, uid);
                     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
                     (snapshot) => {
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        this.setState((prevState: IUploadDialogState) => ({
-                            filesProgess: prevState.filesProgess.set(filename, progress),
+                        this.setState((prevState: types.IUploadDialogState) => ({
+                            uploadProgress: prevState.uploadProgress.set(filename, progress),
+                            uploadState: prevState.uploadState.set(filename, "uploading"),
                         }));
                     }, (error) => {
-                        console.log(error);
+                        this.setState((prevState: types.IUploadDialogState) => ({
+                            uploadState: prevState.uploadState.set(filename, "error"),
+                        }));
+                        this.setSnackbarError(error);
                     }, () => {
-                        filesController.writeFileToDB(uploadTask, userID);
+                        filesController.writeFileToDB(uploadTask, uid, displayName)
+                        .then(() => {
+                            this.setState((prevState: types.IUploadDialogState) => ({
+                                uploadState: prevState.uploadState.set(filename, "success"),
+                            }));
+                        })
+                        .catch((error) => {
+                            this.setState((prevState: types.IUploadDialogState) => ({
+                                uploadState: prevState.uploadState.set(filename, "error"),
+                            }));
+                            this.setSnackbarError(error);
+                        });
                     });
                 }
             });
@@ -85,23 +114,58 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     public removeFileUpload = (index: number) => {
         if (this.state.files) {
             const selectedFile = this.state.files[index];
-            this.setState((prevState: IUploadDialogState) => {
-                prevState.filesProgess.delete(selectedFile.name);
+            this.setState((prevState: types.IUploadDialogState) => {
+                prevState.uploadProgress.delete(selectedFile.name);
+                prevState.uploadState.delete(selectedFile.name);
                 return {
                     files: this.state.files.filter((_, i) => i !== index),
-                    filesProgess: prevState.filesProgess,
+                    uploadProgress: prevState.uploadProgress,
+                    uploadState: prevState.uploadState,
                 };
             });
         }
     }
 
+    public setSnackbarError = (errorMessage: any) => {
+        this.setState({
+            snackbarDisplay: {
+                snackbarVariant: "error",
+                snackbarMessage: errorMessage,
+                shouldDisplaySnackbar: true,
+            },
+        });
+    }
+
+    // For closing an opened Snackbar. Must be executed first before clearing the snackbar message.
+    public handleSnackbarClose = () => {
+        this.setState({
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                shouldDisplaySnackbar: false,
+            },
+        });
+    }
+
+    // Clears the snackbar message.
+    public clearSnackbarMessage = () => {
+        this.setState({
+            snackbarDisplay: {
+                ...this.state.snackbarDisplay,
+                snackbarMessage: null,
+            },
+        });
+    }
+
     public render() {
         const { classes, dialogOpen } = this.props;
-        const { files, filesProgess } = this.state;
+        const { files, uploadProgress, uploadState } = this.state;
+        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
+        const uploading = [...uploadState.values()].some((value) => value === "uploading");
+        const toUpload = [...uploadState.values()].some((value) => value === "added");
 
-        const renderCancelButton = (index: number) => (
-            <Button disableFocusRipple={true} onClick={() => this.removeFileUpload(index)}>
-                <CancelIcon />
+        const renderCancelButton = (index: number, disabled: boolean) => (
+            <Button disableFocusRipple={true} disabled={disabled} onClick={() => this.removeFileUpload(index)}>
+                <CancelIcon fontSize="large"/>
             </Button>
         );
 
@@ -109,24 +173,31 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
             <CloudDoneIcon fontSize="large" color="primary" />
         );
 
+        const renderErrorButton = (
+            <Error fontSize="large" color="error" />
+        );
+
         const renderUploadFiles = (
             files &&  files.map((file: File, i) => {
                 const fileName = file.name;
-                const fileProgress = filesProgess.get(fileName);
+                const fileProgress = uploadProgress.get(fileName);
+                const fileState = uploadState.get(fileName);
+
                 return (
                 <div key={i} className={classes.fileContainer}>
                     <div className={classes.fileInfoContainer}>
                         <p> {fileName} </p>
                         <LinearProgress
                             className={classes.progress}
-                            color="primary"
                             variant="determinate"
                             value={fileProgress}
                         />
                     </div>
                     <div className={classes.statusContainer} >
-                        {fileProgress === 0 && renderCancelButton(i)}
-                        {fileProgress === 100 && renderDoneButton}
+                        {fileState === "added" && renderCancelButton(i, false)}
+                        {fileState === "uploading" && renderCancelButton(i, true)}
+                        {fileState === "success" && renderDoneButton}
+                        {fileState === "error" && renderErrorButton}
                     </div>
                 </div>
                 );
@@ -151,12 +222,24 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                     </div>
                 </div>
             </section>
-            )}}
+            );}}
             </Dropzone>
         );
 
         return (
         <div>
+            <Snackbar
+                anchorOrigin={{vertical: "bottom", horizontal: "center"}}
+                open={shouldDisplaySnackbar}
+                onClose={this.handleSnackbarClose}
+                onExited={this.clearSnackbarMessage}
+            >
+                <SnackbarContentWrapper
+                    message={String(snackbarMessage)}
+                    variant={snackbarVariant}
+                    onClose={this.handleSnackbarClose}
+                />
+            </Snackbar>
             <Dialog
                 open={dialogOpen}
                 onBackdropClick={this.closeFileUpload}
@@ -176,7 +259,12 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                     onChange={(e) => this.handleAddFile(e.target.files)}
                 />
                 <label htmlFor="raised-button-file">
-                <Button component="span" variant="contained" color="primary">
+                <Button
+                    component="span"
+                    variant="contained"
+                    color="primary"
+                    disabled={uploading}
+                >
                     Add
                 </Button>
                 </label>
@@ -185,6 +273,7 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                     variant="contained"
                     color="primary"
                     onClick={this.closeFileUpload}
+                    disabled={uploading}
                 >
                     Cancel
                 </Button>
@@ -193,6 +282,7 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
                     variant="contained"
                     color="primary"
                     onClick={this.uploadFiles}
+                    disabled={!toUpload}
                 >
                     Upload
                 </Button>
@@ -203,14 +293,14 @@ class UploadDialog extends Component<IUploadDialogProps, IUploadDialogState> {
     }
 }
 
-const mapStateToProps = (state: IAppReduxState): IUploadDialogStateProps => {
+const mapStateToProps = (state: IAppReduxState): types.IUploadDialogStateProps => {
     return {
         dialogOpen: state.uploadDialogState.dialogOpen,
         user: state.authState.authUser,
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.IUploadDialogCloseAction>): IUploadDialogDispatchProps => {
+const mapDispatchToProps = (dispatch: Dispatch<actions.IUploadDialogCloseAction>): types.IUploadDialogDispatchProps => {
     return {
         uploadDialogClose: () => dispatch(uploadDialogCloseAction()),
     };

@@ -5,7 +5,8 @@ import { dbRef, storageRef } from "../firebase";
 /**
  * Upload a file to Cloud Storage
  *
- * @param file the file needed to be updates
+ * @param file the file needed to be uploaded
+ * @param userID the user's email unique id.
  * @returns uploadTask of the uploaded File
  */
 
@@ -13,27 +14,47 @@ export function uploadFiletoStorage(file: File, userID: string): firebase.storag
     return storageRef.child(userID + "/" + file.name).put(file);
 }
 
-export function writeFileToDB(upload: firebase.storage.UploadTask, userID: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        const { name, size, timeCreated, generation, fullPath, downloadURLs, updated } = upload.snapshot.metadata;
-        const batch = dbRef.batch();
-        const documentsDBRef = dbRef.collection("documents").doc(generation);
+/**
+ * Add the document to users document subcollection and document collection
+ *
+ * @param upload the upload task of the file.
+ * @param userID the user's email unique id.
+ * @param displayName the user's display name.
+ * @returns a {@link Promise} that resolves or rejects with the error.
+ */
 
-        batch.set(documentsDBRef, {
+export function writeFileToDB(upload: firebase.storage.UploadTask, userID: string, displayName: string | null):
+Promise<any> {
+    return new Promise((resolve, reject) => {
+        const { name, size, timeCreated, generation, fullPath, updated } = upload.snapshot.metadata;
+
+        const batch = dbRef.batch();
+        const documentsRef = dbRef.collection("documents").doc(generation);
+        batch.set(documentsRef, {
             id: generation,
             name,
             path: fullPath,
-            permissions: [],
-            createdBy: userID,
+            permissions: {
+                [userID]: "owner",
+            },
+            createdBy: displayName,
             size,
             timeCreated,
             updated,
         });
-        const newDoc = { name, size, timeCreated, generation, fullPath };
+
+        const newDoc = {
+            name,
+            generation,
+            size,
+            timeCreated,
+            owner: displayName,
+        };
         const userDocRef = dbRef.collection("users").doc(userID).collection("resources").doc("root");
         batch.update(userDocRef, {
             rootFiles: firebase.firestore.FieldValue.arrayUnion(newDoc),
         });
+
         batch.commit()
         .then(() => {
             resolve();
