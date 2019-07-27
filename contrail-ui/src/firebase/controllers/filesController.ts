@@ -10,9 +10,9 @@ import { dbRef, storageRef } from "../firebase";
  * @returns a uploadTask object of the uploaded File
  */
 
-export function uploadFiletoStorage(file: File, userID: string): firebase.storage.UploadTask {
+export const uploadFiletoStorage = (file: File, userID: string): firebase.storage.UploadTask => {
     return storageRef.child(userID + "/" + file.name).put(file);
-}
+};
 
 /**
  * Add the document to the specfic users document
@@ -24,10 +24,11 @@ export function uploadFiletoStorage(file: File, userID: string): firebase.storag
  * @returns a {@link Promise} that resolves or rejects with the error.
  */
 
-export function writeFileToDB(upload: firebase.storage.UploadTask, userID: string, displayName: string | null):
-Promise<any> {
+export const writeFileToDB =
+(upload: firebase.storage.UploadTask, user: firebase.User): Promise<any> => {
     return new Promise((resolve, reject) => {
         const { name, size, timeCreated, generation, fullPath, updated } = upload.snapshot.metadata;
+        const { uid, displayName, email } = user;
 
         const batch = dbRef.batch();
         const documentsRef = dbRef.collection("documents").doc(generation);
@@ -36,22 +37,26 @@ Promise<any> {
             name,
             path: fullPath,
             permissions: {
-                [userID]: "owner",
+                [uid]: "owner",
             },
             createdBy: displayName,
             size,
             timeCreated,
             updated,
         });
-
+        const owner = {
+            uid,
+            displayName,
+            email,
+        };
         const newDoc = {
             name,
             generation,
             size,
+            owner,
             timeCreated,
-            owner: displayName,
         };
-        const userDocRef = dbRef.collection("users").doc(userID).collection("resources").doc("root");
+        const userDocRef = dbRef.collection("users").doc(uid).collection("resources").doc("root");
         batch.update(userDocRef, {
             root: firebase.firestore.FieldValue.arrayUnion(newDoc),
         });
@@ -64,4 +69,4 @@ Promise<any> {
             reject(error);
         });
     });
-}
+};
