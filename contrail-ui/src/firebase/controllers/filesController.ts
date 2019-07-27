@@ -53,7 +53,7 @@ Promise<any> {
         };
         const userDocRef = dbRef.collection("users").doc(userID).collection("resources").doc("root");
         batch.update(userDocRef, {
-            rootFiles: firebase.firestore.FieldValue.arrayUnion(newDoc),
+            root: firebase.firestore.FieldValue.arrayUnion(newDoc),
         });
 
         batch.commit()
