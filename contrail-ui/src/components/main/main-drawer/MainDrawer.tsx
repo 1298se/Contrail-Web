@@ -9,7 +9,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, {Component} from "react";
-import UploadButton from "../../files/upload-button/UploadButton";
+import UploadButton from "../../resources/upload-button/UploadButton";
 
 import styles from "../mainStyles";
 

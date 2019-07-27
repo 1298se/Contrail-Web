@@ -4,9 +4,9 @@ import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
 import { borders } from "@material-ui/system";
 import React, { Component } from "react";
+import ResourceListView from "../../resources/resource-list-view/ResourceListView";
 import MainToolBar from "../main-tool-bar/MainToolBar";
 import styles from "../mainStyles";
-import ResourceListView from "../resource-list-view/ResourceListView";
 
 class MainView extends Component<any, any> {
     public render() {
