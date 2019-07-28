@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import { IAppProps, IAppStateProps } from "./app.types";
 import Auth from "./components/auth/auth-page/Auth";
