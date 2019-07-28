@@ -6,3 +6,5 @@ export interface IResourceFetchAllAction extends Action<constants.RESOURCE_FETCH
     type: constants.RESOURCE_FETCH_ALL;
     payload: IUserResources;
 }
+
+export type ResourceActions = IResourceFetchAllAction;

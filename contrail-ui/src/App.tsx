@@ -54,7 +54,7 @@ class App extends Component<IAppProps, {}> {
 
 const mapStateToProps = (state: IAppReduxState): IAppStateProps => {
     return {
-        isLoading: state.appUiState.isLoading,
+        isLoading: state.appUiState.appLoadState.isFetchingUser,
     };
 };
 

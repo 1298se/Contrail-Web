@@ -1,13 +1,14 @@
 export interface IAppUiState {
     readonly isLoading: boolean;
-    readonly initLoadState: IAppLoadingState;
+    readonly appLoadState: IAppLoadingState;
     readonly dialogState: IAppDialogState;
 }
 
-interface IAppDialogState {
+export interface IAppDialogState {
     uploadDialogOpen: boolean;
 }
 
-interface IAppLoadingState {
+export interface IAppLoadingState {
     isFetchingUser: boolean;
+    isFetchingRootResources: boolean;
 }

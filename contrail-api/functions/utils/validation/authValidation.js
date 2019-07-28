@@ -37,7 +37,7 @@ exports.validateRegisterInfo = (displayName, email, password) => {
 exports.authMiddleware = (req, res, next) => {
     const idToken = req.headers && req.headers.authorization;
     if (idToken) {
-        auth.verifyIdToken(idToken)
+        return auth.verifyIdToken(idToken)
             .then((decodedToken) => {
                 req.uid = decodedToken.uid;
                 return next();
