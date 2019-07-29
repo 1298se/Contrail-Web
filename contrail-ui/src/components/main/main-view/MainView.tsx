@@ -3,8 +3,9 @@ import Container from "@material-ui/core/Container";
 import React, { Component } from "react";
 import ResourceFrame from "../../resources/ResourceFrame";
 import styles from "../mainStyles";
+import { MainViewProps } from "./mainView.type";
 
-class MainView extends Component<any, any> {
+class MainView extends Component<MainViewProps, {}> {
     public render() {
         const { classes } = this.props;
         return (

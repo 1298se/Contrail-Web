@@ -1,7 +1,7 @@
+import axios from "axios";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route } from "react-router-dom";
-import { setAuthorizedAxios } from "../../../firebase/controllers/httpController";
 import * as ROUTES from "../../../routes";
 import { IAppReduxState } from "../../../store/store.types";
 import * as types from "./AuthorizedRoute.type";
@@ -9,7 +9,9 @@ import * as types from "./AuthorizedRoute.type";
 class AuthorizedRoute extends Component<types.IAuthorizedProps> {
     public componentDidMount() {
         const { authToken } = this.props;
-        setAuthorizedAxios(authToken);
+        if (authToken) {
+            axios.defaults.headers.common.Authorization = `bearer ${authToken}`;
+        }
     }
     public render() {
         const { component: AuthorizedComponent, authToken, authUser, path } = this.props;

@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
-import { IAppProps, IAppStateProps } from "./app.types";
+import { AppProps, IAppStateProps } from "./app.types";
 import Auth from "./components/auth/auth-page/Auth";
 import AuthorizedRoute from "./components/auth/authorized-route/AuthorizedRoute";
 import InitLoadingPage from "./components/feedback/init-loading-page/InitLoadingPage";
@@ -14,7 +14,7 @@ import { IAuthFetchUserAction } from "./store/actions/authActions.types";
 import { setNetworkState } from "./store/actions/networkActions";
 import { IAppReduxState } from "./store/store.types";
 
-class App extends Component<IAppProps, {}> {
+class App extends Component<AppProps, {}> {
     public componentDidMount() {
         this.props.setAuthListener();
         window.addEventListener("online", this.handleConnectionChange);

@@ -7,4 +7,4 @@ export interface IAppStateProps {
     isLoading: boolean;
 }
 
-export type IAppProps = IAppDispatchProps & IAppStateProps;
+export type AppProps = IAppDispatchProps & IAppStateProps;

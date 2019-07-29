@@ -1,7 +1,7 @@
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, Theme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const styles = (theme: Theme) => createStyles({
     appBarSpacer: theme.mixins.toolbar,
-}));
+});
 
-export default useStyles;
+export default styles;
