@@ -75,7 +75,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 typing: false,
                 timeout: setTimeout(() => {
                     this.search();
-                }, 100),
+                }, 250),
             },
         });
     }
