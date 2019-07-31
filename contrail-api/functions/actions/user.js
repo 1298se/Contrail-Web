@@ -1,4 +1,4 @@
-const { db } = require("../utils/firebaseUtils")
+const { auth, db } = require("../utils/firebaseUtils")
 
 exports.getUserFiles = (req, res) => {
     const uid  = req.uid;
@@ -14,4 +14,33 @@ exports.getUserFiles = (req, res) => {
     .catch((error) => {
         return res.status(500).send(error)
     });
+}
+
+listAllUsers = () => {
+    return new Promise((resolve, reject) => {
+        const allUsers = [];
+        return auth.listUsers()
+        .then((listUsersResult) => {
+            listUsersResult.users.forEach((userRecord) => {
+            const userData = userRecord.toJSON();
+            allUsers.push(userData);
+            });
+            return resolve(allUsers);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+exports.searchUsers = (req, res) => {
+    const query = req.query.where_query;
+    listAllUsers()
+    .then((users) => {
+        const matchUsers = users.filter((user) => user.email.includes(query) || user.displayName.includes(query));
+        return res.status(200).send(matchUsers);
+    })
+    .catch((error) => {
+        return res.status(500).send(error);
+    })
 }
