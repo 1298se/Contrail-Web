@@ -11,6 +11,7 @@ const initialAppUiState: types.IAppUiState = {
     },
     dialogState: {
         uploadDialogOpen: false,
+        shareDialogOpen: true,
     },
 };
 
@@ -60,6 +61,15 @@ const appUiStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
                 appLoadState: {
                     ...state.appLoadState,
                     isFetchingRootResources: action.payload,
+                },
+            };
+        }
+        case constants.APP_SET_SHARE_DIALOG_OPEN: {
+            return {
+                ...state,
+                dialogState: {
+                    ...state.dialogState,
+                    shareDialogOpen: action.payload,
                 },
             };
         }

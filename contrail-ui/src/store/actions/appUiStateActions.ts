@@ -27,3 +27,10 @@ export const setAppResourceLoadingState = (isLoading: boolean): types.IAppSetRes
         payload: isLoading,
     };
 };
+
+export const setAppShareDialogOpen = (shouldDisplayDialog: boolean): types.IAppSetShareDialogOpenAction => {
+    return {
+        type: constants.APP_SET_SHARE_DIALOG_OPEN,
+        payload: shouldDisplayDialog,
+    };
+};
