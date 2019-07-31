@@ -27,7 +27,6 @@ export const setAuthListener =
                             authToken: token,
                         });
                         dispatch(setAppUserLoadingState(false));
-                        delete axios.defaults.headers.common.Authorization;
                     });
                 } else {
                     dispatch({
@@ -35,6 +34,7 @@ export const setAuthListener =
                         authUser: null,
                         authToken: null,
                     });
+                    delete axios.defaults.headers.common.Authorization;
                     dispatch(setAppUserLoadingState(false));
                 }
             });

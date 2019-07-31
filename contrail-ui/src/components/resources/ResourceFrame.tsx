@@ -14,6 +14,7 @@ class ResourceFrame extends Component<types.ResourceFrameProps, {}> {
     public componentDidMount() {
         this.props.fetchRootResources()
         .catch((error) => {
+            // TODO: Handle error with Snackbar
         });
     }
 

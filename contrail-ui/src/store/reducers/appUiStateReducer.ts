@@ -31,7 +31,7 @@ const appUiStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
         case constants.APP_SET_LOADING_USER_STATE: {
             const prevState: types.IAppUiState = state;
             prevState.appLoadState.isFetchingUser = action.payload;
-            const appLoadState = isAppLoading(state.appLoadState);
+            const appLoadState = isAppLoading(prevState.appLoadState);
             return {
                 ...state,
                 isLoading: appLoadState,
@@ -53,7 +53,7 @@ const appUiStateReducer: Reducer<types.IAppUiState, AppUiStateActions> = (
         case constants.APP_SET_LOADING_RESOURCE_STATE: {
             const prevState: types.IAppUiState = state;
             prevState.appLoadState.isFetchingRootResources = action.payload;
-            const appLoadState = isAppLoading(state.appLoadState);
+            const appLoadState = isAppLoading(prevState.appLoadState);
             return {
                 ...state,
                 isLoading: appLoadState,

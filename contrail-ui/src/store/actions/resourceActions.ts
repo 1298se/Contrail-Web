@@ -13,12 +13,14 @@ export const fetchRootResources =
                 axios.get("/resources")
                 .then((response) => {
                     if (response.status === 200) {
-                        dispatch(setAppResourceLoadingState(false));
                         dispatch({
                             type: constants.RESOURCE_FETCH_ALL,
                             payload: response.data,
                         });
+                        dispatch(setAppResourceLoadingState(false));
                         resolve();
+                    } else {
+                        // TODO: Handle error response
                     }
                 })
                 .catch((error) => {
