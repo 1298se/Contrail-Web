@@ -14,7 +14,6 @@ class ResourceFrame extends Component<types.ResourceFrameProps, {}> {
     public componentDidMount() {
         this.props.fetchRootResources()
         .catch((error) => {
-            console.error(error.response);
         });
     }
 
@@ -22,12 +21,11 @@ class ResourceFrame extends Component<types.ResourceFrameProps, {}> {
         const { classes } = this.props;
         const { userResources } = this.props;
 
-        console.log(userResources);
         return (
             <React.Fragment>
                 <ResourceToolBar />
                 <div className={classes.appBarSpacer} />
-                <ResourceListView />
+                <ResourceListView display={this.props.userResources.root}/>
             </React.Fragment>
         );
     }
