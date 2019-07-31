@@ -10,7 +10,6 @@ export interface IShareDialogState {
 
 export interface ISearchValues {
     input: string;
-    typing: boolean;
     timeout: NodeJS.Timeout | null;
     suggestions: ISuggestion[];
     selected: string[];

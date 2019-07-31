@@ -27,7 +27,6 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
     public state: types.IShareDialogState = {
         search: {
             input: "",
-            typing: false,
             timeout: null,
             suggestions: [] as types.ISuggestion[],
             selected: [],
@@ -40,7 +39,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
     };
 
     public search = () => {
-        if (this.props.user) {
+        if (this.props.user && this.state.search.input.length > 2) {
             const user = this.props.user;
             searchUsers(this.state.search.input)
                 .then((newOptions) => {
@@ -48,10 +47,11 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                         ...this.state,
                         search: {
                             ...this.state.search,
-                            suggestions: newOptions.filter((option: types.ISuggestion) => {
-                                return !(this.state.search.selected.includes(option.email) ||
-                                    option.email === user.email);
-                            }),
+                            suggestions: this.state.search.input.length > 2 ?
+                                newOptions.filter((option: types.ISuggestion) => {
+                                    return !(this.state.search.selected.includes(option.email) ||
+                                        option.email === user.email);
+                                }) : [],
                         },
                     });
                 })
@@ -61,22 +61,25 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         }
     }
 
-    public handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        event.preventDefault();
+    public handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        event.persist();
+
         if (this.state.search.timeout) {
             clearTimeout(this.state.search.timeout);
         }
-
-        this.setState({
-            ...this.state,
-            search: {
-                ...this.state.search,
-                input: event.target.value,
-                typing: false,
-                timeout: setTimeout(() => {
-                    this.search();
-                }, 250),
-            },
+        this.setState((prevState) => {
+            const prevInput = prevState.search.input;
+            return {
+                ...prevState,
+                search: {
+                    ...prevState.search,
+                    input: event.target.value,
+                    timeout: setTimeout(() => {
+                        this.search();
+                    }, 250),
+                    suggestions: prevInput.length > 2 ? prevState.search.suggestions : [],
+                },
+            }
         });
     }
 
