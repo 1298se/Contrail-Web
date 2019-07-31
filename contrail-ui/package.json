@@ -51,5 +51,5 @@
     "tslint": "^5.18.0",
     "tslint-react": "^4.0.0"
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000/contrail-fbase/us-central1/api"
 }

@@ -12,32 +12,11 @@ import React from "react";
 import styles from "./resourceListStyles";
 import * as types from "./resourceListView.types";
 
-function createData(
-    name: string,
-    resourceId: string,
-    owner: string,
-    dateCreated: string,
-    fileSize: number,
-): types.IData {
-    return { name, resourceId, owner, dateCreated, fileSize };
-}
-
-const rows = [
-    createData("Test.txt", "resId1", "Oliver Song", "Sunday", 16),
-    createData("Test.txt", "resId2", "Oliver Song", "Sunday", 16),
-    createData("Test.txt", "resId3", "Oliver Song", "Sunday", 16),
-    createData("Test.txt", "resId4", "Oliver Song", "Sunday", 16),
-    createData("Test.txt", "resId5", "Oliver Song", "Sunday", 16),
-    createData("Test.txt", "resId6", "Oliver Song", "Sunday", 16),
-    createData("Test.txt", "resId7", "Oliver Song", "Sunday", 16),
-    createData("Test.txt", "resId8", "Oliver Song", "Sunday", 16),
-];
-
 const headRows: types.IHeadRow[] = [
     { id: "name", numeric: false, label: "Name" },
     { id: "owner", numeric: false, label: "Owner" },
     { id: "dateCreated", numeric: false, label: "Date Created" },
-    { id: "fileSize", numeric: true, label: "File Size" },
+    { id: "size", numeric: true, label: "File Size" },
 ];
 
 function EnhancedTableHead(props: types.IEnhancedTableProps) {
@@ -79,7 +58,7 @@ EnhancedTableHead.propTypes = {
 
 const useStyles = makeStyles(styles);
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props: types.IResourceListProps) {
     const classes = useStyles();
     const [selected, setSelected] = React.useState<string[]>([]);
     const [page, setPage] = React.useState(0);
@@ -87,7 +66,7 @@ export default function EnhancedTable() {
 
     const isSelected = (name: string) => selected.includes(name);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.display.length - page * rowsPerPage);
     const rowHeight = 49;
 
     const renderEmptyRows = emptyRows > 0 && (
@@ -97,12 +76,12 @@ export default function EnhancedTable() {
     );
 
     const renderResourceRows =
-        rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        props.display.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
-                const isItemSelected = isSelected(row.resourceId);
+                const isItemSelected = isSelected(row.generation);
 
                 function handleClickWrapper(event: React.MouseEvent<unknown>) {
-                    handleClick(event, row.resourceId);
+                    handleClick(event, row.generation);
                 }
 
                 return (
@@ -111,7 +90,7 @@ export default function EnhancedTable() {
                         onClick={handleClickWrapper}
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.resourceId}
+                        key={row.generation}
                         selected={isItemSelected}
                     >
                         <TableCell padding="checkbox">
@@ -121,16 +100,16 @@ export default function EnhancedTable() {
                             />
                         </TableCell>
                         <TableCell align="left">{row.name}</TableCell>
-                        <TableCell align="left">{row.owner}</TableCell>
-                        <TableCell align="left">{row.dateCreated}</TableCell>
-                        <TableCell align="right">{row.fileSize}</TableCell>
+                        <TableCell align="left">{row.owner.displayName}</TableCell>
+                        <TableCell align="left">{row.timeCreated}</TableCell>
+                        <TableCell align="right">{row.size}</TableCell>
                     </TableRow>
                 );
             });
 
     function handleSelectAllClick(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.name);
+            const newSelecteds = props.display.map((n) => n.name);
             setSelected(newSelecteds);
         } else {
             setSelected([]);
@@ -176,7 +155,7 @@ export default function EnhancedTable() {
                         <EnhancedTableHead
                             numSelected={selected.length}
                             onSelectAllClick={handleSelectAllClick}
-                            rowCount={rows.length}
+                            rowCount={props.display.length}
                         />
                         <TableBody>
                             {renderResourceRows}
@@ -187,7 +166,7 @@ export default function EnhancedTable() {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
+                    count={props.display.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}

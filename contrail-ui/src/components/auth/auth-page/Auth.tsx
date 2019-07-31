@@ -1,6 +1,5 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import Snackbar from "@material-ui/core/Snackbar";
 import Typography from "@material-ui/core/Typography";
 import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { withStyles } from "@material-ui/styles";
@@ -9,9 +8,7 @@ import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import * as ROUTES from "../../../routes";
 import { IAppReduxState } from "../../../store/store.types";
-import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "../authStyles";
-import EmailVerificationDialog from "../email-verification-dialog/EmailVerificationDialog";
 import LoginForm from "../login-form/LoginForm";
 import RegisterForm from "../register-form/RegisterForm";
 import * as types from "./auth.type";

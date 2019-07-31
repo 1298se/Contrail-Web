@@ -2,7 +2,7 @@ const { db } = require("../utils/firebaseUtils")
 
 exports.getUserFiles = (req, res) => {
     const uid  = req.uid;
-    const docRef = db.collection("users").doc(uid).collection("resources").doc("root");
+    const docRef = db.collection("users").doc(uid).collection("root").doc("resources");
     docRef.get()
     .then((doc) => {
         if (doc.exists) {

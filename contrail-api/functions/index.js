@@ -7,6 +7,6 @@ app.get("/", (req, res) => {
     res.status(200).send({message: "Welcome to Contrail"});
 })
 
-app.get("/files", authMiddleware, getUserFiles);
+app.get("/resources", authMiddleware, getUserFiles);
 
 exports.api = functions.https.onRequest(app);

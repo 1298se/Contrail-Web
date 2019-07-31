@@ -1,9 +1,14 @@
+import { IResourceModel } from "../../../types/resource.types";
+
 export interface IData {
     name: string;
-    resourceId: string;
     owner: string;
     dateCreated: string;
-    fileSize: number;
+    size: number;
+}
+
+export interface IResourceListProps {
+    display: IResourceModel[];
 }
 
 export interface IHeadRow {

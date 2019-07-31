@@ -20,3 +20,10 @@ export const setAppUploadDialogOpen = (shouldDisplayDialog: boolean): types.IApp
         payload: shouldDisplayDialog,
     };
 };
+
+export const setAppResourceLoadingState = (isLoading: boolean): types.IAppSetResourceLoadingAction => {
+    return {
+        type: constants.APP_SET_LOADING_RESOURCE_STATE,
+        payload: isLoading,
+    };
+};

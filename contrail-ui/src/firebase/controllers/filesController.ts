@@ -56,9 +56,9 @@ export const writeFileToDB =
             owner,
             timeCreated,
         };
-        const userDocRef = dbRef.collection("users").doc(uid).collection("resources").doc("root");
+        const userDocRef = dbRef.collection("users").doc(uid).collection("root").doc("resources");
         batch.update(userDocRef, {
-            rootFiles: firebase.firestore.FieldValue.arrayUnion(newDoc),
+            root: firebase.firestore.FieldValue.arrayUnion(newDoc),
         });
 
         batch.commit()

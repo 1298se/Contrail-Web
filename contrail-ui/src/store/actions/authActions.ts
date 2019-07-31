@@ -1,3 +1,4 @@
+import axios from "axios";
 import { ThunkAction } from "redux-thunk";
 import * as auth from "../../firebase/controllers/authController";
 import { authRef } from "../../firebase/firebase";
@@ -19,6 +20,7 @@ export const setAuthListener =
             authRef.onAuthStateChanged((user) => {
                 if (user) {
                     auth.getUserToken().then((token) => {
+                        axios.defaults.headers.common.Authorization = `${token}`;
                         dispatch({
                             type: constants.AUTH_USER_FETCH_USER,
                             authUser: user,
@@ -32,6 +34,7 @@ export const setAuthListener =
                         authUser: null,
                         authToken: null,
                     });
+                    delete axios.defaults.headers.common.Authorization;
                     dispatch(setAppUserLoadingState(false));
                 }
             });

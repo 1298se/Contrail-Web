@@ -228,7 +228,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                 <div {...getRootProps({className: "dropzone"})}>
                     <input {...getInputProps()} />
                     <DialogContentText>
-                        Drag files here, or click below!
+                        Drag files here to upload!
                     </DialogContentText>
                     <div className={classes.paper}>
                         {renderUploadFiles}
