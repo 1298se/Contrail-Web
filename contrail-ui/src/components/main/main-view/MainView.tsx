@@ -4,6 +4,8 @@ import React, { Component } from "react";
 import ResourceFrame from "../../resources/ResourceFrame";
 import styles from "../mainStyles";
 import { MainViewProps } from "./mainView.type";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import * as ROUTES from "../../../routes";
 
 class MainView extends Component<MainViewProps, {}> {
     public render() {
@@ -12,7 +14,9 @@ class MainView extends Component<MainViewProps, {}> {
             <div className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container className={classes.container}>
-                    <ResourceFrame />
+                    <Router>
+                        <Route path={ROUTES.MAIN} component={ResourceFrame} />
+                    </Router>
                 </Container>
             </div>
         );
