@@ -15,7 +15,7 @@ export const fetchRootResources =
                     if (response.status === 200) {
                         dispatch(setAppResourceLoadingState(false));
                         dispatch({
-                            type: constants.APP_SET_LOADING_RESOURCE_STATE,
+                            type: constants.RESOURCE_FETCH_ALL,
                             payload: response.data,
                         });
                         resolve();

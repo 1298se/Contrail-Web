@@ -65,7 +65,7 @@ export function registerUser(displayName: string, email: string, password: strin
 
 export function addUserToDb(user: firebase.User): Promise<any> {
     return new Promise((resolve, reject) => {
-        dbRef.collection("users").doc(user.uid).collection("resources").doc("root").set({
+        dbRef.collection("users").doc(user.uid).collection("root").doc("resources").set({
             root: [],
             favourites: [],
             trash: [],

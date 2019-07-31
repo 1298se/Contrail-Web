@@ -7,12 +7,6 @@ import { IAppReduxState } from "../../../store/store.types";
 import * as types from "./AuthorizedRoute.type";
 
 class AuthorizedRoute extends Component<types.IAuthorizedProps> {
-    public componentDidMount() {
-        const { authToken } = this.props;
-        if (authToken) {
-            axios.defaults.headers.common.Authorization = `bearer ${authToken}`;
-        }
-    }
     public render() {
         const { component: AuthorizedComponent, authToken, authUser, path } = this.props;
         const isAuth =  authToken && authUser && authUser.emailVerified;
