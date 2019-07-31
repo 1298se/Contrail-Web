@@ -1,4 +1,5 @@
-import { withStyles, Box } from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
 import Dialog from "@material-ui/core/Dialog";
@@ -10,7 +11,6 @@ import Paper from "@material-ui/core/Paper";
 import Snackbar from "@material-ui/core/Snackbar";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
 import Downshift from "downshift";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
@@ -40,19 +40,25 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
     };
 
     public search = () => {
-        searchUsers(this.state.search.input)
-            .then((newOptions) => {
-                this.setState({
-                    ...this.state,
-                    search: {
-                        ...this.state.search,
-                        suggestions: newOptions.filter((option: types.ISuggestion) => !this.state.search.selected.includes(option.email)),
-                    },
+        if (this.props.user) {
+            const user = this.props.user;
+            searchUsers(this.state.search.input)
+                .then((newOptions) => {
+                    this.setState({
+                        ...this.state,
+                        search: {
+                            ...this.state.search,
+                            suggestions: newOptions.filter((option: types.ISuggestion) => {
+                                return !(this.state.search.selected.includes(option.email) ||
+                                    option.email === user.email);
+                            }),
+                        },
+                    });
+                })
+                .catch((error) => {
+                    this.setSnackbarError(error);
                 });
-            })
-            .catch((error) => {
-                this.setSnackbarError(error);
-            });
+        }
     }
 
     public handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -102,6 +108,24 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 selected: selectedItems,
             },
         });
+    }
+
+    public handleCancel = () => {
+        this.setState({
+            ...this.state,
+            search: {
+                ...this.state.search,
+                input: "",
+                suggestions: [] as types.ISuggestion[],
+                selected: [],
+            },
+        });
+        this.props.setDialogOpen(false);
+    }
+
+    public handleSubmit = () => {
+        const selected = this.state.search.selected;
+        console.log(selected);
     }
 
     public setSnackbarError = (errorMessage: any) => {
@@ -273,16 +297,18 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                             component="span"
                             variant="contained"
                             color="primary"
+                            onClick={this.handleCancel}
                         >
                             Cancel
-                    </Button>
+                        </Button>
                         <Button
                             component="span"
                             variant="contained"
                             color="primary"
+                            onClick={this.handleSubmit}
                         >
                             Share
-                    </Button>
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </div >

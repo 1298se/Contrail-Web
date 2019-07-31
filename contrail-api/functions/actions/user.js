@@ -34,7 +34,6 @@ listAllUsers = () => {
 }
 
 exports.searchUsers = (req, res) => {
-    if (!req.query.where_query) return res.status(500).send("No query found");
     const query = (req.query.where_query).toLowerCase();
     return listAllUsers()
         .then((users) => {
