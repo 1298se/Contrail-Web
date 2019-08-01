@@ -75,19 +75,19 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
             <React.Fragment>
                 <ResourceToolBar />
                 <div className={classes.appBarSpacer} />
-                <Router>
-                    <Snackbar
-                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                        open={shouldDisplaySnackbar}
+                <Snackbar
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    open={shouldDisplaySnackbar}
+                    onClose={this.handleSnackbarClose}
+                    onExited={this.clearSnackbarMessage}
+                >
+                    <SnackbarContentWrapper
+                        message={String(snackbarMessage)}
+                        variant={snackbarVariant}
                         onClose={this.handleSnackbarClose}
-                        onExited={this.clearSnackbarMessage}
-                    >
-                        <SnackbarContentWrapper
-                            message={String(snackbarMessage)}
-                            variant={snackbarVariant}
-                            onClose={this.handleSnackbarClose}
-                        />
-                    </Snackbar>
+                    />
+                </Snackbar>
+                <Router>
                     <Route path={`${match.path}/files`} render={renderRootResources} />
                     <Route path={`${match.path}/favourites`} render={renderFavouriteResources} />
                     <Route path={`${match.path}/shared`} render={renderSharedResources} />

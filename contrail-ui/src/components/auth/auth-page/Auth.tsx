@@ -20,7 +20,7 @@ class Auth extends Component<types.AuthProps, {}> {
 
         if (authUser && authToken && authUser.emailVerified) {
             return (
-                <Redirect to={ROUTES.MAIN} />
+                <Redirect to={ROUTES.FILES} />
             );
         }
 
