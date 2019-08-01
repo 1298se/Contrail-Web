@@ -4,18 +4,23 @@ import React, { Component } from "react";
 import ResourceFrame from "../../resources/ResourceFrame";
 import styles from "../mainStyles";
 import { MainViewProps } from "./mainView.type";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import * as ROUTES from "../../../routes";
 
 class MainView extends Component<MainViewProps, {}> {
     public render() {
         const { classes } = this.props;
+        const DefaultRedirect = () => <Redirect to={ROUTES.FILES} />;
+
         return (
             <div className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container className={classes.container}>
                     <Router>
-                        <Route path={ROUTES.MAIN} component={ResourceFrame} />
+                        <Switch>
+                            <Route path={ROUTES.MAIN} exact={true} component={DefaultRedirect} />
+                            <Route path={ROUTES.MAIN} component={ResourceFrame} />
+                        </Switch>
                     </Router>
                 </Container>
             </div>
