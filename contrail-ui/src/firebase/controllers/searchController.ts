@@ -21,4 +21,4 @@ export const searchUsers = (query: string): Promise<any> => {
                 reject(error);
             });
     });
-}
+};

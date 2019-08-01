@@ -1,4 +1,5 @@
 import { WithStyles } from "@material-ui/core";
+import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 import { ISnackbarDisplay } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
 import styles from "../authStyles";
 
@@ -23,7 +24,7 @@ export interface IFormErrors {
     passwordError: string;
 }
 
-export interface ILoginFormOwnProps extends WithStyles<typeof styles> {
+export interface ILoginFormOwnProps extends WithStyles<typeof styles>, ISnackbarInjectProps {
 }
 
 export type LoginFormProps = ILoginFormOwnProps;

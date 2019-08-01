@@ -4,14 +4,13 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
-import Snackbar from "@material-ui/core/Snackbar";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import * as auth from "../../../firebase/controllers/authController";
-import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
+import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import styles from "../authStyles";
 import EmailVerificationDialog from "../email-verification-dialog/EmailVerificationDialog";
 import * as types from "./loginForm.type";
@@ -111,7 +110,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                 });
             }
         }).catch((error) => {
-            this.setSnackbarError(error);
+            this.props.setSnackbarDisplay("error", error.message);
             this.setState({
                 isLoggingInUser: false,
             });
@@ -121,36 +120,6 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
     public handleDialogClose = () => {
         this.setState({
             shouldDisplayDialog: false,
-        });
-    }
-
-    public setSnackbarError = (errorMessage: any) => {
-        this.setState({
-            snackbarDisplay: {
-                snackbarVariant: "error",
-                snackbarMessage: errorMessage,
-                shouldDisplaySnackbar: true,
-            },
-        });
-    }
-
-    // For closing an opened Snackbar. Must be executed first before clearing the snackbar message.
-    public handleSnackbarClose = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                shouldDisplaySnackbar: false,
-            },
-        });
-    }
-
-    // Clears the snackbar message.
-    public clearSnackbarMessage = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                snackbarMessage: null,
-            },
         });
     }
 
@@ -169,20 +138,8 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                 <EmailVerificationDialog
                     shouldDisplayDialog={this.state.shouldDisplayDialog}
                     handleDialogClose={this.handleDialogClose}
-                    setSnackbarError={this.setSnackbarError}
+                    setSnackbarDisplay={this.props.setSnackbarDisplay}
                 />
-                <Snackbar
-                    anchorOrigin={{vertical: "bottom", horizontal: "center"}}
-                    open={shouldDisplaySnackbar}
-                    onClose={this.handleSnackbarClose}
-                    onExited={this.clearSnackbarMessage}
-                >
-                    <SnackbarContentWrapper
-                        message={String(snackbarMessage)}
-                        variant={snackbarVariant}
-                        onClose={this.handleSnackbarClose}
-                    />
-                </Snackbar>
                 <Paper className={classes.paper}>
                     <Typography component="h1" variant="h5">
                         Log In
@@ -243,4 +200,4 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
     }
 }
 
-export default withStyles(styles)(LoginForm);
+export default withSnackbar(withStyles(styles)(LoginForm));
