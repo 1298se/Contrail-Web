@@ -1,12 +1,10 @@
 import { WithStyles } from "@material-ui/core";
 import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
-import { ISnackbarDisplay } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
 import styles from "../authStyles";
 
 export interface ILoginFormState {
     values: IFormValues;
     formErrors: IFormErrors;
-    snackbarDisplay: ISnackbarDisplay;
     shouldDisplayDialog: boolean;
     isFormValid: boolean;
     isLoggingInUser: boolean;

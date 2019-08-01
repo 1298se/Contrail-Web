@@ -1,11 +1,10 @@
 import { WithStyles } from "@material-ui/core";
-import { ISnackbarDisplay } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
+import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 import styles from "../authStyles";
 
 export interface IRegisterFormState {
     values: IFormValues;
     formErrors: IFormErrors;
-    snackbarDisplay: ISnackbarDisplay;
     isFormValid: boolean;
     isRegisteringUser: boolean;
 }
@@ -23,7 +22,7 @@ export interface IFormErrors {
     emailError: string;
     passwordError: string;
 }
-export interface IRegisterFormOwnProps extends WithStyles<typeof styles> {
+export interface IRegisterFormOwnProps extends WithStyles<typeof styles>, ISnackbarInjectProps {
 }
 
 export type RegisterFormProps = IRegisterFormOwnProps;

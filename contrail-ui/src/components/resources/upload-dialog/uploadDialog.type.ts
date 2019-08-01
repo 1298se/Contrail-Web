@@ -1,12 +1,11 @@
 import { WithStyles } from "@material-ui/core";
-import { ISnackbarDisplay } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
+import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 import styles from "./uploadDialogStyles";
 
 export interface IUploadDialogState {
     files: File[];
     uploadProgress: Map<string, number>;
     uploadState: Map<string, string>;
-    snackbarDisplay: ISnackbarDisplay;
 }
 
 export interface IUploadDialogStateProps {
@@ -18,7 +17,7 @@ export interface IUploadDialogDispatchProps {
     setDialogOpen: (shouldDisplay: boolean) => void;
 }
 
-export interface IUploadDialogOwnProps extends WithStyles<typeof styles> {
+export interface IUploadDialogOwnProps extends WithStyles<typeof styles>, ISnackbarInjectProps {
 }
 
 export type IUploadDialogProps = IUploadDialogOwnProps & IUploadDialogStateProps & IUploadDialogDispatchProps;

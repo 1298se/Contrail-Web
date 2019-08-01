@@ -1,4 +1,3 @@
-import Snackbar from "@material-ui/core/Snackbar";
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -7,56 +6,19 @@ import { ThunkDispatch } from "redux-thunk";
 import { fetchRootResources } from "../../store/actions/resourceActions";
 import { IResourceFetchAllAction } from "../../store/actions/resourceActions.types";
 import { IAppReduxState } from "../../store/store.types";
-import SnackbarContentWrapper from "../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
+import withSnackbar from "../feedback/snackbar-component/SnackbarComponent";
 import ResourceListView from "./resource-list-view/ResourceListView";
 import ResourceToolBar from "./resource-tool-bar/ResourceToolBar";
 import * as types from "./resourceFrame.types";
 import styles from "./resourceStyles";
 
-class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceFrameState> {
-    public state: types.IResourceFrameState = {
-        snackbarDisplay: {
-            snackbarVariant: "error",
-            snackbarMessage: null,
-            shouldDisplaySnackbar: false,
-        },
-    };
+class ResourceFrame extends Component<types.ResourceFrameProps, {}> {
 
     public componentDidMount() {
         this.props.fetchRootResources()
             .catch((error) => {
-                this.setSnackbarError("Failed to load resources: " + error);
+                this.props.setSnackbarDisplay("error", "Failed to load resources: " + error.response);
             });
-    }
-
-    public setSnackbarError = (errorMessage: any) => {
-        this.setState({
-            snackbarDisplay: {
-                snackbarVariant: "error",
-                snackbarMessage: errorMessage,
-                shouldDisplaySnackbar: true,
-            },
-        });
-    }
-
-    // For closing an opened Snackbar. Must be executed first before clearing the snackbar message.
-    public handleSnackbarClose = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                shouldDisplaySnackbar: false,
-            },
-        });
-    }
-
-    // Clears the snackbar message.
-    public clearSnackbarMessage = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                snackbarMessage: null,
-            },
-        });
     }
 
     public render() {
@@ -64,7 +26,6 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
         const { userResources } = this.props;
         const { match } = this.props;
         const sharedResources = userResources.sharedBy.concat(userResources.sharedTo);
-        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
 
         const renderRootResources = () => <ResourceListView display={userResources.root} />;
         const renderFavouriteResources = () => <ResourceListView display={userResources.favourites} />;
@@ -75,18 +36,6 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
             <React.Fragment>
                 <ResourceToolBar />
                 <div className={classes.appBarSpacer} />
-                <Snackbar
-                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={shouldDisplaySnackbar}
-                    onClose={this.handleSnackbarClose}
-                    onExited={this.clearSnackbarMessage}
-                >
-                    <SnackbarContentWrapper
-                        message={String(snackbarMessage)}
-                        variant={snackbarVariant}
-                        onClose={this.handleSnackbarClose}
-                    />
-                </Snackbar>
                 <Router>
                     <Route path={`${match.path}/files`} render={renderRootResources} />
                     <Route path={`${match.path}/favourites`} render={renderFavouriteResources} />
@@ -111,4 +60,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IResourceFetchAllA
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ResourceFrame));
+export default connect(mapStateToProps, mapDispatchToProps)(withSnackbar(withStyles(styles)(ResourceFrame)));

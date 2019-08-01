@@ -26,11 +26,6 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
             emailError: "",
             passwordError: "",
         },
-        snackbarDisplay: {
-            snackbarVariant: "error",
-            snackbarMessage: null,
-            shouldDisplaySnackbar: false,
-        },
         shouldDisplayDialog: false,
         isFormValid: false,
         isLoggingInUser: false,
@@ -127,7 +122,6 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
         const { classes } = this.props;
         const { email, password } = this.state.values;
         const { emailError, passwordError } = this.state.formErrors;
-        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
 
         const buttonContent = this.state.isLoggingInUser ?
         <CircularProgress size={20} className={classes.circleProgress} /> :

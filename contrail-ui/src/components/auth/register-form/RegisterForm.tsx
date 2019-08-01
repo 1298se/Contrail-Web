@@ -4,14 +4,13 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
-import Snackbar from "@material-ui/core/Snackbar";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/styles";
 import React, { ChangeEvent, Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import * as auth from "../../../firebase/controllers/authController";
-import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
+import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import styles from "../authStyles";
 import * as types from "./registerForm.type";
 
@@ -27,11 +26,6 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             displayNameError: "",
             emailError: "",
             passwordError: "",
-        },
-        snackbarDisplay: {
-            snackbarVariant: "error",
-            snackbarMessage: null,
-            shouldDisplaySnackbar: false,
         },
         isFormValid: false,
         isRegisteringUser: false,
@@ -105,52 +99,23 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
 
         auth.registerUser(displayName, email, password)
             .then(() => {
+                this.props.setSnackbarDisplay("success", `Registration successful. \
+                An email has been sent to ${email} for verification.`);
                 this.setState({
-                    snackbarDisplay: {
-                        snackbarVariant: "success",
-                        snackbarMessage: `Registration successful. \
-                        An email has been sent to ${email} for verification.`,
-                        shouldDisplaySnackbar: true,
-                    },
                     isRegisteringUser: false,
                 });
             }).catch((error) => {
+                this.props.setSnackbarDisplay("error", error.message);
                 this.setState({
-                    snackbarDisplay: {
-                        snackbarVariant: "error",
-                        snackbarMessage: error,
-                        shouldDisplaySnackbar: true,
-                    },
                     isRegisteringUser: false,
                 });
             });
-    }
-
-    // Closes the snackbar. This must be executed before clearing the snackbar message.
-    public handleSnackbarClose = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                shouldDisplaySnackbar: false,
-            },
-        });
-    }
-
-    // Clears the snackbar message.
-    public clearSnackbarMessage = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                snackbarMessage: null,
-            },
-        });
     }
 
     public render() {
         const { classes } = this.props;
         const { displayName, email, password } = this.state.values;
         const { displayNameError, emailError, passwordError } = this.state.formErrors;
-        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
 
         const buttonContent = this.state.isRegisteringUser ?
         <CircularProgress size={20} className={classes.circleProgress} /> :
@@ -158,18 +123,6 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
 
         return (
             <Container maxWidth="sm">
-                <Snackbar
-                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={shouldDisplaySnackbar}
-                    onClose={this.handleSnackbarClose}
-                    onExited={this.clearSnackbarMessage}
-                >
-                    <SnackbarContentWrapper
-                        message={String(snackbarMessage)}
-                        variant={snackbarVariant}
-                        onClose={this.handleSnackbarClose}
-                    />
-                </Snackbar>
                 <Paper className={classes.paper}>
                     <Typography component="h1" variant="h5">
                         Register
@@ -244,4 +197,4 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
     }
 }
 
-export default withStyles(styles)(RegisterForm);
+export default withSnackbar(withStyles(styles)(RegisterForm));
