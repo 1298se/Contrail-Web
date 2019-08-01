@@ -1,6 +1,8 @@
 import { withStyles } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import React, { Component } from "react";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import * as ROUTES from "../../../routes";
 import ResourceFrame from "../../resources/ResourceFrame";
 import styles from "../mainStyles";
 import { MainViewProps } from "./mainView.type";
@@ -8,11 +10,18 @@ import { MainViewProps } from "./mainView.type";
 class MainView extends Component<MainViewProps, {}> {
     public render() {
         const { classes } = this.props;
+        const DefaultRedirect = () => <Redirect to={ROUTES.FILES} />;
+
         return (
             <div className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container className={classes.container}>
-                    <ResourceFrame />
+                    <Router>
+                        <Switch>
+                            <Route path={ROUTES.MAIN} exact={true} component={DefaultRedirect} />
+                            <Route path={ROUTES.MAIN} component={ResourceFrame} />
+                        </Switch>
+                    </Router>
                 </Container>
             </div>
         );

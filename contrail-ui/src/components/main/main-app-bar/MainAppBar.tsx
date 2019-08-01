@@ -14,9 +14,6 @@ import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/Snac
 import styles from "./appBarStyles";
 import * as types from "./mainAppBar.type";
 
-// TODO: Currently, it logs the user out because the authStateChangedListener responds to network failure
-// and redirects the user to login. Needs to be changed to redirect back to login page AFTER
-// logout is complete (e.g.) do not let a redux state update if the user disconnects from WIFI
 class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState> {
     public state = {
         anchorEl: null,
@@ -37,7 +34,6 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
     }
 
     public handleLogoutClick = () => {
-        // TODO: Handle Errors
         this.handleMenuClose();
         auth.logoutUser()
         .catch((error) => {

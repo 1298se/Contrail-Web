@@ -25,7 +25,7 @@ export const fetchRootResources =
                 })
                 .catch((error) => {
                     dispatch(setAppResourceLoadingState(false));
-                    reject(error);
+                    reject(error.message);
                 });
             });
         };
