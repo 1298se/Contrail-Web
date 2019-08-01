@@ -1,11 +1,11 @@
 import { withStyles } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import React, { Component } from "react";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import * as ROUTES from "../../../routes";
 import ResourceFrame from "../../resources/ResourceFrame";
 import styles from "../mainStyles";
 import { MainViewProps } from "./mainView.type";
-import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
-import * as ROUTES from "../../../routes";
 
 class MainView extends Component<MainViewProps, {}> {
     public render() {
