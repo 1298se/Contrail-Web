@@ -15,8 +15,13 @@ export interface IAppSetUploadDialogOpenAction extends Action<constants.APP_SET_
     type: constants.APP_SET_UPLOAD_DIALOG_OPEN;
     payload: boolean;
 }
+export interface IAppSetShareDialogOpenAction extends Action<constants.APP_SET_SHARE_DIALOG_OPEN> {
+    type: constants.APP_SET_SHARE_DIALOG_OPEN;
+    payload: boolean;
+}
 
 export type AppUiStateActions =
 | IAppSetUserLoadingAction
 | IAppSetUploadDialogOpenAction
-| IAppSetResourceLoadingAction;
+| IAppSetResourceLoadingAction
+| IAppSetShareDialogOpenAction;

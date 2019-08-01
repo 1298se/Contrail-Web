@@ -6,6 +6,7 @@ export interface IAppUiState {
 
 export interface IAppDialogState {
     uploadDialogOpen: boolean;
+    shareDialogOpen: boolean;
 }
 
 export interface IAppLoadingState {
