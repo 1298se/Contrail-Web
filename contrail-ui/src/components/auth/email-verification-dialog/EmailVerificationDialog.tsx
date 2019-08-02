@@ -16,7 +16,7 @@ const EmailVerificationDialog = (props: EmailVerificationDialogProps) => {
         })
         .catch((error) => {
             handleDismissClick();
-            props.setSnackbarError(error);
+            props.setSnackbarDisplay("error", error);
         });
     };
 
@@ -27,7 +27,7 @@ const EmailVerificationDialog = (props: EmailVerificationDialogProps) => {
         })
         .catch((error) => {
             props.handleDialogClose();
-            props.setSnackbarError(error);
+            props.setSnackbarDisplay("error", error);
         });
     };
 

@@ -8,7 +8,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
-import Snackbar from "@material-ui/core/Snackbar";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Downshift from "downshift";
@@ -19,7 +18,7 @@ import { searchUsers } from "../../../firebase/controllers/searchController";
 import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
 import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
 import { IAppReduxState } from "../../../store/store.types";
-import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
+import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import * as types from "./shareDialog.types";
 import styles from "./shareDialogStyles";
 
@@ -30,11 +29,6 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             timeout: null,
             suggestions: [] as types.ISuggestion[],
             selected: [],
-        },
-        snackbarDisplay: {
-            snackbarVariant: "error",
-            snackbarMessage: null,
-            shouldDisplaySnackbar: false,
         },
     };
 
@@ -56,7 +50,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     });
                 })
                 .catch((error) => {
-                    this.setSnackbarError(error);
+                    this.props.setSnackbarDisplay("error", error.message);
                 });
         }
     }
@@ -79,7 +73,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     }, 250),
                     suggestions: prevInput.length > 2 ? prevState.search.suggestions : [],
                 },
-            }
+            };
         });
     }
 
@@ -127,44 +121,14 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
     }
 
     public handleSubmit = () => {
+        // TODO: Fill function to share the resource to the selected users.
         const selected = this.state.search.selected;
         console.log(selected);
-    }
-
-    public setSnackbarError = (errorMessage: any) => {
-        this.setState({
-            snackbarDisplay: {
-                snackbarVariant: "error",
-                snackbarMessage: errorMessage,
-                shouldDisplaySnackbar: true,
-            },
-        });
-    }
-
-    // For closing an opened Snackbar. Must be executed first before clearing the snackbar message.
-    public handleSnackbarClose = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                shouldDisplaySnackbar: false,
-            },
-        });
-    }
-
-    // Clears the snackbar message.
-    public clearSnackbarMessage = () => {
-        this.setState({
-            snackbarDisplay: {
-                ...this.state.snackbarDisplay,
-                snackbarMessage: null,
-            },
-        });
     }
 
     public render() {
         const { classes, dialogOpen } = this.props;
         const { input, suggestions, selected } = this.state.search;
-        const { snackbarVariant, snackbarMessage, shouldDisplaySnackbar } = this.state.snackbarDisplay;
         // tslint:disable: jsx-wrap-multiline
         // tslint:disable: jsx-no-multiline-js
 
@@ -274,18 +238,6 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
 
         return (
             <div>
-                <Snackbar
-                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={shouldDisplaySnackbar}
-                    onClose={this.handleSnackbarClose}
-                    onExited={this.clearSnackbarMessage}
-                >
-                    <SnackbarContentWrapper
-                        message={String(snackbarMessage)}
-                        variant={snackbarVariant}
-                        onClose={this.handleSnackbarClose}
-                    />
-                </Snackbar>
                 <Dialog
                     open={dialogOpen}
                     aria-labelledby="form-dialog-title"
@@ -334,4 +286,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetShareDialog
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ShareDialog));
+export default connect(mapStateToProps, mapDispatchToProps)(withSnackbar(withStyles(styles)(ShareDialog)));

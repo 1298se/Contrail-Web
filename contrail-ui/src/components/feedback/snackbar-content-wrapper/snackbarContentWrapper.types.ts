@@ -3,7 +3,7 @@ import ErrorIcon from "@material-ui/icons/Error";
 import InfoIcon from "@material-ui/icons/Info";
 import WarningIcon from "@material-ui/icons/Warning";
 
-export const variant = {
+export const snackbarVariant = {
     success: CheckCircleIcon,
     warning: WarningIcon,
     error: ErrorIcon,
@@ -11,7 +11,7 @@ export const variant = {
 };
 
 export interface ISnackbarDisplay {
-    snackbarVariant: keyof typeof variant;
+    snackbarVariant: keyof typeof snackbarVariant;
     snackbarMessage: string | null;
     shouldDisplaySnackbar: boolean;
 }
@@ -20,7 +20,7 @@ export interface ISnackbarOwnProps {
     className?: string;
     message: string | null;
     onClose?: () => void;
-    variant: keyof typeof variant;
+    variant: keyof typeof snackbarVariant;
 }
 
 export type SnackbarProps = ISnackbarOwnProps;

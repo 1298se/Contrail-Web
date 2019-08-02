@@ -1,6 +1,5 @@
 import { WithStyles } from "@material-ui/core";
 import { RouteComponentProps } from "react-router-dom";
-import { variant } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
 import styles from "../authStyles";
 
 export interface IAuthOwnProps extends WithStyles<typeof styles>, RouteComponentProps {

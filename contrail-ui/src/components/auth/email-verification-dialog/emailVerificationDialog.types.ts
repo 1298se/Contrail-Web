@@ -1,6 +1,8 @@
+import { snackbarVariant } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
+
 export interface IEmailVerificationDialogOwnProps {
     shouldDisplayDialog: boolean;
-    setSnackbarError: (error: string) => void;
+    setSnackbarDisplay: (variant: keyof typeof snackbarVariant, message: any) => void;
     handleDialogClose: () => void;
 }
 

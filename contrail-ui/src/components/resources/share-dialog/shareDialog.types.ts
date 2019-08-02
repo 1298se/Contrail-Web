@@ -1,11 +1,9 @@
 import { WithStyles } from "@material-ui/core";
-import { TextFieldProps } from "@material-ui/core/TextField/TextField";
-import { ISnackbarDisplay } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
+import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 import styles from "./shareDialogStyles";
 
 export interface IShareDialogState {
     search: ISearchValues;
-    snackbarDisplay: ISnackbarDisplay;
 }
 
 export interface ISearchValues {
@@ -30,7 +28,7 @@ export interface IShareDialogDispatchProps {
     setDialogOpen: (shouldDisplay: boolean) => void;
 }
 
-export interface IShareDialogOwnProps extends WithStyles<typeof styles> {
+export interface IShareDialogOwnProps extends WithStyles<typeof styles>, ISnackbarInjectProps {
 }
 
 export type IShareDialogProps = IShareDialogOwnProps & IShareDialogStateProps & IShareDialogDispatchProps;

@@ -1,5 +1,5 @@
 export interface IAuthorizedOwnProps {
-    component?: any;
+    component: React.ComponentType;
     path: string;
 }
 
