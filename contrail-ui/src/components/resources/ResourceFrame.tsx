@@ -12,7 +12,10 @@ import ResourceToolBar from "./resource-tool-bar/ResourceToolBar";
 import * as types from "./resourceFrame.types";
 import styles from "./resourceStyles";
 
-class ResourceFrame extends Component<types.ResourceFrameProps, {}> {
+class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceFrameState> {
+    public state = {
+        unsubscribeListener: () => null,
+    };
 
     public componentDidMount() {
         this.props.fetchRootResources()
@@ -20,9 +23,18 @@ class ResourceFrame extends Component<types.ResourceFrameProps, {}> {
                 this.props.setSnackbarDisplay("error", "Failed to load resources: " + error.response);
             });
         this.props.setResourceListener()
+        .then((unsubscribe) => {
+            this.setState({
+                unsubscribeListener: unsubscribe,
+            });
+        })
         .catch((error) => {
             this.props.setSnackbarDisplay("error", "Failed to fetch resources: " + error.response);
         });
+    }
+
+    public componentWillUnmount() {
+        this.state.unsubscribeListener();
     }
 
     public render() {

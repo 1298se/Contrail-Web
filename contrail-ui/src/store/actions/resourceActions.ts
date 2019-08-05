@@ -35,25 +35,27 @@ export const fetchRootResources =
 export const setResourceListener =
     (): ThunkAction<Promise<any>, {}, null, actions.IResourceFetchAllAction> =>
         (dispatch) => {
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
                 const user = authRef.currentUser;
                 if (user == null) {
                     reject("current user is null");
                     return;
                 }
                 const doc = dbRef.collection("users").doc(`${user.uid}`).collection("root").doc("resources");
-                doc.onSnapshot((docSnapshot) => {
-                    if (docSnapshot.data === undefined) {
-                        reject("snapshot data is undefined");
-                        return;
-                    }
-                    dispatch({
-                        type: constants.RESOURCE_FETCH_ALL,
-                        payload: docSnapshot.data() as IUserResources,
+                try {
+                    const unsubscribe = await doc.onSnapshot((docSnapshot) => {
+                        if (docSnapshot.data === undefined) {
+                            reject("snapshot data is undefined");
+                            return;
+                        }
+                        dispatch({
+                            type: constants.RESOURCE_FETCH_ALL,
+                            payload: docSnapshot.data() as IUserResources,
+                        });
                     });
-                    resolve();
-                }, (error) => {
+                    resolve(unsubscribe);
+                } catch (error) {
                     reject(error);
-                });
+                }
             });
         };

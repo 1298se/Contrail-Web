@@ -27,6 +27,10 @@ export interface IResourceFrameOwnProps extends WithStyles<typeof styles>,
     ISnackbarInjectProps {
 }
 
+export interface IResourceFrameState {
+    unsubscribeListener: () => void;
+}
+
 export type ResourceFrameProps =
     IResourceFrameStateProps &
     IResourceFrameDispatchProps &
