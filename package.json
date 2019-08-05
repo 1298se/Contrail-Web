@@ -8,7 +8,7 @@
     "installApi": "cd contrail-api && cd functions && npm install",
     "installUi": "cd contrail-ui && npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"cd contrail-ui && npm start\" \"cd contrail-api && npm start\""
+    "start": "concurrently \"cd contrail-ui && npm start\" \"cd contrail-api && cd functions && firebase serve"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,7 @@
     "url": "https://github.com/1298se/Contrail-Web/issues"
   },
   "homepage": "https://github.com/1298se/Contrail-Web#readme",
-  "dependencies": {}
+  "dependencies": {
+    "concurrently": "^4.1.1"
+  }
 }
