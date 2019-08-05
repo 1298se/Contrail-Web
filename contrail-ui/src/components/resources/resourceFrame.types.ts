@@ -19,6 +19,7 @@ export interface IResourceFrameStateProps {
 
 export interface IResourceFrameDispatchProps {
     fetchRootResources: () => Promise<any>;
+    setResourceListener: () => Promise<any>;
 }
 
 export interface IResourceFrameOwnProps extends WithStyles<typeof styles>,

@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
-import { fetchRootResources } from "../../store/actions/resourceActions";
+import { fetchRootResources, setResourceListener } from "../../store/actions/resourceActions";
 import { IResourceFetchAllAction } from "../../store/actions/resourceActions.types";
 import { IAppReduxState } from "../../store/store.types";
 import withSnackbar from "../feedback/snackbar-component/SnackbarComponent";
@@ -19,6 +19,10 @@ class ResourceFrame extends Component<types.ResourceFrameProps, {}> {
             .catch((error) => {
                 this.props.setSnackbarDisplay("error", "Failed to load resources: " + error.response);
             });
+        this.props.setResourceListener()
+        .catch((error) => {
+            this.props.setSnackbarDisplay("error", "Failed to fetch resources: " + error.response);
+        });
     }
 
     public render() {
@@ -57,6 +61,7 @@ const mapStateToProps = (state: IAppReduxState): types.IResourceFrameStateProps 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IResourceFetchAllAction>) => {
     return {
         fetchRootResources: () => dispatch(fetchRootResources()),
+        setResourceListener: () => dispatch(setResourceListener()),
     };
 };
 
