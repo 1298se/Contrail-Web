@@ -20,7 +20,7 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
     public componentDidMount() {
         this.props.fetchRootResources()
             .catch((error) => {
-                this.props.setSnackbarDisplay("error", "Failed to load resources: " + error.response);
+                this.props.setSnackbarDisplay("error", "Failed to load resources: " + error);
             });
         this.props.setResourceListener()
         .then((unsubscribe) => {
@@ -29,7 +29,7 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
             });
         })
         .catch((error) => {
-            this.props.setSnackbarDisplay("error", "Failed to fetch resources: " + error.response);
+            this.props.setSnackbarDisplay("error", "Failed to sync resources: " + error);
         });
     }
 

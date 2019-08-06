@@ -22,12 +22,12 @@ export const fetchRootResources =
                             dispatch(setAppResourceLoadingState(false));
                             resolve();
                         } else {
-                            // TODO: Handle error response
+                            reject(response.statusText);
                         }
                     })
                     .catch((error) => {
                         dispatch(setAppResourceLoadingState(false));
-                        reject(error.message);
+                        reject(error.response.data);
                     });
             });
         };
@@ -41,7 +41,7 @@ export const setResourceListener =
                     reject("current user is null");
                     return;
                 }
-                const doc = dbRef.collection("users").doc(`${user.uid}`).collection("root").doc("resources");
+                const doc = dbRef.collection("users").doc(user.uid).collection("root").doc("resources");
                 try {
                     const unsubscribe = await doc.onSnapshot((docSnapshot) => {
                         if (docSnapshot.data === undefined) {
@@ -55,7 +55,7 @@ export const setResourceListener =
                     });
                     resolve(unsubscribe);
                 } catch (error) {
-                    reject(error);
+                    reject(error.message);
                 }
             });
         };
