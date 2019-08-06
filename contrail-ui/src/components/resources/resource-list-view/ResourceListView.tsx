@@ -1,15 +1,16 @@
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
+import clsx from "clsx";
+import moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
-import styles from "./resourceListStyles";
+import useStyles from "./resourceListStyles";
 import * as types from "./resourceListView.types";
 
 const headRows: types.IHeadRow[] = [
@@ -20,11 +21,13 @@ const headRows: types.IHeadRow[] = [
 ];
 
 function EnhancedTableHead(props: types.IEnhancedTableProps) {
+    const classes = useStyles();
     const { onSelectAllClick, numSelected, rowCount } = props;
 
     const renderHeadRows = headRows.map((row) => (
         <TableCell
             key={row.id}
+            className={classes.column}
             align={row.numeric ? "right" : "left"}
             padding="default"
         >
@@ -56,8 +59,6 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-const useStyles = makeStyles(styles);
-
 export default function EnhancedTable(props: types.IResourceListProps) {
     const classes = useStyles();
     const [selected, setSelected] = React.useState<string[]>([]);
@@ -77,7 +78,7 @@ export default function EnhancedTable(props: types.IResourceListProps) {
 
     const renderResourceRows =
         props.display.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row, index) => {
+            .map((row) => {
                 const isItemSelected = isSelected(row.generation);
 
                 function handleClickWrapper(event: React.MouseEvent<unknown>) {
@@ -99,17 +100,41 @@ export default function EnhancedTable(props: types.IResourceListProps) {
                                 color="default"
                             />
                         </TableCell>
-                        <TableCell align="left">{row.name}</TableCell>
-                        <TableCell align="left">{row.owner.displayName}</TableCell>
-                        <TableCell align="left">{row.timeCreated}</TableCell>
-                        <TableCell align="right">{row.size}</TableCell>
+                        <TableCell
+                            key="name"
+                            align="left"
+                            className={clsx(classes.name, classes.column)}
+                        >
+                            {row.name}
+                        </TableCell>
+                        <TableCell
+                            key="owner"
+                            align="left"
+                            className={classes.column}
+                        >
+                            {row.owner.displayName}
+                        </TableCell>
+                        <TableCell
+                            key="timeCreated"
+                            align="left"
+                            className={classes.column}
+                        >
+                            {moment(row.timeCreated).format("MMMM Do YYYY")}
+                        </TableCell>
+                        <TableCell
+                            key="size"
+                            align="right"
+                            className={classes.column}
+                        >
+                            {Math.round(row.size / 1000) + " KB"}
+                        </TableCell>
                     </TableRow>
                 );
             });
 
     function handleSelectAllClick(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.checked) {
-            const newSelecteds = props.display.map((n) => n.name);
+            const newSelecteds = props.display.map((n) => n.generation);
             setSelected(newSelecteds);
         } else {
             setSelected([]);
@@ -142,6 +167,7 @@ export default function EnhancedTable(props: types.IResourceListProps) {
 
     function handleChangeRowsPerPage(event: React.ChangeEvent<HTMLInputElement>) {
         setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
     }
 
     return (

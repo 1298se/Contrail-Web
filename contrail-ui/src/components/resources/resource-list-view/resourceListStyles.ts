@@ -1,7 +1,14 @@
-import { createStyles, Theme } from "@material-ui/core/styles";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 
-const styles = (theme: Theme) =>
-    createStyles({
+const useStyles = makeStyles((theme: Theme) => ({
+        column: {
+            whiteSpace: "nowrap",
+        },
+        name: {
+            textOverflow: "ellipsis",
+            maxWidth: "500px",
+            overflow: "hidden",
+        },
         paper: {
             marginBottom: theme.spacing(2),
             width: "100%",
@@ -15,6 +22,6 @@ const styles = (theme: Theme) =>
         tableWrapper: {
             overflowX: "auto",
         },
-    });
+    }));
 
-export default styles;
+export default useStyles;
