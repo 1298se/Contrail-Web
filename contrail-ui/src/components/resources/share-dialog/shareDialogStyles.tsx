@@ -8,10 +8,10 @@ const styles = (theme: Theme) => createStyles({
     margin: "5px",
   },
   inputRoot: {
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   inputInput: {
-    width: 'auto',
+    width: "auto",
     flexGrow: 1,
   },
 });
