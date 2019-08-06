@@ -1,5 +1,7 @@
 import axios from "axios";
 import { ThunkAction } from "redux-thunk";
+import { authRef, dbRef } from "../../firebase/firebase";
+import { IUserResources } from "../../types/resource.types";
 import * as constants from "../constants";
 import { setAppResourceLoadingState } from "./appUiStateActions";
 import { IAppSetResourceLoadingAction } from "./appUiStateActions.types";
@@ -11,21 +13,49 @@ export const fetchRootResources =
             dispatch(setAppResourceLoadingState(true));
             return new Promise((resolve, reject) => {
                 axios.get("/resources")
-                .then((response) => {
-                    if (response.status === 200) {
+                    .then((response) => {
+                        if (response.status === 200) {
+                            dispatch({
+                                type: constants.RESOURCE_FETCH_ALL,
+                                payload: response.data,
+                            });
+                            dispatch(setAppResourceLoadingState(false));
+                            resolve();
+                        } else {
+                            reject(response.statusText);
+                        }
+                    })
+                    .catch((error) => {
+                        dispatch(setAppResourceLoadingState(false));
+                        reject(error.response.data);
+                    });
+            });
+        };
+
+export const setResourceListener =
+    (): ThunkAction<Promise<any>, {}, null, actions.IResourceFetchAllAction> =>
+        (dispatch) => {
+            return new Promise(async (resolve, reject) => {
+                const user = authRef.currentUser;
+                if (user == null) {
+                    reject("current user is null");
+                    return;
+                }
+                const doc = dbRef.collection("users").doc(user.uid).collection("root").doc("resources");
+                try {
+                    const unsubscribe = await doc.onSnapshot((docSnapshot) => {
+                        if (docSnapshot.data === undefined) {
+                            reject("snapshot data is undefined");
+                            return;
+                        }
                         dispatch({
                             type: constants.RESOURCE_FETCH_ALL,
-                            payload: response.data,
+                            payload: docSnapshot.data() as IUserResources,
                         });
-                        dispatch(setAppResourceLoadingState(false));
-                        resolve();
-                    } else {
-                        // TODO: Handle error response
-                    }
-                })
-                .catch((error) => {
-                    dispatch(setAppResourceLoadingState(false));
+                    });
+                    resolve(unsubscribe);
+                } catch (error) {
                     reject(error.message);
-                });
+                }
             });
         };
