@@ -170,6 +170,7 @@ export default function EnhancedTable(props: types.IResourceListProps) {
         setPage(0);
     }
 
+    console.log(props.display);
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>

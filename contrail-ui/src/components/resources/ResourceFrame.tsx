@@ -1,7 +1,7 @@
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, RouteComponentProps } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import { fetchRootResources, setResourceListener } from "../../store/actions/resourceActions";
 import { IResourceFetchAllAction } from "../../store/actions/resourceActions.types";
@@ -23,14 +23,14 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
                 this.props.setSnackbarDisplay("error", "Failed to load resources: " + error);
             });
         this.props.setResourceListener()
-        .then((unsubscribe) => {
-            this.setState({
-                unsubscribeListener: unsubscribe,
+            .then((unsubscribe) => {
+                this.setState({
+                    unsubscribeListener: unsubscribe,
+                });
+            })
+            .catch((error) => {
+                this.props.setSnackbarDisplay("error", "Failed to sync resources: " + error);
             });
-        })
-        .catch((error) => {
-            this.props.setSnackbarDisplay("error", "Failed to sync resources: " + error);
-        });
     }
 
     public componentWillUnmount() {
@@ -43,20 +43,27 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
         const { match } = this.props;
         const sharedResources = userResources.sharedBy.concat(userResources.sharedTo);
 
-        const renderRootResources = () => <ResourceListView display={userResources.root} />;
-        const renderFavouriteResources = () => <ResourceListView display={userResources.favourites} />;
-        const renderSharedResources = () => <ResourceListView display={sharedResources} />;
-        const renderTrashResources = () => <ResourceListView display={userResources.trash} />;
+        const renderRootResources = (props: RouteComponentProps) =>
+            <ResourceListView {...props} display={userResources.root} />;
+        const renderFavouriteResources = (props: RouteComponentProps) =>
+            <ResourceListView {...props} display={userResources.favourites} />;
+        const renderSharedResources = (props: RouteComponentProps) =>
+            <ResourceListView {...props} display={sharedResources} />;
+        const renderTrashResources = (props: RouteComponentProps) =>
+            <ResourceListView {...props} display={userResources.trash} />;
 
+        console.log(match.path)
         return (
             <React.Fragment>
                 <ResourceToolBar />
                 <div className={classes.appBarSpacer} />
                 <Router>
-                    <Route path={`${match.path}/files`} render={renderRootResources} />
-                    <Route path={`${match.path}/favourites`} render={renderFavouriteResources} />
-                    <Route path={`${match.path}/shared`} render={renderSharedResources} />
-                    <Route path={`${match.path}/trash`} render={renderTrashResources} />
+                    <Switch>
+                        <Route path={`${match.path}/files`} render={renderRootResources} />
+                        <Route path={`${match.path}/favourites`} render={renderFavouriteResources} />
+                        <Route path={`${match.path}/shared`} render={renderSharedResources} />
+                        <Route path={`${match.path}/trash`} render={renderTrashResources} />
+                    </Switch>
                 </Router>
             </React.Fragment>
         );
