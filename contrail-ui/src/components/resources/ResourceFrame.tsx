@@ -1,7 +1,7 @@
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route, Switch, RouteComponentProps } from "react-router-dom";
+import { Route, RouteComponentProps, Switch } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import { fetchRootResources, setResourceListener } from "../../store/actions/resourceActions";
 import { IResourceFetchAllAction } from "../../store/actions/resourceActions.types";
@@ -52,19 +52,16 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
         const renderTrashResources = (props: RouteComponentProps) =>
             <ResourceListView {...props} display={userResources.trash} />;
 
-        console.log(match.path)
         return (
             <React.Fragment>
                 <ResourceToolBar />
                 <div className={classes.appBarSpacer} />
-                <Router>
-                    <Switch>
-                        <Route path={`${match.path}/files`} render={renderRootResources} />
-                        <Route path={`${match.path}/favourites`} render={renderFavouriteResources} />
-                        <Route path={`${match.path}/shared`} render={renderSharedResources} />
-                        <Route path={`${match.path}/trash`} render={renderTrashResources} />
-                    </Switch>
-                </Router>
+                <Switch>
+                    <Route path={`${match.path}/files`} render={renderRootResources} />
+                    <Route path={`${match.path}/favourites`} render={renderFavouriteResources} />
+                    <Route path={`${match.path}/shared`} render={renderSharedResources} />
+                    <Route path={`${match.path}/trash`} render={renderTrashResources} />
+                </Switch>
             </React.Fragment>
         );
     }
