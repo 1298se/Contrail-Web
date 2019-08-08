@@ -5,7 +5,7 @@ import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined";
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import * as ROUTES from "../../../routes";
 import { IAppReduxState } from "../../../store/store.types";
 import styles from "../authStyles";
@@ -29,7 +29,6 @@ class Auth extends Component<types.AuthProps, {}> {
         const redirectLogin = () => <Redirect to={ROUTES.LOGIN} />;
 
         return (
-            <Router>
                 <Grid container={true} component="main" className={classes.root}>
                     <CssBaseline />
                     <Grid item={true} xs={false} sm={5} md={7} className={classes.image}>
@@ -46,7 +45,6 @@ class Auth extends Component<types.AuthProps, {}> {
                         </Switch>
                     </Grid>
                 </Grid>
-            </Router>
         );
     }
 }

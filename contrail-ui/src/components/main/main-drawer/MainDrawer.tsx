@@ -9,7 +9,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, {Component} from "react";
-import { BrowserRouter as Router, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import * as ROUTES from "../../../routes";
 import UploadButton from "../../resources/upload-button/UploadButton";
 import styles from "../mainStyles";
@@ -27,7 +27,6 @@ class MainDrawer extends Component<MainDrawerProps, {}> {
             >
                 <div className={classes.appBarSpacer} />
                 <UploadButton />
-                <Router>
                 <List>
                     <ListItem button={true} key="Files" component={NavLink} to={ROUTES.FILES}>
                         <ListItemIcon>
@@ -54,7 +53,6 @@ class MainDrawer extends Component<MainDrawerProps, {}> {
                         <ListItemText primary="Trash" />
                     </ListItem>
                 </List>
-                </Router>
             </Drawer>
         );
     }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import { AppProps, IAppStateProps } from "./app.types";
 import Auth from "./components/auth/auth-page/Auth";
@@ -42,12 +42,12 @@ class App extends Component<AppProps, {}> {
             );
         }
         return (
-            <Router>
+            <BrowserRouter>
                 <Route path={ROUTES.ROOT} exact={true} component={Auth} />
                 <Route path={ROUTES.LOGIN} exact={true} component={Auth} />
                 <Route path={ROUTES.REGISTER} exact={true} component={Auth} />
                 <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
-            </Router>
+            </BrowserRouter>
         );
     }
 }
