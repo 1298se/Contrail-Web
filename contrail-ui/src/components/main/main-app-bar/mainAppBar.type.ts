@@ -8,7 +8,8 @@ export interface IMainAppBarState {
 }
 
 export interface IMainAppBarOwnProps extends WithStyles<typeof styles> {
-
+    toggleDrawerOpen: () => void;
+    isDrawerOpen: boolean;
 }
 
 export type MainAppBarProps = IMainAppBarOwnProps;

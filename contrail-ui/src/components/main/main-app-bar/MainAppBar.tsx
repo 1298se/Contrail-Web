@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuIcon from "@material-ui/icons/Menu";
 import { withStyles } from "@material-ui/styles";
+import clsx from "clsx";
 import React, { Component } from "react";
 import * as auth from "../../../firebase/controllers/authController";
 import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
@@ -93,9 +94,17 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
                         onClose={this.handleErrorClose}
                     />
                 </Snackbar>
-                <AppBar position="fixed" className={classes.appBar}>
+                <AppBar
+                    position="fixed"
+                    className={clsx(classes.appBar, {[classes.appBarShift]: this.props.isDrawerOpen})}
+                >
                     <Toolbar>
-                        <IconButton edge="start" className={classes.drawerButton} color="inherit" >
+                        <IconButton
+                            edge="start"
+                            className={clsx(classes.menuButton, this.props.isDrawerOpen && classes.hide)}
+                            color="inherit"
+                            onClick={this.props.toggleDrawerOpen}
+                        >
                             <MenuIcon />
                         </IconButton>
                         <Typography className={classes.appBarTitle} variant="h6" noWrap={true}>

@@ -10,9 +10,18 @@ import MainAppBar from "./main-app-bar/MainAppBar";
 import MainDrawer from "./main-drawer/MainDrawer";
 import MainView from "./main-view/MainView";
 import * as types from "./mainFrame.type";
-import styles from "./mainStyles";
+import styles from "./mainFrameStyles";
 
-class MainFrame extends Component <types.MainFrameProps, {}> {
+class MainFrame extends Component <types.MainFrameProps, types.IMainFrameState> {
+    public state = {
+        isDrawerOpen: false,
+    };
+
+    public toggleDrawerOpen = () => {
+        this.setState({
+            isDrawerOpen: !(this.state.isDrawerOpen),
+        });
+    }
 
     public render() {
         const { classes } = this.props;
@@ -26,9 +35,9 @@ class MainFrame extends Component <types.MainFrameProps, {}> {
                 <UploadDialog />
                 <ShareDialog />
                 <CssBaseline />
-                <MainAppBar />
-                <MainDrawer />
-                <MainView />
+                <MainAppBar toggleDrawerOpen={this.toggleDrawerOpen} isDrawerOpen={this.state.isDrawerOpen} />
+                <MainDrawer toggleDrawerOpen={this.toggleDrawerOpen} isDrawerOpen={this.state.isDrawerOpen} />
+                <MainView isDrawerOpen={this.state.isDrawerOpen} />
             </div>
         );
     }
