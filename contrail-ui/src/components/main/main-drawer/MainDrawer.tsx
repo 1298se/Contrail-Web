@@ -13,7 +13,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, { Component } from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as ROUTES from "../../../routes";
 import theme from "../../../theme";
 import UploadButton from "../../resources/upload-button/UploadButton";
@@ -41,25 +41,25 @@ class MainDrawer extends Component<MainDrawerProps, {}> {
                 <UploadButton />
                 <Divider />
                 <List>
-                    <ListItem button={true} key="Files" component={NavLink} to={ROUTES.FILES}>
+                    <ListItem button={true} key="Files" component={Link} to={ROUTES.FILES}>
                         <ListItemIcon>
                             <FileCopyIcon />
                         </ListItemIcon>
                         <ListItemText primary="Files" />
                     </ListItem>
-                    <ListItem button={true} key="Favorites" component={NavLink} to={ROUTES.FAVOURITES}>
+                    <ListItem button={true} key="Favorites" component={Link} to={ROUTES.FAVOURITES}>
                         <ListItemIcon>
                             <FavoriteIcon />
                         </ListItemIcon>
                         <ListItemText primary="Favorites" />
                     </ListItem>
-                    <ListItem button={true} key="Shared" component={NavLink} to={ROUTES.SHARED}>
+                    <ListItem button={true} key="Shared" component={Link} to={ROUTES.SHARED}>
                         <ListItemIcon>
                             <SharedIcon />
                         </ListItemIcon>
                         <ListItemText primary="Shared" />
                     </ListItem>
-                    <ListItem button={true} key="Trash" component={NavLink} to={ROUTES.TRASH}>
+                    <ListItem button={true} key="Trash" component={Link} to={ROUTES.TRASH}>
                         <ListItemIcon>
                             <TrashIcon />
                         </ListItemIcon>
