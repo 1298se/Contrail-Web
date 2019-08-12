@@ -10,6 +10,12 @@ import clsx from "clsx";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { setSelectedResources } from "../../../store/actions/resourceActions";
+import { IResourceSetSelected } from "../../../store/actions/resourceActions.types";
+import { IAppReduxState } from "../../../store/store.types";
+import { IResourceModel } from "../../../types/resource.types";
 import useStyles from "./resourceListStyles";
 import * as types from "./resourceListView.types";
 
@@ -41,7 +47,7 @@ function EnhancedTableHead(props: types.IEnhancedTableProps) {
                 <TableCell padding="checkbox">
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={numSelected === rowCount}
+                        checked={rowCount === 0 ? false : numSelected === rowCount}
                         color="default"
                         onChange={onSelectAllClick}
                         inputProps={{ "aria-label": "Select all desserts" }}
@@ -59,13 +65,14 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable(props: types.IResourceListProps) {
+function EnhancedTable(props: types.ResourceListProps) {
     const classes = useStyles();
-    const [selected, setSelected] = React.useState<string[]>([]);
+    const selected = props.selectedResources;
+
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const isSelected = (name: string) => selected.includes(name);
+    const isSelected = (generation: string) => selected.some((res) => res.generation === generation);
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.display.length - page * rowsPerPage);
     const rowHeight = 49;
@@ -82,7 +89,7 @@ export default function EnhancedTable(props: types.IResourceListProps) {
                 const isItemSelected = isSelected(row.generation);
 
                 function handleClickWrapper(event: React.MouseEvent<unknown>) {
-                    handleClick(event, row.generation);
+                    handleClick(event, row);
                 }
 
                 return (
@@ -134,19 +141,19 @@ export default function EnhancedTable(props: types.IResourceListProps) {
 
     function handleSelectAllClick(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.checked) {
-            const newSelecteds = props.display.map((n) => n.generation);
-            setSelected(newSelecteds);
+            const newSelecteds: IResourceModel[] = props.display;
+            props.setSelected(newSelecteds);
         } else {
-            setSelected([]);
+            props.setSelected([]);
         }
     }
 
-    function handleClick(event: React.MouseEvent<unknown>, name: string) {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected: string[] = [];
+    function handleClick(event: React.MouseEvent<unknown>, resource: IResourceModel) {
+        const selectedIndex = selected.map((res) => res.generation).indexOf(resource.generation);
+        let newSelected: IResourceModel[] = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, resource);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -157,8 +164,7 @@ export default function EnhancedTable(props: types.IResourceListProps) {
                 selected.slice(selectedIndex + 1),
             );
         }
-
-        setSelected(newSelected);
+        props.setSelected(newSelected);
     }
 
     function handleChangePage(event: unknown, newPage: number) {
@@ -202,3 +208,17 @@ export default function EnhancedTable(props: types.IResourceListProps) {
         </div>
     );
 }
+
+const mapStateToProps = (state: IAppReduxState): types.IResourceListStateProps => {
+    return {
+        selectedResources: state.resourceState.selectedResources,
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<IResourceSetSelected>): types.IResourceListDispatchProps => {
+    return {
+        setSelected: (resources: IResourceModel[]) => dispatch(setSelectedResources(resources)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EnhancedTable);
