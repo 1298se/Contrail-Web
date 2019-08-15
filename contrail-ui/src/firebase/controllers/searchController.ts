@@ -2,7 +2,7 @@ import axios from "axios";
 import { ISuggestion } from "../../components/resources/share-dialog/shareDialog.types";
 
 export const searchUsers = (query: string): Promise<any> => {
-    const searchUrl = `search?where_query=${query}`;
+    const searchUrl = `/search?where_query=${query}`;
     return new Promise((resolve, reject) => {
         axios.get(searchUrl)
             .then((response) => {
