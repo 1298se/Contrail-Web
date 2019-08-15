@@ -105,7 +105,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                 });
             }
         }).catch((error) => {
-            this.props.setSnackbarDisplay("error", error.message);
+            this.props.setSnackbarDisplay("error", error);
             this.setState({
                 isLoggingInUser: false,
             });

@@ -50,7 +50,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     });
                 })
                 .catch((error) => {
-                    this.props.setSnackbarDisplay("error", error.message);
+                    this.props.setSnackbarDisplay("error", error);
                 });
         }
     }

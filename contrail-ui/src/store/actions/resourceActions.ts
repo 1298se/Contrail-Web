@@ -12,7 +12,7 @@ export const fetchRootResources =
         (dispatch) => {
             dispatch(setAppResourceLoadingState(true));
             return new Promise((resolve, reject) => {
-                axios.get("/resources")
+                axios.get("/api/resources")
                     .then((response) => {
                         if (response.status === 200) {
                             dispatch({
@@ -27,7 +27,7 @@ export const fetchRootResources =
                     })
                     .catch((error) => {
                         dispatch(setAppResourceLoadingState(false));
-                        reject(error.response.data);
+                        reject(error.response.data.message);
                     });
             });
         };

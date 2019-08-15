@@ -45,20 +45,20 @@ export function registerUser(displayName: string, email: string, password: strin
                         await authRef.signOut();
                         resolve();
                     } catch (error) {
-                        reject(error);
+                        reject(error.message);
                     }
                 })
                 .catch(async (error) => {
                     try {
                         await currentUser.delete();
-                        reject(error);
+                        reject(error.message);
                     } catch (error) {
-                        reject(error);
+                        reject(error.message);
                     }
                 });
             }
         } catch (error) {
-            reject(error);
+            reject(error.message);
         }
     });
 }
@@ -76,7 +76,7 @@ export function addUserToDb(user: firebase.User): Promise<any> {
             resolve();
         })
         .catch((error) => {
-            reject(error);
+            reject(error.message);
         });
     });
 }
@@ -98,7 +98,7 @@ export function loginUser(email: string, password: string): Promise<firebase.Use
                 resolve(user);
             }
         }).catch((error) => {
-            reject(error);
+            reject(error.message);
         });
     });
 }
@@ -110,7 +110,7 @@ export function logoutUser(): Promise<string> {
                 resolve("success");
             })
             .catch((error) => {
-                reject(error);
+                reject(error.message);
             });
     });
 }
@@ -130,7 +130,7 @@ export function getUserToken(): Promise<string | null> {
             user.getIdToken(true).then((idToken) => {
                 resolve(idToken);
             }).catch((error) => {
-                reject(error);
+                reject(error.message);
             });
         }
     });

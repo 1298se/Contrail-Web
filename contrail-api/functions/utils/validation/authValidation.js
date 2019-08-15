@@ -45,6 +45,6 @@ exports.authMiddleware = (req, res, next) => {
                 return res.status(500).send(error);
             });
     } else {
-        return res.status(401).send("No token found");
+        return res.status(401).send({ code:"noAuthToken", message:"User is not authenticated." });
     }
 }

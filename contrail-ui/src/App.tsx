@@ -24,7 +24,7 @@ class App extends Component<AppProps, {}> {
     public handleConnectionChange = () => {
         const networkCondition = navigator.onLine ? "online" : "offline";
         if (networkCondition === "online") {
-            axios.get("/")
+            axios.get("/api")
             .then(() => {
                 this.props.setNetworkState(true);
             }).catch(() => {
