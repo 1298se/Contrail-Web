@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ThunkAction } from "redux-thunk";
 import { authRef, dbRef } from "../../firebase/firebase";
-import { IUserResources } from "../../types/resource.types";
+import { IResourceModel, IUserResources } from "../../types/resource.types";
 import * as constants from "../constants";
 import { setAppResourceLoadingState } from "./appUiStateActions";
 import { IAppSetResourceLoadingAction } from "./appUiStateActions.types";
@@ -59,3 +59,10 @@ export const setResourceListener =
                 }
             });
         };
+
+export const setSelectedResources = (resources: IResourceModel[]): actions.IResourceSetSelected => {
+    return {
+        type: constants.RESOURCE_SET_SELECTED,
+        payload: resources,
+    };
+};

@@ -79,8 +79,8 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                 <AppBar position="static" color="secondary">
                     <Toolbar>
                         <Typography className={classes.title} variant="h6" noWrap={true}>
-                            Files
-                </Typography>
+                            {this.props.titleText}
+                        </Typography>
                         <div className={classes.grow} />
                         <div className={classes.sectionDesktop}>
                             <IconButton color="default">

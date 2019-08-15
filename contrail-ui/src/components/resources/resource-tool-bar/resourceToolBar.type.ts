@@ -7,7 +7,7 @@ export interface IResourceToolBarState {
 }
 
 export interface IResourceToolBarOwnProps extends WithStyles<typeof styles> {
-
+    titleText: string;
 }
 
 export type ResourceToolBarProps = IResourceToolBarOwnProps;
