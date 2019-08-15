@@ -43,19 +43,48 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
         const { match } = this.props;
         const sharedResources = userResources.sharedBy.concat(userResources.sharedTo);
 
-        const renderRootResources = (props: RouteComponentProps) =>
-            <ResourceListView {...props} display={userResources.root} />;
-        const renderFavouriteResources = (props: RouteComponentProps) =>
-            <ResourceListView {...props} display={userResources.favourites} />;
-        const renderSharedResources = (props: RouteComponentProps) =>
-            <ResourceListView {...props} display={sharedResources} />;
-        const renderTrashResources = (props: RouteComponentProps) =>
-            <ResourceListView {...props} display={userResources.trash} />;
+        const renderRootResources = (props: RouteComponentProps) => {
+            return (
+                <React.Fragment>
+                    <ResourceToolBar titleText="Files" />
+                    <div className={classes.appBarSpacer} />
+                    <ResourceListView {...props} display={userResources.root} />
+                </React.Fragment>
+            );
+        };
+
+        const renderFavouriteResources = (props: RouteComponentProps) => {
+            return (
+                <React.Fragment>
+                    <ResourceToolBar titleText="Favourites" />
+                    <div className={classes.appBarSpacer} />
+                    <ResourceListView {...props} display={userResources.favourites} />
+                </React.Fragment>
+            );
+        };
+
+        const renderSharedResources = (props: RouteComponentProps) => {
+            return (
+                <React.Fragment>
+                    <ResourceToolBar titleText="Shared" />
+                    <div className={classes.appBarSpacer} />
+                    <ResourceListView {...props} display={sharedResources} />
+                </React.Fragment>
+            );
+        };
+
+        const renderTrashResources = (props: RouteComponentProps) => {
+            return (
+                <React.Fragment>
+                    <ResourceToolBar titleText="Trash" />
+                    <div className={classes.appBarSpacer} />
+                    <ResourceListView {...props} display={userResources.trash} />
+                </React.Fragment>
+            );
+        };
 
         return (
             <React.Fragment>
-                <ResourceToolBar />
-                <div className={classes.appBarSpacer} />
                 <Switch>
                     <Route path={`${match.path}/files`} render={renderRootResources} />
                     <Route path={`${match.path}/favourites`} render={renderFavouriteResources} />

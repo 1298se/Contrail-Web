@@ -11,6 +11,7 @@ const initialResourceState: types.IResourceState = {
         sharedTo: [],
         trash: [],
     },
+    selectedResources: [],
 };
 
 const resourceReducer: Reducer<types.IResourceState, ResourceActions> =
@@ -20,6 +21,11 @@ const resourceReducer: Reducer<types.IResourceState, ResourceActions> =
                 return {
                     ...state,
                     userResources: action.payload,
+                };
+            case constants.RESOURCE_SET_SELECTED:
+                return {
+                    ...state,
+                    selectedResources: action.payload,
                 };
             default: return state;
         }

@@ -7,15 +7,28 @@ export interface IData {
     size: number;
 }
 
-export interface IResourceListProps {
-    display: IResourceModel[];
-}
-
 export interface IHeadRow {
     id: keyof IData;
     label: string;
     numeric: boolean;
 }
+
+export interface IResourceListOwnProps {
+    display: IResourceModel[];
+}
+
+export interface IResourceListStateProps {
+    selectedResources: IResourceModel[];
+}
+
+export interface IResourceListDispatchProps {
+    setSelected: (resources: IResourceModel[]) => void;
+}
+
+export type ResourceListProps =
+IResourceListOwnProps &
+IResourceListDispatchProps &
+IResourceListStateProps;
 
 export interface IEnhancedTableProps {
     numSelected: number;
