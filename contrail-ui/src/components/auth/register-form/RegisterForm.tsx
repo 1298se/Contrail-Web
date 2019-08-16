@@ -105,7 +105,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                     isRegisteringUser: false,
                 });
             }).catch((error) => {
-                this.props.setSnackbarDisplay("error", error.message);
+                this.props.setSnackbarDisplay("error", error);
                 this.setState({
                     isRegisteringUser: false,
                 });

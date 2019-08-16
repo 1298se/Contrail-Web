@@ -1,4 +1,5 @@
 import { WithStyles } from "@material-ui/core";
+import { IResourceModel, IUserResources } from "../../../types/resource.types";
 import styles from "./toolBarStyles";
 
 export interface IResourceToolBarState {
@@ -10,4 +11,9 @@ export interface IResourceToolBarOwnProps extends WithStyles<typeof styles> {
     titleText: string;
 }
 
-export type ResourceToolBarProps = IResourceToolBarOwnProps;
+export interface IResourceToolBarStateProps {
+    selectedResources: IResourceModel[];
+    userResources: IUserResources;
+}
+
+export type ResourceToolBarProps = IResourceToolBarOwnProps & IResourceToolBarStateProps;

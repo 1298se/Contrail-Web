@@ -1,5 +1,7 @@
 
+import axios from "axios";
 import * as firebase from "firebase/app";
+import { IResourceModel } from "../../types/resource.types";
 import { dbRef, storageRef } from "../firebase";
 
 /**
@@ -66,7 +68,37 @@ export const writeFileToDB =
             resolve();
         })
         .catch((error) => {
-            reject(error);
+            reject(error.message);
+        });
+    });
+};
+
+export const addResourcesToFavourites = (resources: IResourceModel[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "addFavourites",
+            resources,
+        })
+        .then((response) => {
+            resolve(response.data);
+        })
+        .catch((error) => {
+            resolve(error.response.data);
+        });
+    });
+};
+
+export const removeResourcesFromFavourites = (resources: IResourceModel[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "removeFavourites",
+            resources,
+        })
+        .then((response) => {
+            resolve(response.data);
+        })
+        .catch((error) => {
+            resolve(error.response.data);
         });
     });
 };

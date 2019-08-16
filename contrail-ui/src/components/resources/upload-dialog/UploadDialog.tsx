@@ -80,7 +80,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                     this.setState((prevState: types.IUploadDialogState) => ({
                         uploadState: prevState.uploadState.set(filename, "error"),
                     }));
-                    this.props.setSnackbarDisplay("error", error.message);
+                    this.props.setSnackbarDisplay("error", error);
                 }, () => {
                     if (this.props.user) {
                         filesController.writeFileToDB(uploadTask, this.props.user)
@@ -93,7 +93,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                             this.setState((prevState: types.IUploadDialogState) => ({
                                 uploadState: prevState.uploadState.set(filename, "error"),
                             }));
-                            this.props.setSnackbarDisplay("error", error.message);
+                            this.props.setSnackbarDisplay("error", error);
                         });
                     }
             });

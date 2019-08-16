@@ -11,6 +11,9 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import * as filesController from "../../../firebase/controllers/filesController";
+import { IAppReduxState } from "../../../store/store.types";
 import * as types from "./resourceToolBar.type";
 import styles from "./toolBarStyles";
 
@@ -30,6 +33,18 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         this.setState({
             mobileMoreAnchorEl: null,
         });
+    }
+
+    public handleFavouriteClick = () => {
+        const { selectedResources, userResources } = this.props;
+
+        const isAllFavourited = !(selectedResources.some((selectRes) =>
+            !userResources.favourites.map((res) => res.generation).includes(selectRes.generation)));
+        if (isAllFavourited) {
+            filesController.removeResourcesFromFavourites(selectedResources);
+        } else {
+            filesController.addResourcesToFavourites(selectedResources);
+        }
     }
 
     public render() {
@@ -86,7 +101,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                             <IconButton color="default">
                                 <RemoveRedEyeIcon />
                             </IconButton>
-                            <IconButton color="default">
+                            <IconButton color="default" onClick={this.handleFavouriteClick}>
                                 <FavoriteIcon />
                             </IconButton>
                             <IconButton color="default">
@@ -115,4 +130,11 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
     }
 }
 
-export default withStyles(styles)(ResourceToolBar);
+const mapStateToProps = (state: IAppReduxState): types.IResourceToolBarStateProps => {
+    return {
+        selectedResources: state.resourceState.selectedResources,
+        userResources: state.resourceState.userResources,
+    };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(ResourceToolBar));
