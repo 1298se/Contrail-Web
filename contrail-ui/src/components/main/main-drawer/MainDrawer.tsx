@@ -12,6 +12,7 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
+import clsx from "clsx";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import * as ROUTES from "../../../routes";
@@ -23,14 +24,14 @@ import styles from "./mainDrawerStyles";
 class MainDrawer extends Component<MainDrawerProps, {}> {
     public render() {
         const { classes } = this.props;
+        const open = this.props.isDrawerOpen;
 
         return (
             <Drawer
-                className={classes.drawer}
-                variant="persistent"
-                anchor="left"
-                open={this.props.isDrawerOpen}
-                classes={{paper: classes.drawerPaper}}
+                variant="permanent"
+                className={clsx(classes.drawer, { [classes.drawerOpen]: open, [classes.drawerClose]: !open })}
+                classes={{ paper: clsx({ [classes.drawerOpen]: open, [classes.drawerClose]: !open }) }}
+                open={open}
             >
                 <div className={classes.drawerHeader}>
                     <IconButton onClick={this.props.toggleDrawerOpen}>

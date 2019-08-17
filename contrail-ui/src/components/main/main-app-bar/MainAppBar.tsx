@@ -37,12 +37,12 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
     public handleLogoutClick = () => {
         this.handleMenuClose();
         auth.logoutUser()
-        .catch((error) => {
-            this.setState({
-                logoutRequestError: error,
-                shouldDisplayError: true,
+            .catch((error) => {
+                this.setState({
+                    logoutRequestError: error,
+                    shouldDisplayError: true,
+                });
             });
-        });
     }
 
     // This function is to handle a bug where the error message of the snackbar
@@ -64,6 +64,7 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
 
     public render() {
         const { classes } = this.props;
+        const open = this.props.isDrawerOpen;
 
         const userMenu = (
             <Menu
@@ -96,12 +97,12 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
                 </Snackbar>
                 <AppBar
                     position="fixed"
-                    className={clsx(classes.appBar, {[classes.appBarShift]: this.props.isDrawerOpen})}
+                    className={clsx(classes.appBar, {[classes.appBarShift]: open})}
                 >
                     <Toolbar>
                         <IconButton
                             edge="start"
-                            className={clsx(classes.menuButton, this.props.isDrawerOpen && classes.hide)}
+                            className={clsx(classes.menuButton, {[classes.hide]: open})}
                             color="inherit"
                             onClick={this.props.toggleDrawerOpen}
                         >

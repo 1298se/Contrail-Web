@@ -18,10 +18,7 @@ createStyles({
         },
     },
     title: {
-        display: "none",
-        [theme.breakpoints.up("sm")]: {
         display: "block",
-        },
     },
 });
 
