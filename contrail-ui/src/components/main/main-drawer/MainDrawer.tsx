@@ -29,8 +29,8 @@ class MainDrawer extends Component<MainDrawerProps, {}> {
         return (
             <Drawer
                 variant="permanent"
-                className={clsx(classes.drawer, { [classes.drawerOpen]: open, [classes.drawerClose]: !open })}
-                classes={{ paper: clsx({ [classes.drawerOpen]: open, [classes.drawerClose]: !open }) }}
+                className={clsx(classes.drawer, {[classes.drawerOpen]: open, [classes.drawerClose]: !open})}
+                classes={{ paper: clsx({[classes.drawerOpen]: open, [classes.drawerClose]: !open}) }}
                 open={open}
             >
                 <div className={classes.drawerHeader}>
@@ -39,8 +39,7 @@ class MainDrawer extends Component<MainDrawerProps, {}> {
                     </IconButton>
                 </div>
                 <Divider />
-                <UploadButton />
-                <Divider />
+                <UploadButton isDrawerOpen={this.props.isDrawerOpen} />
                 <List>
                     <ListItem button={true} key="Files" component={Link} to={ROUTES.FILES}>
                         <ListItemIcon>

@@ -2,4 +2,8 @@ export interface IUploadButtonDispatchProps {
     setUploadDialogOpen: (shouldDisplayDialog: boolean) => void;
 }
 
-export type UploadButtonProps = IUploadButtonDispatchProps;
+export interface IUploadButtonOwnProps {
+    isDrawerOpen: boolean;
+}
+
+export type UploadButtonProps = IUploadButtonDispatchProps & IUploadButtonOwnProps;
