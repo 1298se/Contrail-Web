@@ -102,3 +102,19 @@ export const removeResourcesFromFavourites = (resources: IResourceModel[]): Prom
         });
     });
 };
+
+export const addResourcesToShare = (emails: string[], resources: IResourceModel[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "share",
+            resources,
+            emails,
+        })
+        .then((response) => {
+            resolve(response.data);
+        })
+        .catch((error) => {
+            resolve(error.response.data);
+        });
+    });
+};

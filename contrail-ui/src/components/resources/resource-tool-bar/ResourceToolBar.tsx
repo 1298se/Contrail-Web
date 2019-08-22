@@ -12,7 +12,10 @@ import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import TrashIcon from "@material-ui/icons/RestoreFromTrash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
 import * as filesController from "../../../firebase/controllers/filesController";
+import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
+import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
 import { IAppReduxState } from "../../../store/store.types";
 import * as types from "./resourceToolBar.type";
 import styles from "./toolBarStyles";
@@ -44,6 +47,12 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
             filesController.removeResourcesFromFavourites(selectedResources);
         } else {
             filesController.addResourcesToFavourites(selectedResources);
+        }
+    }
+
+    public handleShareClick = () => {
+        if (this.props.selectedResources.length !== 0) {
+            this.props.setDialogOpen(true);
         }
     }
 
@@ -104,7 +113,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                             <IconButton color="default" onClick={this.handleFavouriteClick}>
                                 <FavoriteIcon />
                             </IconButton>
-                            <IconButton color="default">
+                            <IconButton color="default" onClick={this.handleShareClick}>
                                 <SharedIcon />
                             </IconButton>
                             <IconButton
@@ -137,4 +146,11 @@ const mapStateToProps = (state: IAppReduxState): types.IResourceToolBarStateProp
     };
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(ResourceToolBar));
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetShareDialogOpenAction>):
+    types.IShareDialogDispatchProps => {
+    return {
+        setDialogOpen: (shouldDisplay: boolean) => dispatch(setAppShareDialogOpen(shouldDisplay)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ResourceToolBar));

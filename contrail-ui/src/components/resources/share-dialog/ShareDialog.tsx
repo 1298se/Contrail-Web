@@ -14,6 +14,7 @@ import Downshift from "downshift";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
+import * as  filesController from "../../../firebase/controllers/filesController";
 import { searchUsers } from "../../../firebase/controllers/searchController";
 import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
 import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
@@ -122,8 +123,8 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
 
     public handleSubmit = () => {
         // TODO: Fill function to share the resource to the selected users.
-        const selected = this.state.search.selected;
-        console.log(selected);
+        const selectedUsers = this.state.search.selected;
+        filesController.addResourcesToShare(selectedUsers, this.props.selectedResources);
     }
 
     public render() {
@@ -151,10 +152,10 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     component="div"
                 >
                     <Typography component={"span"}>
-                        <Box fontWeight="fontWeightBold" m={1}>
+                        <Box fontSize="fontSize" fontWeight="fontWeightBold" m={1}>
                             {suggestion.displayName}
                         </Box>
-                        <Box m={1} fontStyle="oblique">
+                        <Box fontSize="fontSize" m={1} fontStyle="oblique">
                             {suggestion.email}
                         </Box>
                     </Typography>
@@ -257,6 +258,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                             Cancel
                         </Button>
                         <Button
+                            disabled={selected.length === 0}
                             component="span"
                             variant="contained"
                             color="primary"
@@ -276,6 +278,7 @@ const mapStateToProps = (state: IAppReduxState): types.IShareDialogStateProps =>
         dialogOpen: state.appUiState.dialogState.shareDialogOpen,
         user: state.authState.authUser,
         authToken: state.authState.authToken,
+        selectedResources: state.resourceState.selectedResources,
     };
 };
 

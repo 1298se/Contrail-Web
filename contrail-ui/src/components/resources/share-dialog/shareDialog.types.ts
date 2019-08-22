@@ -1,4 +1,5 @@
 import { WithStyles } from "@material-ui/core";
+import { IResourceModel, IUserResources } from "../../../types/resource.types";
 import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 import styles from "./shareDialogStyles";
 
@@ -22,6 +23,7 @@ export interface IShareDialogStateProps {
     dialogOpen: boolean;
     user: firebase.User | null;
     authToken: string | null;
+    selectedResources: IResourceModel[];
 }
 
 export interface IShareDialogDispatchProps {
