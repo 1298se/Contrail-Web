@@ -35,13 +35,13 @@ shareResource = (resource, users, userRef) => {
         sharedBy: firestore.FieldValue.arrayUnion(resource),
     })
     users.forEach(user => {
-        const shareUserRef = firestore().collection("users").doc(user.uid).collection("root").doc("resources");
+        const shareUserRef = firestore().collection("users").doc(user).collection("root").doc("resources");
         batch.update(shareUserRef, {
             root: firestore.FieldValue.arrayUnion(resource),
             sharedTo: firestore.FieldValue.arrayUnion(resource),
         })
         batch.update(docRef, {
-            [`permissions.${user.uid}`]: "editor",
+            [`permissions.${user}`]: "editor",
         })
     });
     return batch.commit();
@@ -49,14 +49,11 @@ shareResource = (resource, users, userRef) => {
 
 exports.share = async (req, res) => {
     const userId = req.uid;
-    const { resources, emails } = req.body;
+    const { resources, userIds } = req.body;
     const userRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
     try {
-        let promiseUsersList = [];
-        emails.map(email => promiseUsersList.push(auth.getUserByEmail(email)));
-        const users = await Promise.all(promiseUsersList)
         let promiseShareList = [];
-        resources.map(resource => promiseShareList.push(shareResource(resource, users, userRef)));
+        resources.map(resource => promiseShareList.push(shareResource(resource, userIds, userRef)));
         return Promise.all(promiseShareList)
         .then(() => {
             return res.status(200).send();

@@ -12,12 +12,19 @@ export interface ISearchValues {
     input: string;
     timeout: NodeJS.Timeout | null;
     suggestions: ISuggestion[];
-    selected: string[];
+    selected: ISuggestion[];
 }
 
 export interface ISuggestion {
     displayName: string;
     email: string;
+    id: string;
+}
+
+export interface IShareValue {
+    name: string;
+    collaborators: firebase.User[];
+    generation: string;
 }
 
 export interface IShareDialogStateProps {

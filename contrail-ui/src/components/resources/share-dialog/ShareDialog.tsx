@@ -6,10 +6,14 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Downshift from "downshift";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
@@ -29,7 +33,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             input: "",
             timeout: null,
             suggestions: [] as types.ISuggestion[],
-            selected: [],
+            selected: [] as types.ISuggestion[],
         },
         shares: [],
     };
@@ -40,7 +44,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 .then((res) => {
                     this.setState({
                         ...this.state,
-                        shares: res.permisssions,
+                        shares: res,
                     });
                 });
         }
@@ -57,8 +61,8 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                             ...this.state.search,
                             suggestions: this.state.search.input.length > 2 ?
                                 newOptions.filter((option: types.ISuggestion) => {
-                                    return !(this.state.search.selected.includes(option.email) ||
-                                        option.email === user.email);
+                                    return !(this.state.search.selected.map((sel) => sel.id).includes(option.id) ||
+                                        option.id === user.uid);
                                 }) : [],
                         },
                     });
@@ -91,7 +95,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         });
     }
 
-    public handleChange = (item: string) => {
+    public handleChange = (item: types.ISuggestion) => {
         let selectedItems = [...this.state.search.selected];
         if (selectedItems.indexOf(item) === -1) {
             selectedItems = [...selectedItems, item];
@@ -107,7 +111,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         });
     }
 
-    public handleDelete = (item: string) => () => {
+    public handleDelete = (item: types.ISuggestion) => () => {
         const selectedItems = [...this.state.search.selected];
         selectedItems.splice(selectedItems.indexOf(item), 1);
         this.setState({
@@ -145,7 +149,6 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         const { input, suggestions, selected } = this.state.search;
         // tslint:disable: jsx-wrap-multiline
         // tslint:disable: jsx-no-multiline-js
-
         interface IRenderSuggestionProps {
             highlightedIndex: number | null;
             index: number;
@@ -156,11 +159,10 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         const renderSuggestion = (suggestionProps: IRenderSuggestionProps) => {
             const { suggestion, index, itemProps, highlightedIndex } = suggestionProps;
             const isHighlighted = highlightedIndex === index;
-
             return (
                 <MenuItem
                     {...itemProps}
-                    key={suggestion.email}
+                    key={suggestion.id}
                     selected={isHighlighted}
                     component="div"
                 >
@@ -198,6 +200,35 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             );
         }
 
+        const renderCollaborators = (
+            this.state.shares && this.state.shares.map((share: types.IShareValue, i) => {
+                const renderShares = (
+                    share.collaborators.map((collab) => {
+                        return (
+                            <div>
+                                {collab.email}
+                            </div>
+                        )
+                    })
+                );
+
+                return (
+                    <ExpansionPanel key={i}>
+                        <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
+                        >
+                            <Typography>{share.name}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            {renderShares}
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                )
+            })
+        );
+
         const renderSearchInput = (
             <Downshift
                 inputValue={input}
@@ -224,7 +255,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                                             className={classes.chip}
                                             color="primary"
                                             key={index}
-                                            label={item}
+                                            label={item.email}
                                             onDelete={this.handleDelete(item)}
                                         />
                                     )),
@@ -239,7 +270,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                                     renderSuggestion({
                                         suggestion,
                                         index,
-                                        itemProps: getItemProps({ item: suggestion.email }),
+                                        itemProps: getItemProps({ item: suggestion }),
                                         highlightedIndex,
                                     }),
                                 )}
@@ -261,6 +292,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     <DialogTitle id="form-dialog-title">Share</DialogTitle>
                     <DialogContent className={classes.dialogPaper}>
                         {renderSearchInput}
+                        {renderCollaborators}
                     </DialogContent>
                     <DialogActions>
                         <Button

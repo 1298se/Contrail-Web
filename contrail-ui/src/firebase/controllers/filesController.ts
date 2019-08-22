@@ -3,6 +3,7 @@ import axios from "axios";
 import * as firebase from "firebase/app";
 import { IResourceModel } from "../../types/resource.types";
 import { dbRef, storageRef } from "../firebase";
+import { ISuggestion } from "../../components/resources/share-dialog/shareDialog.types";
 
 /**
  * Upload a file to Cloud Storage
@@ -103,12 +104,13 @@ export const removeResourcesFromFavourites = (resources: IResourceModel[]): Prom
     });
 };
 
-export const addResourcesToShare = (emails: string[], resources: IResourceModel[]): Promise<any> => {
+export const addResourcesToShare = (users: ISuggestion[], resources: IResourceModel[]): Promise<any> => {
+    const userIds = users.map((user) => user.id);
     return new Promise((resolve, reject) => {
         axios.put("/api/resources", {
             type: "share",
             resources,
-            emails,
+            userIds,
         })
         .then((response) => {
             resolve(response.data);
@@ -122,7 +124,6 @@ export const addResourcesToShare = (emails: string[], resources: IResourceModel[
 export const getCollaborators = (resources: IResourceModel[]): Promise<any> => {
     return new Promise((resolve, reject) => {
         const ids = resources.map((resource) => resource.generation);
-        console.log(ids)
         const request = {
             params: {
                 ids,

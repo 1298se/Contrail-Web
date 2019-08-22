@@ -10,6 +10,7 @@ export const searchUsers = (query: string): Promise<any> => {
                 response.data.map((user: firebase.User) => {
                     if (user.email && user.displayName) {
                         newOptions.push({
+                            id: user.uid,
                             displayName: user.displayName,
                             email: user.email,
                         });
