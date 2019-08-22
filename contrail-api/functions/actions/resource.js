@@ -8,9 +8,9 @@ exports.createFavourites = async (req, res) => {
     ref.update({
         favourites: firestore.FieldValue.arrayUnion(...resources)
     }).then(() => {
-        res.status(200).send();
+        return res.status(200).send();
     }).catch((error) => {
-        res.status(500).send(error);
+        return res.status(500).send(error);
     });
 }
 
@@ -22,26 +22,26 @@ exports.removeFavourites = async (req, res) => {
     ref.update({
         favourites: firestore.FieldValue.arrayRemove(...resources)
     }).then(() => {
-        res.status(200).send();
+        return res.status(200).send();
     }).catch((error) => {
-        res.status(500).send(error);
+        return res.status(500).send(error);
     });
 }
 
 shareResource = (resource, users, userRef) => {
     const docRef = firestore().collection("documents").doc(resource.generation);
     const batch = firestore().batch();
-    console.log("FIN", users, resource)
     batch.update(userRef, {
         sharedBy: firestore.FieldValue.arrayUnion(resource),
     })
-    users.map(user => {
+    users.forEach(user => {
         const shareUserRef = firestore().collection("users").doc(user.uid).collection("root").doc("resources");
         batch.update(shareUserRef, {
-            sharedTo: firestore.FieldValue.arrayUnion(docInfo),
+            root: firestore.FieldValue.arrayUnion(resource),
+            sharedTo: firestore.FieldValue.arrayUnion(resource),
         })
         batch.update(docRef, {
-            [`permissions.${user.id}`]: "editor",
+            [`permissions.${user.uid}`]: "editor",
         })
     });
     return batch.commit();
@@ -50,21 +50,56 @@ shareResource = (resource, users, userRef) => {
 exports.share = async (req, res) => {
     const userId = req.uid;
     const { resources, emails } = req.body;
-    console.log(userId, resources, emails)
     const userRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
     try {
-        let promiseList = [];
-        emails.map(email => promiseList.push(auth.getUserByEmail(email)));
-        const users = await Promise.all(promiseList)
-        console.log(users)
-        let promiseList1 = [];
-        resources.map(resource => promiseList1.push(shareResource(resource, users, userRef)));
-        return Promise.all(promiseList1)
-        .then(values => {
-            console.log(values)
+        let promiseUsersList = [];
+        emails.map(email => promiseUsersList.push(auth.getUserByEmail(email)));
+        const users = await Promise.all(promiseUsersList)
+        let promiseShareList = [];
+        resources.map(resource => promiseShareList.push(shareResource(resource, users, userRef)));
+        return Promise.all(promiseShareList)
+        .then(() => {
             return res.status(200).send();
         })
     } catch (error) {
-        return res.status(500).json(error);
+        return res.status(500).send(error);
     }
+}
+
+getCollaboratorsforResource = (userId, resource) => {
+    const docRef = firestore().collection("documents").doc(resource);
+    return docRef.get()
+    .then(async (doc) => {
+        if (doc.exists) {
+            const { permissions, id, name } = doc.data()
+            const ids = Object.keys(permissions);
+            let promiseList = [];
+            ids.map(id => id !== userId ? promiseList.push(auth.getUser(id)) : Promise.resolve());
+            const collaborators = await Promise.all(promiseList);
+            return {
+                generation: id,
+                name,
+                collaborators,
+            };
+        } else {
+            throw new Error("Document does not exist")
+        }
+    })
+    .catch((error) => {
+        throw error
+    });
+}
+
+exports.getCollaborators = async (req, res) => {
+    const userId = req.uid;
+    const resources = req.query.ids;
+    return Promise.all(resources.map(async resource => {
+        return await getCollaboratorsforResource(userId, resource)
+    }))
+    .then((values) => {
+        return res.status(200).send(values)
+    })
+    .catch((error) => {
+        return res.status(500).send(error)
+    })
 }

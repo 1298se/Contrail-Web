@@ -14,6 +14,9 @@ const styles = (theme: Theme) => createStyles({
     width: "auto",
     flexGrow: 1,
   },
+  dialogPaper: {
+    overflow: "visible"
+  },
 });
 
 export default styles;

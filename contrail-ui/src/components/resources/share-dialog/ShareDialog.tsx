@@ -31,7 +31,20 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             suggestions: [] as types.ISuggestion[],
             selected: [],
         },
+        shares: [],
     };
+
+    public componentDidUpdate = (prevProps: types.IShareDialogProps, prevState: types.IShareDialogState) => {
+        if (!prevProps.dialogOpen && this.props.dialogOpen) {
+            filesController.getCollaborators(this.props.selectedResources)
+                .then((res) => {
+                    this.setState({
+                        ...this.state,
+                        shares: res.permisssions,
+                    });
+                });
+        }
+    }
 
     public search = () => {
         if (this.props.user && this.state.search.input.length > 2) {
@@ -243,9 +256,10 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     open={dialogOpen}
                     aria-labelledby="form-dialog-title"
                     fullWidth={true}
+                    className={classes.dialogPaper}
                 >
                     <DialogTitle id="form-dialog-title">Share</DialogTitle>
-                    <DialogContent>
+                    <DialogContent className={classes.dialogPaper}>
                         {renderSearchInput}
                     </DialogContent>
                     <DialogActions>

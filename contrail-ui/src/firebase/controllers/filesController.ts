@@ -118,3 +118,22 @@ export const addResourcesToShare = (emails: string[], resources: IResourceModel[
         });
     });
 };
+
+export const getCollaborators = (resources: IResourceModel[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        const ids = resources.map((resource) => resource.generation);
+        console.log(ids)
+        const request = {
+            params: {
+                ids,
+            },
+        };
+        axios.get("/api/shares", request)
+        .then((response) => {
+            resolve(response.data);
+        })
+        .catch((error) => {
+            resolve(error.response.data);
+        });
+    });
+};

@@ -5,6 +5,7 @@ import styles from "./shareDialogStyles";
 
 export interface IShareDialogState {
     search: ISearchValues;
+    shares: [];
 }
 
 export interface ISearchValues {

@@ -3,7 +3,7 @@ const { auth, firestore } = require("../utils/firebaseUtils");
 exports.getUserFiles = (req, res) => {
     const uid = req.uid;
     const docRef = firestore().collection("users").doc(uid).collection("root").doc("resources");
-    docRef.get()
+    return docRef.get()
         .then((doc) => {
             if (doc.exists) {
                 return res.status(200).send(doc.data())
