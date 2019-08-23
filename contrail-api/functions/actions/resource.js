@@ -63,6 +63,23 @@ exports.share = async (req, res) => {
     }
 }
 
+exports.unshare = async (req, res) => {
+    const userId = req.uid;
+    const { resource, shareUserId } = req.body;
+    const batch = firestore().batch();
+    const docRef = firestore().collection("documents").doc(resource.generation);
+    const shareUserRef = firestore().collection("users").doc(shareUserId).collection("root").doc("resources");
+    batch.update(shareUserRef, {
+        root: firestore.FieldValue.arrayRemove(resource),
+        sharedTo: firestore.FieldValue.arrayRemove(resource)
+    })
+    batch.update(docRef, {
+        [`permissions.${shareUserId}`]: firestore.FieldValue.delete(),
+    })
+    // Check share count for user delete
+    return batch.commit();
+}
+
 getCollaboratorsforResource = (userId, resource) => {
     const docRef = firestore().collection("documents").doc(resource);
     return docRef.get()

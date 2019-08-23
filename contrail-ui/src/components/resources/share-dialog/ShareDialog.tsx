@@ -158,6 +158,13 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         filesController.addResourcesToShare(selectedUsers, this.props.selectedResources);
     }
 
+    public removeShare = (resource: number, user: number) => {
+        const selectedResource: types.IShareValue = this.state.shares[resource];
+        const selectedUser = selectedResource.collaborators[user].uid;
+        const sentResource = this.props.selectedResources.find(res => res.generation === selectedResource.generation);
+        if (sentResource) filesController.removeResourcesToShare(selectedUser, sentResource);
+    }
+
     public render() {
         const { classes, dialogOpen } = this.props;
         const { input, suggestions, selected } = this.state.search;
@@ -218,6 +225,9 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             this.state.shares && this.state.shares.map((share: types.IShareValue, i) => {
                 const renderShares = (
                     share.collaborators.map((collab, index) => {
+                        const handleCancelClick = (event: React.MouseEvent<unknown>) => {
+                            this.removeShare(i, index);
+                        };
                         return (
                             <TableRow key={i}>
                                 <TableCell>
@@ -227,7 +237,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                                     {collab.email}
                                 </TableCell>
                                 <TableCell>
-                                    <Button>
+                                    <Button onClick={handleCancelClick}>
                                         <CancelIcon />
                                     </Button>
                                 </TableCell>

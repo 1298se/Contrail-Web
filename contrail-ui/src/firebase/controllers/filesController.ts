@@ -121,6 +121,23 @@ export const addResourcesToShare = (users: ISuggestion[], resources: IResourceMo
     });
 };
 
+export const removeResourcesToShare = (user: string, resource: IResourceModel): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "unshare",
+            resource,
+            shareUserId: user,
+        })
+        .then((response) => {
+            resolve(response.data);
+        })
+        .catch((error) => {
+            resolve(error.response.data);
+        });
+    });
+};
+
+
 export const getCollaborators = (resources: IResourceModel[]): Promise<any> => {
     return new Promise((resolve, reject) => {
         const ids = resources.map((resource) => resource.generation);
