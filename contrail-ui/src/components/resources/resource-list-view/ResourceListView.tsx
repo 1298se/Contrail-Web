@@ -1,3 +1,4 @@
+import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -7,7 +8,7 @@ import TableFooter from "@material-ui/core/TableFooter";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import clsx from "clsx";
+import Typography from "@material-ui/core/Typography";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
@@ -16,6 +17,7 @@ import { Dispatch } from "redux";
 import { setSelectedResources } from "../../../store/actions/resourceActions";
 import { IResourceSetSelected } from "../../../store/actions/resourceActions.types";
 import { IAppReduxState } from "../../../store/store.types";
+import theme from "../../../theme";
 import { IResourceModel } from "../../../types/resource.types";
 import useStyles from "./resourceListStyles";
 import * as types from "./resourceListView.types";
@@ -28,17 +30,17 @@ const headRows: types.IHeadRow[] = [
 ];
 
 function EnhancedTableHead(props: types.IEnhancedTableProps) {
-    const classes = useStyles();
     const { onSelectAllClick, numSelected, rowCount } = props;
 
     const renderHeadRows = headRows.map((row) => (
         <TableCell
             key={row.id}
-            className={classes.column}
             align={row.numeric ? "right" : "left"}
             padding="default"
         >
-            {row.label}
+            <Typography variant="caption" noWrap={true}>
+                {row.label}
+            </Typography>
         </TableCell>
     ));
 
@@ -71,12 +73,18 @@ function EnhancedTable(props: types.ResourceListProps) {
     const selected = props.selectedResources;
 
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const getInitialPageRows = (): number => {
+        console.log(theme.mixins.toolbar.minHeight, window.innerHeight);
+        return (window.innerHeight);
+    }
+
+    const [rowsPerPage, setRowsPerPage] = React.useState(getInitialPageRows());
 
     const isSelected = (generation: string) => selected.some((res) => res.generation === generation);
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.display.length - page * rowsPerPage);
-    const rowHeight = 49;
+    const rowHeight = 53;
 
     const renderEmptyRows = emptyRows > 0 && (
         <TableRow style={{ height: rowHeight * emptyRows }}>
@@ -111,30 +119,35 @@ function EnhancedTable(props: types.ResourceListProps) {
                         <TableCell
                             key="name"
                             align="left"
-                            className={clsx(classes.name, classes.column)}
+                            className={classes.name}
                         >
-                            {row.name}
+                            <Typography noWrap={true}>
+                                {row.name}
+                            </Typography>
                         </TableCell>
                         <TableCell
                             key="owner"
                             align="left"
-                            className={classes.column}
                         >
-                            {row.owner.displayName}
+                            <Typography noWrap={true}>
+                                {row.owner.displayName}
+                            </Typography>
                         </TableCell>
                         <TableCell
                             key="timeCreated"
                             align="left"
-                            className={classes.column}
                         >
-                            {moment(row.timeCreated).format("MMMM Do YYYY")}
+                            <Typography noWrap={true}>
+                                {moment(row.timeCreated).format("MMMM Do YYYY")}
+                            </Typography>
                         </TableCell>
                         <TableCell
                             key="size"
                             align="right"
-                            className={classes.column}
                         >
-                            {Math.round(row.size / 1000) + " KB"}
+                            <Typography noWrap={true}>
+                                {Math.round(row.size / 1000) + " KB"}
+                            </Typography>
                         </TableCell>
                     </TableRow>
                 );

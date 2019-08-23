@@ -1,13 +1,8 @@
 import { makeStyles, Theme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
-        column: {
-            whiteSpace: "nowrap",
-        },
         name: {
-            textOverflow: "ellipsis",
-            maxWidth: "500px",
-            overflow: "hidden",
+            maxWidth: "300px",
         },
         paper: {
             marginBottom: theme.spacing(2),

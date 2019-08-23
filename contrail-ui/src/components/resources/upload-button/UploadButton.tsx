@@ -21,7 +21,7 @@ const UploadButton = (props: types.UploadButtonProps) => {
         <Fab
             variant={isDrawerOpen ? "extended" : "round"}
             color="primary"
-            className={classes.button}
+            className={clsx({[classes.extendedButton]: isDrawerOpen}, classes.button)}
             onClick={handleClick}
         >
             <CloudUploadIcon className={clsx({[classes.leftIcon]: isDrawerOpen})} />
