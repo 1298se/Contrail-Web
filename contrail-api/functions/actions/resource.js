@@ -69,9 +69,9 @@ getCollaboratorsforResource = (userId, resource) => {
     .then(async (doc) => {
         if (doc.exists) {
             const { permissions, id, name } = doc.data()
-            const ids = Object.keys(permissions);
+            const ids = Object.keys(permissions).filter(id => id !== userId);
             let promiseList = [];
-            ids.map(id => id !== userId ? promiseList.push(auth.getUser(id)) : Promise.resolve());
+            ids.map(id => promiseList.push(auth.getUser(id)));
             const collaborators = await Promise.all(promiseList);
             return {
                 generation: id,

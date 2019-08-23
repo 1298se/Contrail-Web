@@ -14,8 +14,10 @@ const styles = (theme: Theme) => createStyles({
     width: "auto",
     flexGrow: 1,
   },
-  dialogPaper: {
-    overflow: "visible"
+  name: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
   },
 });
 

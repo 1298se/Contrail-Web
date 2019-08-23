@@ -6,14 +6,21 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TablePagination from "@material-ui/core/TablePagination";
+import TableRow from "@material-ui/core/TableRow";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CancelIcon from "@material-ui/icons/Cancel";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Downshift from "downshift";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
@@ -46,7 +53,14 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                         ...this.state,
                         shares: res,
                     });
-                });
+                })
+                .catch((error) => console.log(error));
+        }
+        if (prevProps.dialogOpen && !this.props.dialogOpen) {
+            this.setState({
+                ...this.state,
+                shares: [],
+            });
         }
     }
 
@@ -203,12 +217,22 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         const renderCollaborators = (
             this.state.shares && this.state.shares.map((share: types.IShareValue, i) => {
                 const renderShares = (
-                    share.collaborators.map((collab) => {
+                    share.collaborators.map((collab, index) => {
                         return (
-                            <div>
-                                {collab.email}
-                            </div>
-                        )
+                            <TableRow key={i}>
+                                <TableCell>
+                                    {collab.displayName}
+                                </TableCell>
+                                <TableCell>
+                                    {collab.email}
+                                </TableCell>
+                                <TableCell>
+                                    <Button>
+                                    <CancelIcon />
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        );
                     })
                 );
 
@@ -222,10 +246,14 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                             <Typography>{share.name}</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
-                            {renderShares}
+                            <Table>
+                                <TableBody>
+                                    {renderShares}
+                                </TableBody>
+                            </Table>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
-                )
+                );
             })
         );
 
@@ -287,10 +315,9 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     open={dialogOpen}
                     aria-labelledby="form-dialog-title"
                     fullWidth={true}
-                    className={classes.dialogPaper}
                 >
                     <DialogTitle id="form-dialog-title">Share</DialogTitle>
-                    <DialogContent className={classes.dialogPaper}>
+                    <DialogContent>
                         {renderSearchInput}
                         {renderCollaborators}
                     </DialogContent>
