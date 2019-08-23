@@ -51,7 +51,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 .then((res) => {
                     this.setState({
                         ...this.state,
-                        shares: res,
+                        shares: res.length ? res : [],
                     });
                 })
                 .catch((error) => console.log(error));
@@ -180,7 +180,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     selected={isHighlighted}
                     component="div"
                 >
-                    <Typography component={"span"}>
+                    <Typography component={"span"} className={classes.search}>
                         <Box fontSize="fontSize" fontWeight="fontWeightBold" m={1}>
                             {suggestion.displayName}
                         </Box>
@@ -228,7 +228,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                                 </TableCell>
                                 <TableCell>
                                     <Button>
-                                    <CancelIcon />
+                                        <CancelIcon />
                                     </Button>
                                 </TableCell>
                             </TableRow>
@@ -274,7 +274,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                         placeholder: "Enter names or email addresses",
                     });
                     return (
-                        <div>
+                        <div className={classes.container}>
                             {renderInput({
                                 fullWidth: true,
                                 InputProps: {
@@ -293,7 +293,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                                 },
                                 inputProps,
                             })}
-                            <Paper>
+                            <Paper className={classes.paper}>
                                 {suggestions.map((suggestion, index) =>
                                     renderSuggestion({
                                         suggestion,
@@ -312,12 +312,13 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         return (
             <div>
                 <Dialog
+                    classes={{ paper: classes.dialogPaper }}
                     open={dialogOpen}
                     aria-labelledby="form-dialog-title"
                     fullWidth={true}
                 >
                     <DialogTitle id="form-dialog-title">Share</DialogTitle>
-                    <DialogContent>
+                    <DialogContent className={classes.dialogPaper}>
                         {renderSearchInput}
                         {renderCollaborators}
                     </DialogContent>

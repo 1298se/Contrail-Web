@@ -55,9 +55,9 @@ exports.share = async (req, res) => {
         let promiseShareList = [];
         resources.map(resource => promiseShareList.push(shareResource(resource, userIds, userRef)));
         return Promise.all(promiseShareList)
-        .then(() => {
-            return res.status(200).send();
-        })
+            .then(() => {
+                return res.status(200).send();
+            })
     } catch (error) {
         return res.status(500).send(error);
     }
@@ -66,25 +66,25 @@ exports.share = async (req, res) => {
 getCollaboratorsforResource = (userId, resource) => {
     const docRef = firestore().collection("documents").doc(resource);
     return docRef.get()
-    .then(async (doc) => {
-        if (doc.exists) {
-            const { permissions, id, name } = doc.data()
-            const ids = Object.keys(permissions).filter(id => id !== userId);
-            let promiseList = [];
-            ids.map(id => promiseList.push(auth.getUser(id)));
-            const collaborators = await Promise.all(promiseList);
-            return {
-                generation: id,
-                name,
-                collaborators,
-            };
-        } else {
-            throw new Error("Document does not exist")
-        }
-    })
-    .catch((error) => {
-        throw error
-    });
+        .then(async (doc) => {
+            if (doc.exists) {
+                const { permissions, id, name } = doc.data()
+                const ids = Object.keys(permissions).filter(id => id !== userId);
+                let promiseList = [];
+                ids.map(id => promiseList.push(auth.getUser(id)));
+                const collaborators = await Promise.all(promiseList);
+                return {
+                    generation: id,
+                    name,
+                    collaborators,
+                };
+            } else {
+                throw new Error("Document does not exist")
+            }
+        })
+        .catch((error) => {
+            throw error
+        });
 }
 
 exports.getCollaborators = async (req, res) => {
@@ -93,10 +93,10 @@ exports.getCollaborators = async (req, res) => {
     return Promise.all(resources.map(async resource => {
         return await getCollaboratorsforResource(userId, resource)
     }))
-    .then((values) => {
-        return res.status(200).send(values)
-    })
-    .catch((error) => {
-        return res.status(500).send(error)
-    })
+        .then((values) => {
+            return res.status(200).send(values)
+        })
+        .catch((error) => {
+            return res.status(500).send(error)
+        })
 }
