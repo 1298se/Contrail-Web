@@ -7,7 +7,7 @@ import { EmailVerificationDialogProps } from "./emailVerificationDialog.types";
 const EmailVerificationDialog = (props: EmailVerificationDialogProps) => {
 
     const notEmailVerifiedMessage = "You have not yet verified your email address.\
-    Please verify it in order to continue logging in.";
+    Please verify it to continue logging in.";
 
     const handleResendClick = () => {
         auth.sendEmailVerification()

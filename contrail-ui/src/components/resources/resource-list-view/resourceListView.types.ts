@@ -1,4 +1,4 @@
-import { IResourceModel } from "../../../types/resource.types";
+import { IResourceModel, IUserResources } from "../../../types/resource.types";
 
 export interface IData {
     name: string;
@@ -14,11 +14,12 @@ export interface IHeadRow {
 }
 
 export interface IResourceListOwnProps {
-    display: IResourceModel[];
+    page: string;
 }
 
 export interface IResourceListStateProps {
     selectedResources: IResourceModel[];
+    userResources: IUserResources;
 }
 
 export interface IResourceListDispatchProps {
