@@ -48,7 +48,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
     }
 
     public render() {
-        const mobileMenuId = "toolbar-icons-menu-mobile";
+        const isItemSelected = this.props.selectedResources.length !== 0;
         const isMobileMenuOpen = Boolean(this.state.mobileMoreAnchorEl);
 
         const { classes } = this.props;
@@ -56,31 +56,30 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
             <Menu
                 anchorEl={this.state.mobileMoreAnchorEl}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                id={mobileMenuId}
                 keepMounted={true}
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
                 open={isMobileMenuOpen}
                 onClose={this.handleMobileMenuClose}
             >
-                <MenuItem onClick={this.handleMobileMenuClose}>
+                <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
                     <IconButton color="default">
                         <RemoveRedEyeIcon />
                     </IconButton>
                     <p>View</p>
                 </MenuItem>
                 <MenuItem onClick={this.handleMobileMenuClose}>
-                    <IconButton color="default">
+                    <IconButton disabled={!isItemSelected} color="default">
                         <FavoriteIcon />
                     </IconButton>
                     <p>Favorite</p>
                 </MenuItem>
-                <MenuItem onClick={this.handleMobileMenuClose}>
+                <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
                     <IconButton color="default">
                         <SharedIcon />
                     </IconButton>
                     <p>Share</p>
                 </MenuItem>
-                <MenuItem onClick={this.handleMobileMenuClose}>
+                <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
                     <IconButton color="default">
                         <TrashIcon />
                     </IconButton>
@@ -98,18 +97,19 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                         </Typography>
                         <div className={classes.grow} />
                         <div className={classes.sectionDesktop}>
-                            <IconButton color="default">
+                            <IconButton color="default" disabled={!isItemSelected}>
                                 <RemoveRedEyeIcon />
                             </IconButton>
-                            <IconButton color="default" onClick={this.handleFavouriteClick}>
+                            <IconButton color="default" disabled={!isItemSelected} onClick={this.handleFavouriteClick}>
                                 <FavoriteIcon />
                             </IconButton>
-                            <IconButton color="default">
+                            <IconButton color="default" disabled={!isItemSelected}>
                                 <SharedIcon />
                             </IconButton>
                             <IconButton
                                 edge="end"
                                 color="default"
+                                disabled={!isItemSelected}
                             >
                                 <TrashIcon />
                             </IconButton>

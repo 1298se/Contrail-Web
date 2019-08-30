@@ -1,11 +1,10 @@
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Route, RouteComponentProps, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import { fetchRootResources, setResourceListener } from "../../store/actions/resourceActions";
-import { IResourceFetchAllAction } from "../../store/actions/resourceActions.types";
-import { IAppReduxState } from "../../store/store.types";
+import { ResourceActions } from "../../store/actions/resourceActions.types";
 import withSnackbar from "../feedback/snackbar-component/SnackbarComponent";
 import ResourceListView from "./resource-list-view/ResourceListView";
 import ResourceToolBar from "./resource-tool-bar/ResourceToolBar";
@@ -39,46 +38,30 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
 
     public render() {
         const { classes } = this.props;
-        const { userResources } = this.props;
         const { match } = this.props;
-        const sharedResources = userResources.sharedBy.concat(userResources.sharedTo);
 
-        const renderRootResources = (props: RouteComponentProps) => {
-            return (
-                <React.Fragment>
-                    <ResourceToolBar titleText="Files" />
-                    <div className={classes.appBarSpacer} />
-                    <ResourceListView {...props} display={userResources.root} />
-                </React.Fragment>
-            );
+        const renderRootResources = () => {
+            return renderResourcesWrapper(types.ResourcePages.FILES);
         };
 
-        const renderFavouriteResources = (props: RouteComponentProps) => {
-            return (
-                <React.Fragment>
-                    <ResourceToolBar titleText="Favourites" />
-                    <div className={classes.appBarSpacer} />
-                    <ResourceListView {...props} display={userResources.favourites} />
-                </React.Fragment>
-            );
+        const renderFavouriteResources = () => {
+            return renderResourcesWrapper(types.ResourcePages.FAVOURITES);
         };
 
-        const renderSharedResources = (props: RouteComponentProps) => {
-            return (
-                <React.Fragment>
-                    <ResourceToolBar titleText="Shared" />
-                    <div className={classes.appBarSpacer} />
-                    <ResourceListView {...props} display={sharedResources} />
-                </React.Fragment>
-            );
+        const renderSharedResources = () => {
+            return renderResourcesWrapper(types.ResourcePages.SHARED);
         };
 
-        const renderTrashResources = (props: RouteComponentProps) => {
+        const renderTrashResources = () => {
+            return renderResourcesWrapper(types.ResourcePages.TRASH);
+        };
+
+        const renderResourcesWrapper = (page: string) => {
             return (
                 <React.Fragment>
-                    <ResourceToolBar titleText="Trash" />
+                    <ResourceToolBar titleText={page} />
                     <div className={classes.appBarSpacer} />
-                    <ResourceListView {...props} display={userResources.trash} />
+                    <ResourceListView page={page} />
                 </React.Fragment>
             );
         };
@@ -86,28 +69,21 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
         return (
             <React.Fragment>
                 <Switch>
-                    <Route path={`${match.path}/files`} render={renderRootResources} />
-                    <Route path={`${match.path}/favourites`} render={renderFavouriteResources} />
-                    <Route path={`${match.path}/shared`} render={renderSharedResources} />
-                    <Route path={`${match.path}/trash`} render={renderTrashResources} />
+                    <Route path={`${match.path}/files`} component={renderRootResources} />
+                    <Route path={`${match.path}/favourites`} component={renderFavouriteResources} />
+                    <Route path={`${match.path}/shared`} component={renderSharedResources} />
+                    <Route path={`${match.path}/trash`} component={renderTrashResources} />
                 </Switch>
             </React.Fragment>
         );
     }
 }
 
-const mapStateToProps = (state: IAppReduxState): types.IResourceFrameStateProps => {
-    return {
-        isFetchingResources: state.appUiState.appLoadState.isFetchingRootResources,
-        userResources: state.resourceState.userResources,
-    };
-};
-
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IResourceFetchAllAction>) => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, ResourceActions>) => {
     return {
         fetchRootResources: () => dispatch(fetchRootResources()),
         setResourceListener: () => dispatch(setResourceListener()),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withSnackbar(withStyles(styles)(ResourceFrame)));
+export default connect(null, mapDispatchToProps)(withSnackbar(withStyles(styles)(ResourceFrame)));

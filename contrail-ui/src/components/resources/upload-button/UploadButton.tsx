@@ -1,5 +1,6 @@
-import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import clsx from "clsx";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -10,22 +11,22 @@ import useStyles from "./uploadButtonStyles";
 
 const UploadButton = (props: types.UploadButtonProps) => {
     const classes = useStyles();
+    const isDrawerOpen = props.isDrawerOpen;
 
     const handleClick = () => {
         props.setUploadDialogOpen(true);
     };
 
     return (
-        <Button
-            className={classes.uploadButton}
-            variant="contained"
+        <Fab
+            variant={isDrawerOpen ? "extended" : "round"}
             color="primary"
-            size="large"
+            className={clsx({[classes.extendedButton]: isDrawerOpen}, classes.button)}
             onClick={handleClick}
         >
-            <CloudUploadIcon className={classes.uploadIcon} />
-            Upload
-        </Button>
+            <CloudUploadIcon className={clsx({[classes.leftIcon]: isDrawerOpen})} />
+            {isDrawerOpen ? "Upload" : null}
+        </Fab>
     );
 };
 

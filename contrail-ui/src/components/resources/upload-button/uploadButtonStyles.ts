@@ -1,12 +1,15 @@
 import { makeStyles, Theme } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    uploadButton : {
-        margin: "10px",
-        borderRadius: "20px",
+    button: {
+        margin: theme.spacing(1),
+        maxWidth: 175,
     },
-    uploadIcon : {
-        margin: "0px 10px",
+    extendedButton: {
+        marginBottom: theme.spacing(2),
+    },
+    leftIcon: {
+        marginRight: theme.spacing(1),
     },
 }));
 
