@@ -49,14 +49,14 @@ shareResource = (resource, users, userRef) => {
 
 exports.share = async (req, res) => {
     const userId = req.uid;
-    const { resources, userIds } = req.body;
+    const { resources, shareIds } = req.body;
     const userRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
     try {
         let promiseShareList = [];
-        resources.map(resource => promiseShareList.push(shareResource(resource, userIds, userRef)));
+        resources.map(resource => promiseShareList.push(shareResource(resource, shareIds, userRef)));
         return Promise.all(promiseShareList)
             .then(() => {
-                return res.status(200).send();
+                return res.status(200).send({ message: "Resources shared successfully" });
             })
     } catch (error) {
         return res.status(500).send(error);
@@ -68,6 +68,7 @@ exports.unshare = async (req, res) => {
     const { resource, shareUserId } = req.body;
     const batch = firestore().batch();
     const docRef = firestore().collection("documents").doc(resource.generation);
+    const userRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
     const shareUserRef = firestore().collection("users").doc(shareUserId).collection("root").doc("resources");
     batch.update(shareUserRef, {
         root: firestore.FieldValue.arrayRemove(resource),
@@ -76,8 +77,26 @@ exports.unshare = async (req, res) => {
     batch.update(docRef, {
         [`permissions.${shareUserId}`]: firestore.FieldValue.delete(),
     })
-    // Check share count for user delete
-    return batch.commit();
+    try {
+        const doc = await docRef.get()
+        if (doc.exists) {
+            const { permissions } = doc.data()
+            const ids = Object.keys(permissions).filter(id => id !== userId);
+            if (ids.length === 1) {
+                batch.update(userRef, {
+                    sharedBy: firestore.FieldValue.arrayRemove(resource)
+                });
+            }
+            return batch.commit()
+                .then(() => {
+                    return res.status(200).send()
+                })
+        } else {
+            return res.status(500).send({ code: "noRequestType", message: "No document found" });
+        }
+    } catch (error) {
+        return res.status(500).send(error);
+    }
 }
 
 getCollaboratorsforResource = (userId, resource) => {
@@ -85,7 +104,7 @@ getCollaboratorsforResource = (userId, resource) => {
     return docRef.get()
         .then(async (doc) => {
             if (doc.exists) {
-                const { permissions, id, name } = doc.data()
+                const { permissions, id, name } = doc.data();
                 const ids = Object.keys(permissions).filter(id => id !== userId);
                 let promiseList = [];
                 ids.map(id => promiseList.push(auth.getUser(id)));
@@ -96,11 +115,11 @@ getCollaboratorsforResource = (userId, resource) => {
                     collaborators,
                 };
             } else {
-                throw new Error("Document does not exist")
+                throw new Error("Document does not exist");
             }
         })
         .catch((error) => {
-            throw error
+            throw error;
         });
 }
 
