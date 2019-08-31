@@ -37,6 +37,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
 
     public handleFavouriteClick = () => {
         const { selectedResources, userResources } = this.props;
+        this.handleMobileMenuClose();
 
         const isAllFavourited = !(selectedResources.some((selectRes) =>
             !userResources.favourites.map((res) => res.generation).includes(selectRes.generation)));
@@ -67,11 +68,11 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     </IconButton>
                     <p>View</p>
                 </MenuItem>
-                <MenuItem onClick={this.handleMobileMenuClose}>
-                    <IconButton disabled={!isItemSelected} color="default">
+                <MenuItem disabled={!isItemSelected} onClick={this.handleFavouriteClick}>
+                    <IconButton color="default">
                         <FavoriteIcon />
                     </IconButton>
-                    <p>Favorite</p>
+                    <p>Favourite</p>
                 </MenuItem>
                 <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
                     <IconButton color="default">
