@@ -58,20 +58,20 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
             case "displayName":
                 formErrors.displayNameError = value.trim().length >= auth.minDisplayNameLength
                     ? ""
-                    : "Usernames must have a minimum of 4 characters.";
+                    : auth.DISPLAY_NAME_LENGTH_ERROR;
                 break;
             case "email":
                 formErrors.emailError = auth.emailRegex.test(value.trim())
                     ? ""
-                    : "Please enter a valid email.";
+                    : auth.EMAIL_REGEX_ERROR;
                 break;
             case "password":
                 const passwordLengthError = value.length >= auth.minPasswordLength
                     ? ""
-                    : "Passwords must have a minimum of 6 characters.";
+                    : auth.PASSWORD_LENGTH_ERROR;
                 const passwordRegexError = auth.passwordRegex.test(value)
                     ? ""
-                    : "Password must not contain whitespace.";
+                    : auth.PASSWORD_NO_WHITESPACE;
                 formErrors.passwordError = passwordLengthError.concat(passwordRegexError);
                 break;
             default:

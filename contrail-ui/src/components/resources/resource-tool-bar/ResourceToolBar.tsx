@@ -14,6 +14,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as filesController from "../../../firebase/controllers/filesController";
 import { IAppReduxState } from "../../../store/store.types";
+import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import * as types from "./resourceToolBar.type";
 import styles from "./toolBarStyles";
 
@@ -40,12 +41,30 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         this.handleMobileMenuClose();
 
         const isAllFavourited = !(selectedResources.some((selectRes) =>
-            !userResources.favourites.map((res) => res.generation).includes(selectRes.generation)));
+            !userResources.favourites.includes(selectRes.generation)));
         if (isAllFavourited) {
-            filesController.removeResourcesFromFavourites(selectedResources);
+            filesController.removeResourcesFromFavourites(selectedResources.map((res) => res.generation));
         } else {
-            filesController.addResourcesToFavourites(selectedResources);
+            filesController.addResourcesToFavourites(selectedResources.map((res) => res.generation))
+                .then(() => {
+                    this.props.setSnackbarDisplay("success", "File(s) have been successfully favourited.");
+                })
+                .catch((error) => {
+                    this.props.setSnackbarDisplay("error", error);
+                });
         }
+    }
+
+    public handleTrashClick = () => {
+        const { selectedResources } = this.props;
+        this.handleMobileMenuClose();
+
+        filesController.addResourcesToTrash(selectedResources.map((res) => res.generation))
+            .then(() => {
+                this.props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
+            }).catch((error) => {
+                this.props.setSnackbarDisplay("error", error);
+            });
     }
 
     public render() {
@@ -98,19 +117,30 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                         </Typography>
                         <div className={classes.grow} />
                         <div className={classes.sectionDesktop}>
-                            <IconButton color="default" disabled={!isItemSelected}>
+                            <IconButton
+                                color="default"
+                                disabled={!isItemSelected}
+                            >
                                 <RemoveRedEyeIcon />
                             </IconButton>
-                            <IconButton color="default" disabled={!isItemSelected} onClick={this.handleFavouriteClick}>
+                            <IconButton
+                                color="default"
+                                disabled={!isItemSelected}
+                                onClick={this.handleFavouriteClick}
+                            >
                                 <FavoriteIcon />
                             </IconButton>
-                            <IconButton color="default" disabled={!isItemSelected}>
+                            <IconButton
+                                color="default"
+                                disabled={!isItemSelected}
+                            >
                                 <SharedIcon />
                             </IconButton>
                             <IconButton
                                 edge="end"
                                 color="default"
                                 disabled={!isItemSelected}
+                                onClick={this.handleTrashClick}
                             >
                                 <TrashIcon />
                             </IconButton>
@@ -138,4 +168,4 @@ const mapStateToProps = (state: IAppReduxState): types.IResourceToolBarStateProp
     };
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(ResourceToolBar));
+export default connect(mapStateToProps)(withSnackbar(withStyles(styles)(ResourceToolBar)));

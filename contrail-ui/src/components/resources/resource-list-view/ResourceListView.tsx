@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { filterTrashResources, mapIdsToResources } from "../../../firebase/controllers/filesController";
 import { setSelectedResources } from "../../../store/actions/resourceActions";
 import { IResourceSetSelected } from "../../../store/actions/resourceActions.types";
 import { IAppReduxState } from "../../../store/store.types";
@@ -81,13 +82,14 @@ function EnhancedTable(props: types.ResourceListProps) {
     const displayResources = (() => {
         switch (props.page) {
             case ResourcePages.FILES:
-                return props.userResources.root;
+                return filterTrashResources(props.userResources.root);
             case ResourcePages.FAVOURITES:
-                return props.userResources.favourites;
+                return filterTrashResources(mapIdsToResources(props.userResources.favourites));
             case ResourcePages.SHARED:
-                return props.userResources.sharedBy.concat(props.userResources.sharedTo);
+                return filterTrashResources(mapIdsToResources(
+                    props.userResources.sharedBy.concat(props.userResources.sharedTo)));
             case ResourcePages.TRASH:
-                return props.userResources.trash;
+                return mapIdsToResources(props.userResources.trash);
             default:
                 return [];
         }
@@ -97,7 +99,7 @@ function EnhancedTable(props: types.ResourceListProps) {
     const rowHeight = 53;
 
     const isFavourited = (generation: string): boolean =>
-        props.userResources.favourites.map((res) => res.generation).includes(generation);
+        props.userResources.favourites.includes(generation);
 
     React.useEffect(() => {
         return (() => {
