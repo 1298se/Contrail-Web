@@ -1,5 +1,5 @@
 import { WithStyles } from "@material-ui/core";
-import { IResourceModel, IUserResources } from "../../../types/resource.types";
+import { IResourceModel } from "../../../types/resource.types";
 import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 import styles from "./shareDialogStyles";
 
@@ -11,11 +11,11 @@ export interface IShareDialogState {
 export interface ISearchValues {
     input: string;
     timeout: NodeJS.Timeout | null;
-    suggestions: ISuggestion[];
-    selected: ISuggestion[];
+    suggestions: IUserSuggestion[];
+    selected: IUserSuggestion[];
 }
 
-export interface ISuggestion {
+export interface IUserSuggestion {
     displayName: string;
     email: string;
     id: string;

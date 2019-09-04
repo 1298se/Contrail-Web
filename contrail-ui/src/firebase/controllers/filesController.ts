@@ -1,9 +1,9 @@
 
 import axios from "axios";
 import * as firebase from "firebase/app";
+import { IUserSuggestion } from "../../components/resources/share-dialog/shareDialog.types";
 import { IResourceModel } from "../../types/resource.types";
 import { dbRef, storageRef } from "../firebase";
-import { ISuggestion } from "../../components/resources/share-dialog/shareDialog.types";
 
 /**
  * Upload a file to Cloud Storage
@@ -84,7 +84,7 @@ export const addResourcesToFavourites = (resources: IResourceModel[]): Promise<a
             resolve(response.data);
         })
         .catch((error) => {
-            resolve(error.response.data);
+            reject(error.response.data);
         });
     });
 };
@@ -99,24 +99,42 @@ export const removeResourcesFromFavourites = (resources: IResourceModel[]): Prom
             resolve(response.data);
         })
         .catch((error) => {
-            resolve(error.response.data);
+            reject(error.response.data);
         });
     });
 };
 
-export const addResourcesToShare = (users: ISuggestion[], resources: IResourceModel[]): Promise<any> => {
-    const userIds = users.map((user) => user.id);
+export const getCollaborators = (resources: IResourceModel[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        const ids = resources.map((resource) => resource.generation);
+        const request = {
+            params: {
+                ids,
+            },
+        };
+        axios.get("/api/shares", request)
+        .then((response) => {
+            resolve(response.data);
+        })
+        .catch((error) => {
+            reject(error.response.data);
+        });
+    });
+};
+
+export const addResourcesToShare = (users: IUserSuggestion[], resources: IResourceModel[]): Promise<any> => {
+    const shareIds = users.map((user) => user.id);
     return new Promise((resolve, reject) => {
         axios.put("/api/resources", {
             type: "share",
             resources,
-            userIds,
+            shareIds,
         })
         .then((response) => {
             resolve(response.data);
         })
         .catch((error) => {
-            resolve(error.response.data);
+            reject(error.response.data);
         });
     });
 };
@@ -132,26 +150,7 @@ export const removeResourcesToShare = (user: string, resource: IResourceModel): 
             resolve(response.data);
         })
         .catch((error) => {
-            resolve(error.response.data);
-        });
-    });
-};
-
-
-export const getCollaborators = (resources: IResourceModel[]): Promise<any> => {
-    return new Promise((resolve, reject) => {
-        const ids = resources.map((resource) => resource.generation);
-        const request = {
-            params: {
-                ids,
-            },
-        };
-        axios.get("/api/shares", request)
-        .then((response) => {
-            resolve(response.data);
-        })
-        .catch((error) => {
-            resolve(error.response.data);
+            reject(error.response.data);
         });
     });
 };

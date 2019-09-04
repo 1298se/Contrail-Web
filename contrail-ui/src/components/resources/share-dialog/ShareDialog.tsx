@@ -14,8 +14,6 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -39,28 +37,24 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         search: {
             input: "",
             timeout: null,
-            suggestions: [] as types.ISuggestion[],
-            selected: [] as types.ISuggestion[],
+            suggestions: [] as types.IUserSuggestion[],
+            selected: [] as types.IUserSuggestion[],
         },
         shares: [],
     };
 
-    public componentDidUpdate = (prevProps: types.IShareDialogProps, prevState: types.IShareDialogState) => {
-        if (!prevProps.dialogOpen && this.props.dialogOpen) {
-            filesController.getCollaborators(this.props.selectedResources)
-                .then((res) => {
-                    this.setState({
-                        ...this.state,
-                        shares: res.length ? res : [],
-                    });
-                })
-                .catch((error) => console.log(error));
-        }
-        if (prevProps.dialogOpen && !this.props.dialogOpen) {
-            this.setState({
-                ...this.state,
-                shares: [],
+    public updateCollaborators = () => {
+        return filesController.getCollaborators(this.props.selectedResources)
+            .then((res) => {
+                this.setState({
+                    ...this.state,
+                    shares: res.length > 0 ? res : [],
+                });
             });
+    }
+    public componentDidUpdate = (prevProps: types.IShareDialogProps) => {
+        if (!prevProps.dialogOpen && this.props.dialogOpen) {
+            return this.updateCollaborators();
         }
     }
 
@@ -74,7 +68,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                         search: {
                             ...this.state.search,
                             suggestions: this.state.search.input.length > 2 ?
-                                newOptions.filter((option: types.ISuggestion) => {
+                                newOptions.filter((option: types.IUserSuggestion) => {
                                     return !(this.state.search.selected.map((sel) => sel.id).includes(option.id) ||
                                         option.id === user.uid);
                                 }) : [],
@@ -109,7 +103,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         });
     }
 
-    public handleChange = (item: types.ISuggestion) => {
+    public handleChange = (item: types.IUserSuggestion) => {
         let selectedItems = [...this.state.search.selected];
         if (selectedItems.indexOf(item) === -1) {
             selectedItems = [...selectedItems, item];
@@ -119,13 +113,13 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             search: {
                 ...this.state.search,
                 input: "",
-                suggestions: [] as types.ISuggestion[],
+                suggestions: [] as types.IUserSuggestion[],
                 selected: selectedItems,
             },
         });
     }
 
-    public handleDelete = (item: types.ISuggestion) => () => {
+    public handleDelete = (item: types.IUserSuggestion) => () => {
         const selectedItems = [...this.state.search.selected];
         selectedItems.splice(selectedItems.indexOf(item), 1);
         this.setState({
@@ -133,7 +127,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             search: {
                 ...this.state.search,
                 input: "",
-                suggestions: [] as types.ISuggestion[],
+                suggestions: [] as types.IUserSuggestion[],
                 selected: selectedItems,
             },
         });
@@ -141,28 +135,42 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
 
     public handleCancel = () => {
         this.setState({
-            ...this.state,
             search: {
                 ...this.state.search,
                 input: "",
-                suggestions: [] as types.ISuggestion[],
+                suggestions: [] as types.IUserSuggestion[],
                 selected: [],
             },
+            shares: [],
         });
         this.props.setDialogOpen(false);
     }
 
     public handleSubmit = () => {
-        // TODO: Fill function to share the resource to the selected users.
         const selectedUsers = this.state.search.selected;
-        filesController.addResourcesToShare(selectedUsers, this.props.selectedResources);
+        return filesController.addResourcesToShare(selectedUsers, this.props.selectedResources)
+            .then((res) => {
+                this.updateCollaborators();
+                this.props.setSnackbarDisplay("success", res.message);
+            })
+            .catch((err) => {
+                this.props.setSnackbarDisplay("error", err);
+            });
     }
 
     public removeShare = (resource: number, user: number) => {
         const selectedResource: types.IShareValue = this.state.shares[resource];
         const selectedUser = selectedResource.collaborators[user].uid;
-        const sentResource = this.props.selectedResources.find(res => res.generation === selectedResource.generation);
-        if (sentResource) filesController.removeResourcesToShare(selectedUser, sentResource);
+        const selResource = this.props.selectedResources.find((res) => res.generation === selectedResource.generation);
+        if (selResource) {
+            filesController.removeResourcesToShare(selectedUser, selResource)
+                .then(() => {
+                    this.updateCollaborators();
+                })
+                .catch((err) => {
+                    this.props.setSnackbarDisplay("error", err);
+                });
+        }
     }
 
     public render() {
@@ -174,7 +182,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             highlightedIndex: number | null;
             index: number;
             itemProps: MenuItemProps<"div", { button?: never }>;
-            suggestion: types.ISuggestion;
+            suggestion: types.IUserSuggestion;
         }
 
         const renderSuggestion = (suggestionProps: IRenderSuggestionProps) => {
@@ -229,25 +237,19 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                             this.removeShare(i, index);
                         };
                         return (
-                            <TableRow key={i}>
-                                <TableCell>
-                                    {collab.displayName}
-                                </TableCell>
-                                <TableCell>
-                                    {collab.email}
-                                </TableCell>
-                                <TableCell>
-                                    <Button onClick={handleCancelClick}>
-                                        <CancelIcon />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
+                            <div className={classes.search} key={index}>
+                                <Typography>{collab.displayName}</Typography>
+                                <Typography>{collab.email}</Typography>
+                                <Button onClick={handleCancelClick}>
+                                    <CancelIcon />
+                                </Button>
+                            </div>
                         );
                     })
                 );
 
                 return (
-                    <ExpansionPanel key={i}>
+                    <ExpansionPanel key={i} disabled={share.collaborators.length === 0}>
                         <ExpansionPanelSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1a-content"
@@ -256,11 +258,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                             <Typography>{share.name}</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
-                            <Table>
-                                <TableBody>
-                                    {renderShares}
-                                </TableBody>
-                            </Table>
+                            {renderShares}
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                 );
@@ -276,8 +274,6 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 {({
                     getInputProps,
                     getItemProps,
-                    inputValue: inputValue2,
-                    selectedItem: selectedItem2,
                     highlightedIndex,
                 }) => {
                     const { onBlur, onChange, onFocus, ...inputProps } = getInputProps({
@@ -329,8 +325,10 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 >
                     <DialogTitle id="form-dialog-title">Share</DialogTitle>
                     <DialogContent className={classes.dialogPaper}>
+                        <div className={classes.collaborators}>
+                            {renderCollaborators}
+                        </div>
                         {renderSearchInput}
-                        {renderCollaborators}
                     </DialogContent>
                     <DialogActions>
                         <Button

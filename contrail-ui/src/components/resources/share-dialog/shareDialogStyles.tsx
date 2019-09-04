@@ -38,6 +38,12 @@ const styles = (theme: Theme) => createStyles({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
+    flexGrow: 1,
+  },
+  collaborators: {
+    maxHeight: "500px",
+    overflowY: "auto",
+    padding: theme.spacing(1),
   },
 });
 
