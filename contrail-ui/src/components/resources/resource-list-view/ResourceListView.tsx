@@ -144,7 +144,9 @@ function EnhancedTable(props: types.ResourceListProps) {
                         >
                             <Grid container={true} direction="row" alignItems="center">
                                 <Grid item={true}>
-                                    {res.name}
+                                    <Typography noWrap={true}>
+                                        {res.name}
+                                    </Typography>
                                 </Grid>
                                 <Grid item={true}>
                                     {isFavourited(res.generation) ? <FavoriteIcon className={classes.icon} /> : null}
