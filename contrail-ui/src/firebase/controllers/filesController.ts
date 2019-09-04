@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import * as firebase from "firebase/app";
+import store from "../../store/store";
 import { IResourceModel } from "../../types/resource.types";
 import { dbRef, storageRef } from "../firebase";
 
@@ -27,78 +28,101 @@ export const uploadFiletoStorage = (file: File, userID: string): firebase.storag
  */
 
 export const writeFileToDB =
-(upload: firebase.storage.UploadTask, user: firebase.User): Promise<any> => {
-    return new Promise((resolve, reject) => {
-        const { name, size, timeCreated, generation, fullPath, updated } = upload.snapshot.metadata;
-        const { uid, displayName, email } = user;
+    (upload: firebase.storage.UploadTask, user: firebase.User): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            const { name, size, timeCreated, generation, fullPath, updated } = upload.snapshot.metadata;
+            const { uid, displayName, email } = user;
 
-        const batch = dbRef.batch();
-        const documentsRef = dbRef.collection("documents").doc(generation);
-        batch.set(documentsRef, {
-            id: generation,
-            name,
-            path: fullPath,
-            permissions: {
-                [uid]: "owner",
-            },
-            createdBy: displayName,
-            size,
-            timeCreated,
-            updated,
-        });
-        const owner = {
-            uid,
-            displayName,
-            email,
-        };
-        const newDoc = {
-            name,
-            generation,
-            size,
-            owner,
-            timeCreated,
-        };
-        const userDocRef = dbRef.collection("users").doc(uid).collection("root").doc("resources");
-        batch.update(userDocRef, {
-            root: firebase.firestore.FieldValue.arrayUnion(newDoc),
-        });
+            const batch = dbRef.batch();
+            const documentsRef = dbRef.collection("documents").doc(generation);
+            batch.set(documentsRef, {
+                id: generation,
+                name,
+                path: fullPath,
+                permissions: {
+                    [uid]: "owner",
+                },
+                createdBy: displayName,
+                size,
+                timeCreated,
+                updated,
+            });
+            const owner = {
+                uid,
+                displayName,
+                email,
+            };
+            const newDoc = {
+                name,
+                generation,
+                size,
+                owner,
+                timeCreated,
+            };
+            const userDocRef = dbRef.collection("users").doc(uid).collection("root").doc("resources");
+            batch.update(userDocRef, {
+                root: firebase.firestore.FieldValue.arrayUnion(newDoc),
+            });
 
-        batch.commit()
-        .then(() => {
-            resolve();
-        })
-        .catch((error) => {
-            reject(error.message);
+            batch.commit()
+                .then(() => {
+                    resolve();
+                })
+                .catch((error) => {
+                    reject(error.message);
+                });
         });
-    });
-};
+    };
 
-export const addResourcesToFavourites = (resources: IResourceModel[]): Promise<any> => {
+export const addResourcesToFavourites = (resourceIds: string[]): Promise<any> => {
     return new Promise((resolve, reject) => {
         axios.put("/api/resources", {
             type: "addFavourites",
-            resources,
-        })
-        .then((response) => {
+            resourceIds,
+        }).then((response) => {
             resolve(response.data);
-        })
-        .catch((error) => {
-            resolve(error.response.data);
+        }).catch((error) => {
+            reject(error.response.data);
         });
     });
 };
 
-export const removeResourcesFromFavourites = (resources: IResourceModel[]): Promise<any> => {
+export const addResourcesToTrash = (resourceIds: string[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "addTrash",
+            resourceIds,
+        }).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error.response.data);
+        });
+    });
+};
+
+export const removeResourcesFromFavourites = (resourceIds: string[]): Promise<any> => {
     return new Promise((resolve, reject) => {
         axios.put("/api/resources", {
             type: "removeFavourites",
-            resources,
-        })
-        .then((response) => {
+            resourceIds,
+        }).then((response) => {
             resolve(response.data);
-        })
-        .catch((error) => {
-            resolve(error.response.data);
+        }).catch((error) => {
+            reject(error.response.data);
         });
     });
+};
+
+export const filterTrashResources = (resourceIds: string[]): string[] => {
+    const trashResources = store.getState().resourceState.userResources.trash;
+
+    return resourceIds.filter((generation) => !trashResources.includes(generation));
+};
+
+export const mapIdsToResources = (resourceIds: string[]): IResourceModel[] => {
+    const rootResources = store.getState().resourceState.userResources.root;
+
+    const mappedResources = resourceIds.map((generation) =>
+        rootResources.find((res) => res.generation === generation));
+    return mappedResources.filter((res): res is IResourceModel => !!res);
 };
