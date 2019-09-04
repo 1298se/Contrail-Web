@@ -56,7 +56,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
 
         switch (name) {
             case "displayName":
-                formErrors.displayNameError = value.trim().length > auth.minDisplayNameLength
+                formErrors.displayNameError = value.trim().length >= auth.MIN_DISPLAY_NAME_LENGTH
                     ? ""
                     : auth.DISPLAY_NAME_LENGTH_ERROR;
                 break;
@@ -66,7 +66,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
                     : auth.EMAIL_REGEX_ERROR;
                 break;
             case "password":
-                const passwordLengthError = value.length >= auth.minPasswordLength
+                const passwordLengthError = value.length >= auth.MIN_PASSWORD_LENGTH
                     ? ""
                     : auth.PASSWORD_LENGTH_ERROR;
                 const passwordRegexError = auth.passwordRegex.test(value)

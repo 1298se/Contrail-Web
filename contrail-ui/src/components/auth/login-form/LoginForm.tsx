@@ -61,7 +61,7 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                     : auth.EMAIL_REGEX_ERROR;
                 break;
             case "password":
-                const passwordLengthError = value.length >= auth.minPasswordLength
+                const passwordLengthError = value.length >= auth.MIN_PASSWORD_LENGTH
                     ? ""
                     : auth.PASSWORD_LENGTH_ERROR;
                 const passwordRegexError = auth.passwordRegex.test(value)
