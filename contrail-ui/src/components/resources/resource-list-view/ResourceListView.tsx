@@ -79,21 +79,21 @@ function EnhancedTable(props: types.ResourceListProps) {
 
     const isSelected = (generation: string) => selected.some((res) => res.generation === generation);
 
-    const displayResources = (() => {
+    const displayResources = mapIdsToResources((() => {
         switch (props.page) {
             case ResourcePages.FILES:
-                return filterTrashResources(props.userResources.root);
+                return filterTrashResources(props.userResources.root.map((res) => res.generation));
             case ResourcePages.FAVOURITES:
-                return filterTrashResources(mapIdsToResources(props.userResources.favourites));
+                return filterTrashResources(props.userResources.favourites);
             case ResourcePages.SHARED:
-                return filterTrashResources(mapIdsToResources(
-                    props.userResources.sharedBy.concat(props.userResources.sharedTo)));
+                return filterTrashResources(
+                    props.userResources.sharedBy.concat(props.userResources.sharedTo));
             case ResourcePages.TRASH:
-                return mapIdsToResources(props.userResources.trash);
+                return props.userResources.trash;
             default:
                 return [];
         }
-    })();
+    })());
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, displayResources.length - page * rowsPerPage);
     const rowHeight = 53;

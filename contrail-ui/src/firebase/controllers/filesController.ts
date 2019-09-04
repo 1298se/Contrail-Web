@@ -113,10 +113,10 @@ export const removeResourcesFromFavourites = (resourceIds: string[]): Promise<an
     });
 };
 
-export const filterTrashResources = (resources: IResourceModel[]): IResourceModel[] => {
+export const filterTrashResources = (resourceIds: string[]): string[] => {
     const trashResources = store.getState().resourceState.userResources.trash;
 
-    return resources.filter((res) => !trashResources.includes(res.generation));
+    return resourceIds.filter((generation) => !trashResources.includes(generation));
 };
 
 export const mapIdsToResources = (resourceIds: string[]): IResourceModel[] => {

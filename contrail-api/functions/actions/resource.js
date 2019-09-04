@@ -15,7 +15,7 @@ exports.createFavourites = (req, res) => {
             res.status(500).send(error);
         });
     } else {
-        res.status(400).send(httpStatus.invalidReqBody);
+        res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
 }
 
@@ -33,7 +33,7 @@ exports.removeFavourites = (req, res) => {
             res.status(500).send(error);
         });
     } else {
-        res.status(400).send(httpStatus.invalidReqBody);
+        res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
 }
 
@@ -51,6 +51,6 @@ exports.addTrash = (req, res) => {
             res.status(500).send(error);
         });
     } else {
-        res.status(400).send(httpStatus.invalidReqBody);
+        res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
 }
