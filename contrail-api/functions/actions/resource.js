@@ -70,6 +70,7 @@ exports.unshare = async (req, res) => {
     const docRef = firestore().collection("documents").doc(resource.generation);
     const userRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
     const shareUserRef = firestore().collection("users").doc(shareUserId).collection("root").doc("resources");
+    //check favs and trash
     batch.update(shareUserRef, {
         root: firestore.FieldValue.arrayRemove(resource),
         sharedTo: firestore.FieldValue.arrayRemove(resource)
