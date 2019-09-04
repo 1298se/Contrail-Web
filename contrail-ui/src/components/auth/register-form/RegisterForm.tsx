@@ -56,7 +56,7 @@ class RegisterForm extends Component<types.RegisterFormProps, types.IRegisterFor
 
         switch (name) {
             case "displayName":
-                formErrors.displayNameError = value.trim().length >= auth.minDisplayNameLength
+                formErrors.displayNameError = value.trim().length > auth.minDisplayNameLength
                     ? ""
                     : auth.DISPLAY_NAME_LENGTH_ERROR;
                 break;
