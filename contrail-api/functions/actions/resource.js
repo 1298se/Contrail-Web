@@ -1,31 +1,58 @@
 const { firestore, auth } = require("../utils/firebaseUtils");
+const httpStatus = require("../../http/httpStatus");
 
-exports.createFavourites = async (req, res) => {
+exports.createFavourites = (req, res) => {
     const userId = req.uid;
-    const resources = req.body.resources
+    const resourceIds = req.body.resourceIds
 
-    const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
-    ref.update({
-        favourites: firestore.FieldValue.arrayUnion(...resources)
-    }).then(() => {
-        return res.status(200).send();
-    }).catch((error) => {
-        return res.status(500).send(error);
-    });
+    if (resourceIds && userId) {
+        const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
+        ref.update({
+            favourites: firestore.FieldValue.arrayUnion(...resourceIds)
+        }).then(() => {
+            return res.status(200).send();
+        }).catch((error) => {
+            return res.status(500).send(error);
+        });
+    } else {
+        return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
+    }
 }
 
-exports.removeFavourites = async (req, res) => {
+exports.removeFavourites = (req, res) => {
     const userId = req.uid;
-    const resources = req.body.resources
+    const resourceIds = req.body.resourceIds
 
-    const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
-    ref.update({
-        favourites: firestore.FieldValue.arrayRemove(...resources)
-    }).then(() => {
-        return res.status(200).send();
-    }).catch((error) => {
-        return res.status(500).send(error);
-    });
+    if (resourceIds && userId) {
+        const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
+        ref.update({
+            favourites: firestore.FieldValue.arrayRemove(...resourceIds)
+        }).then(() => {
+            return res.status(200).send();
+        }).catch((error) => {
+            return res.status(500).send(error);
+        });
+    } else {
+        return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
+    }
+}
+
+exports.addTrash = (req, res) => {
+    const userId = req.uid;
+    const resourceIds = req.body.resourceIds
+
+    if (resourceIds && userId) {
+        const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
+        ref.update({
+            trash: firestore.FieldValue.arrayUnion(...resourceIds)
+        }).then(() => {
+            return res.status(200).send();
+        }).catch((error) => {
+            return res.status(500).send(error);
+        });
+    } else {
+        return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
+    }
 }
 
 shareResource = (resource, users, userRef) => {

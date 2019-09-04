@@ -14,8 +14,16 @@ import { authRef, dbRef } from "../firebase";
 export const emailRegex = RegExp(/^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 export const passwordRegex = RegExp(/^\S*$/);
 
-export const minPasswordLength = 6;
-export const minDisplayNameLength = 3;
+export const MIN_PASSWORD_LENGTH = 6;
+export const MIN_DISPLAY_NAME_LENGTH = 4;
+
+/**
+ * Errors for auth forms.
+ */
+export const DISPLAY_NAME_LENGTH_ERROR = "Username must have a minimum of 4 characters.";
+export const EMAIL_REGEX_ERROR = "Please enter a valid email address.";
+export const PASSWORD_LENGTH_ERROR = "Password must have a minimum of 6 characters.";
+export const PASSWORD_NO_WHITESPACE = "Password must not contain whitespace.";
 
 /**
  * Registers a user to Firebase with their email and password. Then, updates their firebase

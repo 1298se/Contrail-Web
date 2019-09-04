@@ -12,7 +12,7 @@ import MainView from "./main-view/MainView";
 import * as types from "./mainFrame.type";
 import styles from "./mainFrameStyles";
 
-class MainFrame extends Component <types.MainFrameProps, types.IMainFrameState> {
+class MainFrame extends Component<types.MainFrameProps, types.IMainFrameState> {
     public state = {
         isDrawerOpen: false,
     };
@@ -27,6 +27,7 @@ class MainFrame extends Component <types.MainFrameProps, types.IMainFrameState> 
         const { classes } = this.props;
         return (
             <div className={classes.root}>
+                <CssBaseline />
                 <DialogWrapper
                     title={"Network Disconnected. Attempting to Reconnect..."}
                     isOpen={!this.props.hasInternetConnection}
@@ -34,7 +35,6 @@ class MainFrame extends Component <types.MainFrameProps, types.IMainFrameState> 
                 />
                 <UploadDialog />
                 <ShareDialog />
-                <CssBaseline />
                 <MainAppBar toggleDrawerOpen={this.toggleDrawerOpen} isDrawerOpen={this.state.isDrawerOpen} />
                 <MainDrawer toggleDrawerOpen={this.toggleDrawerOpen} isDrawerOpen={this.state.isDrawerOpen} />
                 <MainView isDrawerOpen={this.state.isDrawerOpen} />

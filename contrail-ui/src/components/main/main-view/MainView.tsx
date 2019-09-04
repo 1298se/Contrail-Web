@@ -14,14 +14,12 @@ class MainView extends Component<MainViewProps, {}> {
         const DefaultRedirect = () => <Redirect to={ROUTES.FILES} />;
 
         return (
-            <div className={clsx(classes.content, {[classes.contentShift]: this.props.isDrawerOpen})}>
+            <div className={classes.content}>
                 <div className={classes.appBarSpacer} />
-                <Container className={classes.container}>
-                        <Switch>
-                            <Route path={ROUTES.MAIN} exact={true} component={DefaultRedirect} />
-                            <Route path={ROUTES.MAIN} component={ResourceFrame} />
-                        </Switch>
-                </Container>
+                <Switch>
+                    <Route path={ROUTES.MAIN} exact={true} component={DefaultRedirect} />
+                    <Route path={ROUTES.MAIN} component={ResourceFrame} />
+                </Switch>
             </div>
         );
     }

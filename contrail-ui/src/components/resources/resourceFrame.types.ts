@@ -1,13 +1,14 @@
 import { WithStyles } from "@material-ui/core";
 import { RouteComponentProps } from "react-router";
-import { IUserResources } from "../../types/resource.types";
 import { IRouteMatchParams } from "../../types/routes.types";
 import { ISnackbarInjectProps } from "../feedback/snackbar-component/snackbarComponent.types";
 import styles from "./resourceStyles";
 
-export interface IResourceFrameStateProps {
-    isFetchingResources: boolean;
-    userResources: IUserResources;
+export enum ResourcePages {
+    FILES = "Files",
+    FAVOURITES = "Favourites",
+    SHARED = "Shared",
+    TRASH = "Trash",
 }
 
 export interface IResourceFrameDispatchProps {
@@ -26,6 +27,5 @@ export interface IResourceFrameState {
 }
 
 export type ResourceFrameProps =
-    IResourceFrameStateProps &
     IResourceFrameDispatchProps &
     IResourceFrameOwnProps;

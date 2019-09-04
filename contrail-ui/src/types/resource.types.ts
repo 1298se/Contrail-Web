@@ -1,11 +1,11 @@
 import { IUserModel } from "./user.types";
 
 export interface IUserResources {
-    favourites: IResourceModel[];
     root: IResourceModel[];
-    sharedBy: IResourceModel[];
-    sharedTo: IResourceModel[];
-    trash: IResourceModel[];
+    favourites: string[];
+    sharedBy: string[];
+    sharedTo: string[];
+    trash: string[];
 }
 
 export interface IResourceModel {

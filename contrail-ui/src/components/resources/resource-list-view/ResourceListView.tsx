@@ -1,21 +1,26 @@
 import Checkbox from "@material-ui/core/Checkbox";
+import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import TableFooter from "@material-ui/core/TableFooter";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import clsx from "clsx";
+import Typography from "@material-ui/core/Typography";
+import FavoriteIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { filterTrashResources, mapIdsToResources } from "../../../firebase/controllers/filesController";
 import { setSelectedResources } from "../../../store/actions/resourceActions";
 import { IResourceSetSelected } from "../../../store/actions/resourceActions.types";
 import { IAppReduxState } from "../../../store/store.types";
 import { IResourceModel } from "../../../types/resource.types";
+import { ResourcePages } from "../resourceFrame.types";
 import useStyles from "./resourceListStyles";
 import * as types from "./resourceListView.types";
 
@@ -27,17 +32,17 @@ const headRows: types.IHeadRow[] = [
 ];
 
 function EnhancedTableHead(props: types.IEnhancedTableProps) {
-    const classes = useStyles();
     const { onSelectAllClick, numSelected, rowCount } = props;
 
     const renderHeadRows = headRows.map((row) => (
         <TableCell
             key={row.id}
-            className={classes.column}
             align={row.numeric ? "right" : "left"}
             padding="default"
         >
-            {row.label}
+            <Typography variant="caption" noWrap={true}>
+                {row.label}
+            </Typography>
         </TableCell>
     ));
 
@@ -74,8 +79,33 @@ function EnhancedTable(props: types.ResourceListProps) {
 
     const isSelected = (generation: string) => selected.some((res) => res.generation === generation);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.display.length - page * rowsPerPage);
-    const rowHeight = 49;
+    const displayResources = mapIdsToResources((() => {
+        switch (props.page) {
+            case ResourcePages.FILES:
+                return filterTrashResources(props.userResources.root.map((res) => res.generation));
+            case ResourcePages.FAVOURITES:
+                return filterTrashResources(props.userResources.favourites);
+            case ResourcePages.SHARED:
+                return filterTrashResources(
+                    props.userResources.sharedBy.concat(props.userResources.sharedTo));
+            case ResourcePages.TRASH:
+                return props.userResources.trash;
+            default:
+                return [];
+        }
+    })());
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, displayResources.length - page * rowsPerPage);
+    const rowHeight = 53;
+
+    const isFavourited = (generation: string): boolean =>
+        props.userResources.favourites.includes(generation);
+
+    React.useEffect(() => {
+        return (() => {
+            props.setSelected([]);
+        });
+    }, []);
 
     const renderEmptyRows = emptyRows > 0 && (
         <TableRow style={{ height: rowHeight * emptyRows }}>
@@ -84,12 +114,12 @@ function EnhancedTable(props: types.ResourceListProps) {
     );
 
     const renderResourceRows =
-        props.display.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row) => {
-                const isItemSelected = isSelected(row.generation);
+        displayResources.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((res) => {
+                const isItemSelected = isSelected(res.generation);
 
                 function handleClickWrapper(event: React.MouseEvent<unknown>) {
-                    handleClick(event, row);
+                    handleClick(event, res);
                 }
 
                 return (
@@ -98,7 +128,7 @@ function EnhancedTable(props: types.ResourceListProps) {
                         onClick={handleClickWrapper}
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.generation}
+                        key={res.generation}
                         selected={isItemSelected}
                     >
                         <TableCell padding="checkbox">
@@ -110,30 +140,40 @@ function EnhancedTable(props: types.ResourceListProps) {
                         <TableCell
                             key="name"
                             align="left"
-                            className={clsx(classes.name, classes.column)}
+                            className={classes.name}
                         >
-                            {row.name}
+                            <Grid container={true} direction="row" alignItems="center">
+                                <Grid item={true}>
+                                    {res.name}
+                                </Grid>
+                                <Grid item={true}>
+                                    {isFavourited(res.generation) ? <FavoriteIcon className={classes.icon} /> : null}
+                                </Grid>
+                            </Grid>
                         </TableCell>
                         <TableCell
                             key="owner"
                             align="left"
-                            className={classes.column}
                         >
-                            {row.owner.displayName}
+                            <Typography noWrap={true}>
+                                {res.owner.displayName}
+                            </Typography>
                         </TableCell>
                         <TableCell
                             key="timeCreated"
                             align="left"
-                            className={classes.column}
                         >
-                            {moment(row.timeCreated).format("MMMM Do YYYY")}
+                            <Typography noWrap={true}>
+                                {moment(res.timeCreated).format("MMMM Do YYYY")}
+                            </Typography>
                         </TableCell>
                         <TableCell
                             key="size"
                             align="right"
-                            className={classes.column}
                         >
-                            {Math.round(row.size / 1000) + " KB"}
+                            <Typography noWrap={true}>
+                                {Math.round(res.size / 1000) + " KB"}
+                            </Typography>
                         </TableCell>
                     </TableRow>
                 );
@@ -141,7 +181,7 @@ function EnhancedTable(props: types.ResourceListProps) {
 
     function handleSelectAllClick(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.checked) {
-            const newSelecteds: IResourceModel[] = props.display;
+            const newSelecteds: IResourceModel[] = displayResources;
             props.setSelected(newSelecteds);
         } else {
             props.setSelected([]);
@@ -187,23 +227,27 @@ function EnhancedTable(props: types.ResourceListProps) {
                         <EnhancedTableHead
                             numSelected={selected.length}
                             onSelectAllClick={handleSelectAllClick}
-                            rowCount={props.display.length}
+                            rowCount={displayResources.length}
                         />
                         <TableBody>
                             {renderResourceRows}
                             {renderEmptyRows}
                         </TableBody>
+                        <TableFooter>
+                            <TableRow>
+                                <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25]}
+                                    colSpan={6}
+                                    count={displayResources.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onChangePage={handleChangePage}
+                                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                                />
+                            </TableRow>
+                        </TableFooter>
                     </Table>
                 </div>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={props.display.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                />
             </Paper>
         </div>
     );
@@ -212,6 +256,7 @@ function EnhancedTable(props: types.ResourceListProps) {
 const mapStateToProps = (state: IAppReduxState): types.IResourceListStateProps => {
     return {
         selectedResources: state.resourceState.selectedResources,
+        userResources: state.resourceState.userResources,
     };
 };
 

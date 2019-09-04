@@ -6,16 +6,29 @@ const styles = (theme: Theme) =>
         drawer: {
             width: drawerWidth,
             flexShrink: 0,
+            whiteSpace: "nowrap",
         },
-        drawerPaper: {
-            width: drawerWidth,
+        drawerClose: {
+            transition: theme.transitions.create("width", {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+            }),
+            overflowX: "hidden",
+            width: theme.spacing(9) + 1,
         },
         drawerHeader: {
             display: "flex",
             alignItems: "center",
+            justifyContent: "flex-end",
             padding: "0 8px",
             ...theme.mixins.toolbar,
-            justifyContent: "flex-end",
+        },
+        drawerOpen: {
+            width: drawerWidth,
+            transition: theme.transitions.create("width", {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
         },
     });
 

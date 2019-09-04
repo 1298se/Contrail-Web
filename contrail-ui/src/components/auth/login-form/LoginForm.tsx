@@ -58,15 +58,15 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
             case "email":
                 formErrors.emailError = auth.emailRegex.test(value.trim())
                     ? ""
-                    : "Please enter a valid email.";
+                    : auth.EMAIL_REGEX_ERROR;
                 break;
             case "password":
-                const passwordLengthError = value.length >= auth.minPasswordLength
+                const passwordLengthError = value.length >= auth.MIN_PASSWORD_LENGTH
                     ? ""
-                    : "Passwords must have a minimum of 6 characters.";
+                    : auth.PASSWORD_LENGTH_ERROR;
                 const passwordRegexError = auth.passwordRegex.test(value)
                     ? ""
-                    : "Password must not contain whitespace.";
+                    : auth.PASSWORD_NO_WHITESPACE;
                 formErrors.passwordError = passwordLengthError.concat(passwordRegexError);
                 break;
             default:
