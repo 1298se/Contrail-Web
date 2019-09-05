@@ -5,11 +5,13 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
-import TrashIcon from "@material-ui/icons/RestoreFromTrash";
+import RestoreIcon from "@material-ui/icons/Restore";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
@@ -18,6 +20,7 @@ import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions"
 import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
 import { IAppReduxState } from "../../../store/store.types";
 import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
+import { ResourcePages } from "../resourceFrame.types";
 import * as types from "./resourceToolBar.type";
 import styles from "./toolBarStyles";
 
@@ -74,6 +77,13 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
             });
     }
 
+    public handleRestoreClick = () => {
+        const { selectedResources } = this.props;
+        this.handleMobileMenuClose();
+
+        filesController.restoreResourceFromTrash(selectedResources.map((res) => res.generation));
+    }
+
     public render() {
         const isItemSelected = this.props.selectedResources.length !== 0;
         const isMobileMenuOpen = Boolean(this.state.mobileMoreAnchorEl);
@@ -108,11 +118,62 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                 </MenuItem>
                 <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
                     <IconButton color="default">
-                        <TrashIcon />
+                        <DeleteIcon />
                     </IconButton>
                     <p>Trash</p>
                 </MenuItem>
             </Menu>
+        );
+
+        const resourceToolbarItems = (
+            <React.Fragment>
+                <IconButton
+                    color="default"
+                    disabled={!isItemSelected}
+                >
+                    <RemoveRedEyeIcon />
+                </IconButton>
+                <IconButton
+                    color="default"
+                    disabled={!isItemSelected}
+                    onClick={this.handleFavouriteClick}
+                >
+                    <FavoriteIcon />
+                </IconButton>
+                <IconButton
+                    color="default"
+                    disabled={!isItemSelected}
+                >
+                    <SharedIcon />
+                </IconButton>
+                <IconButton
+                    edge="end"
+                    color="default"
+                    disabled={!isItemSelected}
+                    onClick={this.handleTrashClick}
+                >
+                    <DeleteIcon />
+                </IconButton>
+            </React.Fragment>
+        );
+
+        const trashToolbarItems = (
+            <React.Fragment>
+                <IconButton
+                    color="default"
+                    disabled={!isItemSelected}
+                    onClick={this.handleRestoreClick}
+                >
+                    <RestoreIcon />
+                </IconButton>
+                <IconButton
+                    color="default"
+                    disabled={!isItemSelected}
+                    onClick={this.handleFavouriteClick}
+                >
+                    <DeleteForeverIcon />
+                </IconButton>
+            </React.Fragment>
         );
 
         return (
@@ -124,34 +185,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                         </Typography>
                         <div className={classes.grow} />
                         <div className={classes.sectionDesktop}>
-                            <IconButton
-                                color="default"
-                                disabled={!isItemSelected}
-                            >
-                                <RemoveRedEyeIcon />
-                            </IconButton>
-                            <IconButton
-                                color="default"
-                                disabled={!isItemSelected}
-                                onClick={this.handleFavouriteClick}
-                            >
-                                <FavoriteIcon />
-                            </IconButton>
-                            <IconButton
-                                color="default"
-                                disabled={!isItemSelected}
-                                onClick={this.handleShareClick}
-                            >
-                                <SharedIcon />
-                            </IconButton>
-                            <IconButton
-                                edge="end"
-                                color="default"
-                                disabled={!isItemSelected}
-                                onClick={this.handleTrashClick}
-                            >
-                                <TrashIcon />
-                            </IconButton>
+                            {this.props.titleText === ResourcePages.TRASH ? trashToolbarItems : resourceToolbarItems}
                         </div>
                         <div className={classes.sectionMobile}>
                             <IconButton
