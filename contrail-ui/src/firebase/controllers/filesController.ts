@@ -77,7 +77,20 @@ export const writeFileToDB =
 export const addResourcesToFavourites = (resourceIds: string[]): Promise<any> => {
     return new Promise((resolve, reject) => {
         axios.put("/api/resources", {
-            type: "addFavourites",
+            type: "createFavourites",
+            resourceIds,
+        }).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error.response.data);
+        });
+    });
+};
+
+export const removeResourcesFromFavourites = (resourceIds: string[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "removeFavourites",
             resourceIds,
         }).then((response) => {
             resolve(response.data);
@@ -100,10 +113,10 @@ export const addResourcesToTrash = (resourceIds: string[]): Promise<any> => {
     });
 };
 
-export const removeResourcesFromFavourites = (resourceIds: string[]): Promise<any> => {
+export const restoreResourceFromTrash = (resourceIds: string[]): Promise<any> => {
     return new Promise((resolve, reject) => {
         axios.put("/api/resources", {
-            type: "removeFavourites",
+            type: "restoreTrash",
             resourceIds,
         }).then((response) => {
             resolve(response.data);
