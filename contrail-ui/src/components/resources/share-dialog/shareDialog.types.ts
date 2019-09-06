@@ -5,7 +5,7 @@ import styles from "./shareDialogStyles";
 
 export interface IShareDialogState {
     search: ISearchValues;
-    shares: [];
+    shares: IShareValue[];
 }
 
 export interface ISearchValues {
@@ -25,6 +25,8 @@ export interface IShareValue {
     name: string;
     collaborators: firebase.User[];
     generation: string;
+    open?: boolean;
+    checkedCollaborators: string[];
 }
 
 export interface IShareDialogStateProps {

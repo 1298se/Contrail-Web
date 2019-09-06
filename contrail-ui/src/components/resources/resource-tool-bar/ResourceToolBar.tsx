@@ -143,6 +143,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                 <IconButton
                     color="default"
                     disabled={!isItemSelected}
+                    onClick={this.handleShareClick}
                 >
                     <SharedIcon />
                 </IconButton>

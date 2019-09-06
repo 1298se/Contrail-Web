@@ -1,24 +1,27 @@
 import { withStyles } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
+import Checkbox from "@material-ui/core/Checkbox";
 import Chip from "@material-ui/core/Chip";
+import Collapse from "@material-ui/core/Collapse";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import CancelIcon from "@material-ui/icons/Cancel";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import PersonIcon from "@material-ui/icons/Person";
 import Downshift from "downshift";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
@@ -40,18 +43,23 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             suggestions: [] as types.IUserSuggestion[],
             selected: [] as types.IUserSuggestion[],
         },
-        shares: [],
+        shares: [] as types.IShareValue[],
     };
 
     public updateCollaborators = () => {
         return filesController.getCollaborators(this.props.selectedResources)
             .then((res) => {
+                res.map((resource: types.IShareValue) => {
+                    resource.open = false;
+                    resource.checkedCollaborators = [];
+                });
                 this.setState({
                     ...this.state,
                     shares: res.length > 0 ? res : [],
                 });
             });
     }
+
     public componentDidUpdate = (prevProps: types.IShareDialogProps) => {
         if (!prevProps.dialogOpen && this.props.dialogOpen) {
             return this.updateCollaborators();
@@ -81,9 +89,22 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         }
     }
 
-    public handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        event.persist();
+    public handleSubmit = () => {
+        const selectedUsers = this.state.search.selected;
+        return filesController.addResourcesToShare(selectedUsers, this.props.selectedResources)
+            .then((res) => {
+                this.updateCollaborators();
+                this.props.setSnackbarDisplay("success", res.message);
+            })
+            .catch((err) => {
+                this.props.setSnackbarDisplay("error", err);
+            });
+    }
 
+    public removeShares = () => {
+    }
+
+    public handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (this.state.search.timeout) {
             clearTimeout(this.state.search.timeout);
         }
@@ -146,36 +167,37 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         this.props.setDialogOpen(false);
     }
 
-    public handleSubmit = () => {
-        const selectedUsers = this.state.search.selected;
-        return filesController.addResourcesToShare(selectedUsers, this.props.selectedResources)
-            .then((res) => {
-                this.updateCollaborators();
-                this.props.setSnackbarDisplay("success", res.message);
-            })
-            .catch((err) => {
-                this.props.setSnackbarDisplay("error", err);
-            });
+    public handleOpen = (i: number) => {
+        this.setState((prevState) => {
+            prevState.shares[i].open = !prevState.shares[i].open;
+            return {
+                ...this.state,
+                shares: prevState.shares,
+            };
+        });
     }
 
-    public removeShare = (resource: number, user: number) => {
-        const selectedResource: types.IShareValue = this.state.shares[resource];
-        const selectedUser = selectedResource.collaborators[user].uid;
-        const selResource = this.props.selectedResources.find((res) => res.generation === selectedResource.generation);
-        if (selResource) {
-            filesController.removeResourcesToShare(selectedUser, selResource)
-                .then(() => {
-                    this.updateCollaborators();
-                })
-                .catch((err) => {
-                    this.props.setSnackbarDisplay("error", err);
-                });
-        }
+    public handleUnshare = (resource: number, uid: string) => {
+        this.setState((prevState: types.IShareDialogState) => {
+            if (prevState.shares[resource].checkedCollaborators &&
+                prevState.shares[resource].checkedCollaborators.indexOf(uid) !== -1) {
+                const index = prevState.shares[resource].checkedCollaborators.indexOf(uid);
+                prevState.shares[resource].checkedCollaborators.splice(index, 1);
+            } else {
+                prevState.shares[resource].checkedCollaborators.push(uid);
+            }
+            return {
+                ...this.state,
+                shares: prevState.shares,
+            };
+        });
     }
 
     public render() {
         const { classes, dialogOpen } = this.props;
         const { input, suggestions, selected } = this.state.search;
+        const shares = this.state.shares.filter((share) => share.collaborators.length > 0);
+
         // tslint:disable: jsx-wrap-multiline
         // tslint:disable: jsx-no-multiline-js
         interface IRenderSuggestionProps {
@@ -230,37 +252,51 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         }
 
         const renderCollaborators = (
-            this.state.shares && this.state.shares.map((share: types.IShareValue, i) => {
+            shares && shares.map((share: types.IShareValue, i) => {
+                const handleOpenClick = (event: React.MouseEvent<unknown>) => {
+                    this.handleOpen(i);
+                };
                 const renderShares = (
                     share.collaborators.map((collab, index) => {
-                        const handleCancelClick = (event: React.MouseEvent<unknown>) => {
-                            this.removeShare(i, index);
+                        const handleUnshareToggle = (value: number) => () => {
+                            this.handleUnshare(i, collab.uid);
                         };
                         return (
-                            <div className={classes.search} key={index}>
-                                <Typography>{collab.displayName}</Typography>
-                                <Typography>{collab.email}</Typography>
-                                <Button onClick={handleCancelClick}>
-                                    <CancelIcon />
-                                </Button>
-                            </div>
+                            <ListItem key={index}>
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <PersonIcon />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={collab.displayName}
+                                    secondary={collab.email}
+                                />
+                                <ListItemSecondaryAction>
+                                    <Checkbox
+                                        edge="end"
+                                        color="default"
+                                        checked={share.checkedCollaborators.indexOf(collab.uid) !== -1}
+                                        onChange={handleUnshareToggle(index)}
+                                    />
+                                </ListItemSecondaryAction>
+                            </ListItem>
                         );
                     })
                 );
 
                 return (
-                    <ExpansionPanel key={i} disabled={share.collaborators.length === 0}>
-                        <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                        >
-                            <Typography>{share.name}</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            {renderShares}
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                    <React.Fragment key={i}>
+                        <ListItem button={true} onClick={handleOpenClick}>
+                            <ListItemText primary={share.name} />
+                            {share.open ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse in={share.open} timeout="auto" unmountOnExit={false}>
+                            <List component="div" disablePadding={true}>
+                                {renderShares}
+                            </List>
+                        </Collapse>
+                    </React.Fragment>
                 );
             })
         );
@@ -315,6 +351,10 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             </Downshift>
         );
 
+        const checkedNone = () => {
+            return shares.every((share) => share.checkedCollaborators.length === 0);
+        }
+
         return (
             <div>
                 <Dialog
@@ -326,7 +366,25 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     <DialogTitle id="form-dialog-title">Share</DialogTitle>
                     <DialogContent className={classes.dialogPaper}>
                         <div className={classes.collaborators}>
-                            {renderCollaborators}
+                            <List
+                                disablePadding={true}
+                                subheader={
+                                    <ListSubheader component="div">
+                                        Collaborators
+                                    </ListSubheader>
+                                }
+                            >
+                                {renderCollaborators}
+                            </List>
+                            <Button
+                                disabled={selected.length === 0}
+                                component="span"
+                                variant="contained"
+                                color="primary"
+                                onClick={this.handleSubmit}
+                            >
+                                {checkedNone()? "Unshare All" : "Unshare selected"}
+                            </Button>
                         </div>
                         {renderSearchInput}
                     </DialogContent>
