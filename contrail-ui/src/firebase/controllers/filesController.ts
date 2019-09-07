@@ -1,7 +1,6 @@
 
 import axios from "axios";
 import * as firebase from "firebase/app";
-import { IUserSuggestion } from "../../components/resources/share-dialog/shareDialog.types";
 import store from "../../store/store";
 import { IResourceModel } from "../../types/resource.types";
 import { dbRef, storageRef } from "../firebase";
@@ -120,57 +119,6 @@ export const restoreResourceFromTrash = (resourceIds: string[]): Promise<any> =>
             type: "restoreTrash",
             resourceIds,
         }).then((response) => {
-            resolve(response.data);
-        })
-        .catch((error) => {
-            reject(error.response.data);
-        });
-    });
-};
-
-export const getCollaborators = (resources: IResourceModel[]): Promise<any> => {
-    return new Promise((resolve, reject) => {
-        const ids = resources.map((resource) => resource.generation);
-        const request = {
-            params: {
-                ids,
-            },
-        };
-        axios.get("/api/shares", request)
-        .then((response) => {
-            resolve(response.data);
-        })
-        .catch((error) => {
-            reject(error.response.data);
-        });
-    });
-};
-
-export const addResourcesToShare = (users: IUserSuggestion[], resources: IResourceModel[]): Promise<any> => {
-    const shareIds = users.map((user) => user.id);
-    return new Promise((resolve, reject) => {
-        axios.put("/api/resources", {
-            type: "share",
-            resources,
-            shareIds,
-        })
-        .then((response) => {
-            resolve(response.data);
-        })
-        .catch((error) => {
-            reject(error.response.data);
-        });
-    });
-};
-
-export const removeResourcesToShare = (user: string, resource: IResourceModel): Promise<any> => {
-    return new Promise((resolve, reject) => {
-        axios.put("/api/resources", {
-            type: "unshare",
-            resource,
-            shareUserId: user,
-        })
-        .then((response) => {
             resolve(response.data);
         })
         .catch((error) => {

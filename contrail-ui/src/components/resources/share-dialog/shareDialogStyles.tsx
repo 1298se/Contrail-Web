@@ -45,6 +45,13 @@ const styles = (theme: Theme) => createStyles({
     overflowY: "auto",
     padding: theme.spacing(1),
   },
+  collaboratorsWrapper: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  unshareButton: {
+    alignSelf: "flex-end",
+  },
 });
 
 export default styles;

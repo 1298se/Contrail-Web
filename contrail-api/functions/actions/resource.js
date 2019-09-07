@@ -112,44 +112,53 @@ exports.share = (req, res) => {
 }
 
 // unshares is a map with resourceModel keys and userIds array values
-unshareResources = (unshares, userId) => {
+unshareResources = (resource, userIds, ownerId) => {
     const batch = firestore().batch();
-    Object.entries(unshares).forEach(async ([resource, userIds]) => {
-        const docRef = firestore().collection("documents").doc(resource.generation);
-        const userRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
-        userIds.forEach(userId => {
-            const shareUserRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
-            batch.update(shareUserRef, {
-                root: firestore.FieldValue.arrayRemove(resource),
-                favourites: firestore.FieldValue.arrayRemove(resource.generation),
-                trash: firestore.FieldValue.arrayRemove(resource.generation),
-                sharedBy: firestore.FieldValue.arrayRemove(resource.generation),
-                sharedTo: firestore.FieldValue.arrayRemove(resource.generation)
-            });
-            batch.update(docRef, {
-                [`permissions.${shareUserId}`]: firestore.FieldValue.delete(),
-            });
+    const docRef = firestore().collection("documents").doc(resource.generation);
+    const ownerRef = firestore().collection("users").doc(ownerId).collection("root").doc("resources");
+    userIds.forEach(userId => {
+        const shareUserRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
+        batch.update(shareUserRef, {
+            root: firestore.FieldValue.arrayRemove(resource),
+            favourites: firestore.FieldValue.arrayRemove(resource.generation),
+            trash: firestore.FieldValue.arrayRemove(resource.generation),
+            sharedBy: firestore.FieldValue.arrayRemove(resource.generation),
+            sharedTo: firestore.FieldValue.arrayRemove(resource.generation)
         });
-        const doc = await docRef.get();
-        if (doc.exists) {
-            const { permissions } = doc.data()
-            const ids = Object.keys(permissions).filter(id => id !== userId);
-            if (ids.length === shareIds.length) {
-                batch.update(userRef, {
-                    sharedBy: firestore.FieldValue.arrayRemove(resource.generation)
-                });
+        batch.update(docRef, {
+            [`permissions.${userId}`]: firestore.FieldValue.delete(),
+        });
+    });
+    return docRef.get()
+        .then((doc) => {
+            if (doc.exists) {
+                const { permissions } = doc.data()
+                const ids = Object.keys(permissions).filter(id => id !== ownerId);
+                console.log(ids)
+                console.log(userIds)
+                if (ids.length === userIds.length) {
+                    batch.update(ownerRef, {
+                        sharedBy: firestore.FieldValue.arrayRemove(resource.generation)
+                    });
+                }
             }
-        }
-    })
-    return batch.commit();
-}
+            console.log("1")
+            return batch.commit();
+        })
+        .catch((e) => {
+            console.log("2", e)
+            return batch.commit();
 
+        })
+}
 
 exports.unshare = (req, res) => {
     const userId = req.uid;
     const { unshares } = req.body;
-    
-    return unshareResources(unshares, userId)
+    console.log(unshares)
+    return Promise.all(unshares.map(async unshare => {
+        return await unshareResources(unshare.resource, unshare.userIds, userId)
+    }))
         .then(() => {
             return res.status(200).send(httpStatus.UNSHARE_SUCCESS);
         })

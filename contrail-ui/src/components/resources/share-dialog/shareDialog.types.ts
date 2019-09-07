@@ -1,27 +1,22 @@
 import { WithStyles } from "@material-ui/core";
 import { IResourceModel } from "../../../types/resource.types";
+import { IUserModel } from "../../../types/user.types";
 import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 import styles from "./shareDialogStyles";
 
 export interface IShareDialogState {
-    search: ISearchValues;
-    shares: IShareValue[];
+    search: ISearchModel;
+    sharedResources: IShareModel[];
 }
 
-export interface ISearchValues {
+export interface ISearchModel {
     input: string;
     timeout: NodeJS.Timeout | null;
-    suggestions: IUserSuggestion[];
-    selected: IUserSuggestion[];
+    suggestions: IUserModel[];
+    selected: IUserModel[];
 }
 
-export interface IUserSuggestion {
-    displayName: string;
-    email: string;
-    id: string;
-}
-
-export interface IShareValue {
+export interface IShareModel {
     name: string;
     collaborators: firebase.User[];
     generation: string;

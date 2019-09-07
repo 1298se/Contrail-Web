@@ -135,7 +135,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
         // tslint:disable-next-line: jsx-no-multiline-js
 
         const handleAddEvent = (e: React.ChangeEvent<any>) => this.handleAddFile(e.target.files);
-
+ 
         const renderUploadFiles = (
             files && files.map((file: File, i) => {
                 const fileName = file.name;
