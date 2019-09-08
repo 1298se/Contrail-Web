@@ -1,5 +1,4 @@
 import { createStyles, Theme } from "@material-ui/core";
-import { width } from "@material-ui/system";
 
 const styles = (theme: Theme) => createStyles({
   body: {
@@ -14,11 +13,6 @@ const styles = (theme: Theme) => createStyles({
   inputInput: {
     width: "auto",
     flexGrow: 1,
-  },
-  name: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
   },
   dialogPaper: {
     overflow: "visible",
@@ -41,8 +35,9 @@ const styles = (theme: Theme) => createStyles({
     flexGrow: 1,
   },
   collaborators: {
-    maxHeight: "500px",
+    maxHeight: "30vh",
     overflowY: "auto",
+    overflowX: "hidden",
   },
   collaboratorsWrapper: {
     display: "flex",
@@ -50,6 +45,7 @@ const styles = (theme: Theme) => createStyles({
   },
   unshareButton: {
     alignSelf: "flex-end",
+    marginTop: theme.spacing(1),
   },
 });
 

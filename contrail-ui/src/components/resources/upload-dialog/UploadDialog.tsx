@@ -132,10 +132,11 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
         const { files, uploadProgress, uploadState } = this.state;
         const uploading = [...uploadState.values()].some((value) => value === "uploading");
         const toUpload = [...uploadState.values()].some((value) => value === "added");
-        // tslint:disable-next-line: jsx-no-multiline-js
+        // tslint:disable: jsx-wrap-multiline
+        // tslint:disable: jsx-no-multiline-js
 
         const handleAddEvent = (e: React.ChangeEvent<any>) => this.handleAddFile(e.target.files);
- 
+
         const renderUploadFiles = (
             files && files.map((file: File, i) => {
                 const fileName = file.name;
@@ -232,7 +233,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                                 disabled={uploading}
                             >
                                 Add
-                </Button>
+                            </Button>
                         </label>
                         <Button
                             component="span"
@@ -242,7 +243,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                             disabled={uploading}
                         >
                             Cancel
-                </Button>
+                        </Button>
                         <Button
                             component="span"
                             variant="contained"
@@ -251,7 +252,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                             disabled={!toUpload}
                         >
                             Upload
-                </Button>
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </div >

@@ -404,7 +404,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 <Typography variant="overline" noWrap={true}>
                     Collaborators
                     </Typography>
-                <List disablePadding={true}>
+                <List disablePadding={true} className={classes.collaborators}>
                     {renderCollaborators}
                 </List>
                 <Button

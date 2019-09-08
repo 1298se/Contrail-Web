@@ -144,8 +144,39 @@ unshareResource = (resource, userIds, ownerId) => {
         .catch(() => {
             return batch.commit();
 
-        })
+        });
 }
+
+unshareAllfromResource = (resource, ownerId, includeOwner) => {
+    const docRef = firestore().collection("documents").doc(resource.generation);
+    return docRef.get()
+        .then((doc) => {
+            if (doc.exists) {
+                const batch = firestore().batch();
+                const { permissions } = doc.data();
+                const userIds = includeOwner ? Object.keys(permissions) : Object.keys(permissions).filter(id => id !== ownerId);
+                userIds.forEach((userId) => {
+                    const shareUserRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
+                    batch.update(shareUserRef, {
+                        root: firestore.FieldValue.arrayRemove(resource),
+                        favourites: firestore.FieldValue.arrayRemove(resource.generation),
+                        trash: firestore.FieldValue.arrayRemove(resource.generation),
+                        sharedBy: firestore.FieldValue.arrayRemove(resource.generation),
+                        sharedTo: firestore.FieldValue.arrayRemove(resource.generation)
+                    });
+                    batch.update(docRef, {
+                        [`permissions.${userId}`]: firestore.FieldValue.delete(),
+                    });
+                });
+                return batch.commit();
+            } else {
+                throw new Error("Document does not exist");
+            }
+        })
+        .catch((error) => {
+            throw error;
+        });
+};
 
 exports.unshare = (req, res) => {
     const userId = req.uid;
@@ -161,7 +192,7 @@ exports.unshare = (req, res) => {
         })
         .catch((error) => {
             return res.status(500).send(error);
-        })
+        });
 }
 
 getCollaboratorsforResource = (userId, resource) => {
@@ -199,5 +230,5 @@ exports.getCollaborators = async (req, res) => {
         })
         .catch((error) => {
             return res.status(500).send(error)
-        })
+        });
 }
