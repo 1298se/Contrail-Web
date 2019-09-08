@@ -14,7 +14,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
@@ -26,16 +25,16 @@ import Downshift from "downshift";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
-import * as shareController from "../../../firebase/controllers/shareController";
 import { searchUsers } from "../../../firebase/controllers/searchController";
+import * as shareController from "../../../firebase/controllers/shareController";
 import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
 import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
 import { IAppReduxState } from "../../../store/store.types";
+import { IUnshareModel } from "../../../types/shares.types";
 import { IUserModel } from "../../../types/user.types";
 import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import * as types from "./shareDialog.types";
 import styles from "./shareDialogStyles";
-import { IUnshareModel } from "../../../types/shares.types";
 
 class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogState> {
     public state: types.IShareDialogState = {
@@ -92,7 +91,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         }
     }
 
-    public handleSubmit = () => {
+    public handleShare = () => {
         const selectedUsers = this.state.search.selected;
         return shareController.shareResources(this.props.selectedResources, selectedUsers)
             .then((res) => {
@@ -104,7 +103,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                         timeout: null,
                         suggestions: [] as IUserModel[],
                         selected: [] as IUserModel[],
-                    }
+                    },
                 });
                 this.props.setSnackbarDisplay("success", res.message);
             })
@@ -113,7 +112,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             });
     }
 
-    public removeShares = (event: React.MouseEvent<unknown>) => {
+    public handleUnshare = (event: React.MouseEvent<unknown>) => {
         const unshareMap = [] as IUnshareModel[];
         const selectedNone = this.state.sharedResources.every((share) => share.checkedCollaborators.length === 0);
         if (selectedNone) {
@@ -224,7 +223,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         });
     }
 
-    public handleUnshare = (resource: number, uid: string) => {
+    public handleUnshareClick = (resource: number, uid: string) => {
         this.setState((prevState: types.IShareDialogState) => {
             if (prevState.sharedResources[resource].checkedCollaborators &&
                 prevState.sharedResources[resource].checkedCollaborators.indexOf(uid) !== -1) {
@@ -244,7 +243,6 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         const { classes, dialogOpen } = this.props;
         const { input, suggestions, selected } = this.state.search;
         const shareResources = this.state.sharedResources;
-
         // tslint:disable: jsx-wrap-multiline
         // tslint:disable: jsx-no-multiline-js
         interface IRenderSuggestionProps {
@@ -314,6 +312,9 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     });
                     return (
                         <div className={classes.container}>
+                            <Typography variant="overline" noWrap={true}>
+                                Invite Collaborators
+                            </Typography>
                             {renderInput({
                                 fullWidth: true,
                                 InputProps: {
@@ -356,7 +357,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 const renderShares = (
                     resource.collaborators.map((collab, index) => {
                         const handleUnshareToggle = (value: number) => () => {
-                            this.handleUnshare(i, collab.uid);
+                            this.handleUnshareClick(i, collab.uid);
                         };
                         return (
                             <ListItem key={index}>
@@ -400,23 +401,21 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
 
         const renderCollaboratorsWrapper = (
             <div className={classes.collaboratorsWrapper}>
-                <div className={classes.collaborators}>
-                    <Typography noWrap={true}>
-                        Collaborators
-                </Typography>
-                    <List disablePadding={true}>
-                        {renderCollaborators}
-                    </List>
-                </div>
+                <Typography variant="overline" noWrap={true}>
+                    Collaborators
+                    </Typography>
+                <List disablePadding={true}>
+                    {renderCollaborators}
+                </List>
                 <Button
                     className={classes.unshareButton}
                     component="span"
                     variant="contained"
                     color="primary"
-                    onClick={this.removeShares}
+                    onClick={this.handleUnshare}
                 >
                     {shareResources.every((resource) => resource.checkedCollaborators.length === 0) ?
-                        "Unshare All" : "Unshare selected"}
+                        "Unshare all" : "Unshare selected"}
                 </Button>
             </div>
         );
@@ -447,7 +446,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                             component="span"
                             variant="contained"
                             color="primary"
-                            onClick={this.handleSubmit}
+                            onClick={this.handleShare}
                         >
                             Share
                         </Button>

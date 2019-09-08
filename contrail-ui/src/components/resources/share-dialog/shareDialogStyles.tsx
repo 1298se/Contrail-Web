@@ -43,7 +43,6 @@ const styles = (theme: Theme) => createStyles({
   collaborators: {
     maxHeight: "500px",
     overflowY: "auto",
-    padding: theme.spacing(1),
   },
   collaboratorsWrapper: {
     display: "flex",

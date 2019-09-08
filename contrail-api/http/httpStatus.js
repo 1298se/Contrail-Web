@@ -7,10 +7,10 @@ exports.INVALID_REQUEST_BODY = {
 // success statuses
 exports.SHARE_SUCCESS = {
     code: "shareSuccess",
-    message: "Successfully shared resources"
+    message: "File(s) have been successfully shared."
 }
 
 exports.UNSHARE_SUCCESS = {
     code: "unshareSuccess",
-    message: "Successfully unshared resources"
+    message: "File(s) have been successfully unshared."
 }

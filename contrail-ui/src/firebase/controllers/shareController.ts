@@ -38,11 +38,11 @@ export const shareResources = (resources: IResourceModel[], users: IUserModel[])
   });
 };
 
-export const unshareResources = (resources: IUnshareModel[]): Promise<any> => {
+export const unshareResources = (shares: IUnshareModel[]): Promise<any> => {
   return new Promise((resolve, reject) => {
       axios.put("/api/resources", {
           type: "unshare",
-          resources,
+          shares,
       })
       .then((response) => {
           resolve(response.data);

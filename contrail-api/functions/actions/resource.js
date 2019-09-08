@@ -74,8 +74,8 @@ exports.restoreTrash = (req, res) => {
 }
 
 shareResource = (resource, userIds, ownerRef) => {
-    const docRef = firestore().collection("documents").doc(resource.generation);
     const batch = firestore().batch();
+    const docRef = firestore().collection("documents").doc(resource.generation);
     batch.update(ownerRef, {
         sharedBy: firestore.FieldValue.arrayUnion(resource.generation),
     })
@@ -111,8 +111,7 @@ exports.share = (req, res) => {
     }
 }
 
-// unshares is a map with resourceModel keys and userIds array values
-unshareResources = (resource, userIds, ownerId) => {
+unshareResource = (resource, userIds, ownerId) => {
     const batch = firestore().batch();
     const docRef = firestore().collection("documents").doc(resource.generation);
     const ownerRef = firestore().collection("users").doc(ownerId).collection("root").doc("resources");
@@ -134,19 +133,15 @@ unshareResources = (resource, userIds, ownerId) => {
             if (doc.exists) {
                 const { permissions } = doc.data()
                 const ids = Object.keys(permissions).filter(id => id !== ownerId);
-                console.log(ids)
-                console.log(userIds)
                 if (ids.length === userIds.length) {
                     batch.update(ownerRef, {
                         sharedBy: firestore.FieldValue.arrayRemove(resource.generation)
                     });
                 }
             }
-            console.log("1")
             return batch.commit();
         })
-        .catch((e) => {
-            console.log("2", e)
+        .catch(() => {
             return batch.commit();
 
         })
@@ -154,11 +149,13 @@ unshareResources = (resource, userIds, ownerId) => {
 
 exports.unshare = (req, res) => {
     const userId = req.uid;
-    const { unshares } = req.body;
-    console.log(unshares)
-    return Promise.all(unshares.map(async unshare => {
-        return await unshareResources(unshare.resource, unshare.userIds, userId)
-    }))
+    const { shares } = req.body;
+    if (!shares) {
+        return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
+    }
+    let promiseUnshareList = [];
+    shares.map(share => promiseUnshareList.push(unshareResource(share.resource, share.userIds, userId)));
+    return Promise.all(promiseUnshareList)
         .then(() => {
             return res.status(200).send(httpStatus.UNSHARE_SUCCESS);
         })
