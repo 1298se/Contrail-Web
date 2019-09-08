@@ -2,7 +2,7 @@
 import axios from "axios";
 import * as firebase from "firebase/app";
 import store from "../../store/store";
-import { IResourceModel } from "../../types/resource.types";
+import { IUserResourceModel } from "../../types/resource.types";
 import { dbRef, storageRef } from "../firebase";
 
 /**
@@ -132,10 +132,41 @@ export const filterTrashResources = (resourceIds: string[]): string[] => {
     return resourceIds.filter((generation) => !trashResources.includes(generation));
 };
 
-export const mapIdsToResources = (resourceIds: string[]): IResourceModel[] => {
+export const mapIdsToResources = (resourceIds: string[]): IUserResourceModel[] => {
     const rootResources = store.getState().resourceState.userResources.root;
 
     const mappedResources = resourceIds.map((generation) =>
         rootResources.find((res) => res.generation === generation));
-    return mappedResources.filter((res): res is IResourceModel => !!res);
+    return mappedResources.filter((res): res is IUserResourceModel => !!res);
 };
+
+export const downloadBlob = (name: string, fileData: Blob) => {
+    const url = window.URL.createObjectURL(fileData);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = name;
+    document.body.appendChild(link);
+    window.URL.revokeObjectURL(url);
+};
+
+export const downloadResource = (resource: IUserResourceModel): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.get(`/api/resources/${resource.generation}/contents`, {
+            responseType: "blob",
+        }).then((response) => {
+            downloadBlob(resource.name, new Blob(response.data));
+            resolve();
+        }).catch((error) => {
+            reject(error.response.data);
+        });
+    });
+};
+
+export const downloadMultipleResources = async (resources: IUserResourceModel[]): Promise<any> => {
+    const zip = (await axios.post("/api/zip", {
+        resourceIds: resources.map((res) => res.generation),
+    })).data;
+    const zipUrl = await axios.get
+    const 
+
+}

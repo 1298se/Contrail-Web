@@ -1,5 +1,5 @@
 import { WithStyles } from "@material-ui/core";
-import { IResourceModel, IUserResources } from "../../../types/resource.types";
+import { IUserResourceModel, IUserResources } from "../../../types/resource.types";
 import styles from "./toolBarStyles";
 import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 
@@ -14,7 +14,7 @@ export interface IResourceToolBarOwnProps extends WithStyles<typeof styles>,
 }
 
 export interface IResourceToolBarStateProps {
-    selectedResources: IResourceModel[];
+    selectedResources: IUserResourceModel[];
     userResources: IUserResources;
 }
 

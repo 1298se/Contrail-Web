@@ -1,4 +1,4 @@
-import { IResourceModel, IUserResources } from "../../../types/resource.types";
+import { IUserResourceModel, IUserResources } from "../../../types/resource.types";
 
 export interface IData {
     name: string;
@@ -18,12 +18,12 @@ export interface IResourceListOwnProps {
 }
 
 export interface IResourceListStateProps {
-    selectedResources: IResourceModel[];
+    selectedResources: IUserResourceModel[];
     userResources: IUserResources;
 }
 
 export interface IResourceListDispatchProps {
-    setSelected: (resources: IResourceModel[]) => void;
+    setSelected: (resources: IUserResourceModel[]) => void;
 }
 
 export type ResourceListProps =

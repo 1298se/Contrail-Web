@@ -19,7 +19,7 @@ import { filterTrashResources, mapIdsToResources } from "../../../firebase/contr
 import { setSelectedResources } from "../../../store/actions/resourceActions";
 import { IResourceSetSelected } from "../../../store/actions/resourceActions.types";
 import { IAppReduxState } from "../../../store/store.types";
-import { IResourceModel } from "../../../types/resource.types";
+import { IUserResourceModel } from "../../../types/resource.types";
 import { ResourcePages } from "../resourceFrame.types";
 import useStyles from "./resourceListStyles";
 import * as types from "./resourceListView.types";
@@ -142,8 +142,8 @@ function EnhancedTable(props: types.ResourceListProps) {
                             align="left"
                             className={classes.name}
                         >
-                            <Grid container={true} direction="row" alignItems="center">
-                                <Grid item={true}>
+                            <Grid container={true} wrap="nowrap" direction="row" alignItems="center">
+                                <Grid item={true} zeroMinWidth={true}>
                                     <Typography noWrap={true}>
                                         {res.name}
                                     </Typography>
@@ -183,16 +183,16 @@ function EnhancedTable(props: types.ResourceListProps) {
 
     function handleSelectAllClick(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.checked) {
-            const newSelecteds: IResourceModel[] = displayResources;
+            const newSelecteds: IUserResourceModel[] = displayResources;
             props.setSelected(newSelecteds);
         } else {
             props.setSelected([]);
         }
     }
 
-    function handleClick(event: React.MouseEvent<unknown>, resource: IResourceModel) {
+    function handleClick(event: React.MouseEvent<unknown>, resource: IUserResourceModel) {
         const selectedIndex = selected.map((res) => res.generation).indexOf(resource.generation);
-        let newSelected: IResourceModel[] = [];
+        let newSelected: IUserResourceModel[] = [];
 
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, resource);
@@ -264,7 +264,7 @@ const mapStateToProps = (state: IAppReduxState): types.IResourceListStateProps =
 
 const mapDispatchToProps = (dispatch: Dispatch<IResourceSetSelected>): types.IResourceListDispatchProps => {
     return {
-        setSelected: (resources: IResourceModel[]) => dispatch(setSelectedResources(resources)),
+        setSelected: (resources: IUserResourceModel[]) => dispatch(setSelectedResources(resources)),
     };
 };
 

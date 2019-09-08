@@ -5,12 +5,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import MoreIcon from "@material-ui/icons/MoreVert";
-import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import RestoreIcon from "@material-ui/icons/Restore";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -37,6 +37,16 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         this.setState({
             mobileMoreAnchorEl: null,
         });
+    }
+
+    public handleDownloadClick = () => {
+        const { selectedResources } = this.props;
+
+        if (selectedResources.length === 1) {
+            filesController.downloadResource(selectedResources[0]);
+        } else if (selectedResources.length > 1) {
+            filesController.downloadMultipleResources(selectedResources);
+        }
     }
 
     public handleFavouriteClick = () => {
@@ -93,9 +103,9 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
             >
                 <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
                     <IconButton color="default">
-                        <RemoveRedEyeIcon />
+                        <CloudDownloadIcon />
                     </IconButton>
-                    <p>View</p>
+                    <p>Download</p>
                 </MenuItem>
                 <MenuItem disabled={!isItemSelected} onClick={this.handleFavouriteClick}>
                     <IconButton color="default">
@@ -123,8 +133,9 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                 <IconButton
                     color="default"
                     disabled={!isItemSelected}
+                    onClick={this.handleDownloadClick}
                 >
-                    <RemoveRedEyeIcon />
+                    <CloudDownloadIcon />
                 </IconButton>
                 <IconButton
                     color="default"
