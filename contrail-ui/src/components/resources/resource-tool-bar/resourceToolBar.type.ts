@@ -18,4 +18,8 @@ export interface IResourceToolBarStateProps {
     userResources: IUserResources;
 }
 
-export type ResourceToolBarProps = IResourceToolBarOwnProps & IResourceToolBarStateProps;
+export interface IShareDialogDispatchProps {
+    setDialogOpen: (shouldDisplay: boolean) => void;
+}
+
+export type ResourceToolBarProps = IResourceToolBarOwnProps & IResourceToolBarStateProps & IShareDialogDispatchProps;

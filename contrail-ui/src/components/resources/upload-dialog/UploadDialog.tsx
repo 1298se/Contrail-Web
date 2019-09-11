@@ -68,7 +68,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
     }
 
     public onUploadTask =
-    (uploadTask: firebase.storage.UploadTask, filename: string) => {
+        (uploadTask: firebase.storage.UploadTask, filename: string) => {
             uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -84,24 +84,24 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                 }, () => {
                     if (this.props.user) {
                         filesController.writeFileToDB(uploadTask, this.props.user)
-                        .then(() => {
-                            this.setState((prevState: types.IUploadDialogState) => ({
-                                uploadState: prevState.uploadState.set(filename, "success"),
-                            }));
-                        })
-                        .catch((error) => {
-                            this.setState((prevState: types.IUploadDialogState) => ({
-                                uploadState: prevState.uploadState.set(filename, "error"),
-                            }));
-                            this.props.setSnackbarDisplay("error", error);
-                        });
+                            .then(() => {
+                                this.setState((prevState: types.IUploadDialogState) => ({
+                                    uploadState: prevState.uploadState.set(filename, "success"),
+                                }));
+                            })
+                            .catch((error) => {
+                                this.setState((prevState: types.IUploadDialogState) => ({
+                                    uploadState: prevState.uploadState.set(filename, "error"),
+                                }));
+                                this.props.setSnackbarDisplay("error", error);
+                            });
                     }
-            });
-    }
+                });
+        }
 
     public uploadFiles = () => {
         if (this.props.user && this.state.files) {
-            const { uid }  = this.props.user;
+            const { uid } = this.props.user;
             this.state.files.map((file: File) => {
                 const filename = file && file.name;
                 if (this.state.uploadProgress.get(filename) === 0) {
@@ -132,11 +132,13 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
         const { files, uploadProgress, uploadState } = this.state;
         const uploading = [...uploadState.values()].some((value) => value === "uploading");
         const toUpload = [...uploadState.values()].some((value) => value === "added");
+        // tslint:disable: jsx-wrap-multiline
+        // tslint:disable: jsx-no-multiline-js
 
         const handleAddEvent = (e: React.ChangeEvent<any>) => this.handleAddFile(e.target.files);
 
         const renderUploadFiles = (
-            files &&  files.map((file: File, i) => {
+            files && files.map((file: File, i) => {
                 const fileName = file.name;
                 const fileProgress = uploadProgress.get(fileName);
                 const fileState = uploadState.get(fileName);
@@ -147,7 +149,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
 
                 const renderCancelButton = (disabled: boolean) => (
                     <Button disableFocusRipple={true} disabled={disabled} onClick={handleCancelClick}>
-                        <CancelIcon fontSize="large"/>
+                        <CancelIcon fontSize="large" />
                     </Button>
                 );
 
@@ -160,22 +162,22 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                 );
 
                 return (
-                <div key={i} className={classes.fileContainer}>
-                    <div className={classes.fileInfoContainer}>
-                        <p> {fileName} </p>
-                        <LinearProgress
-                            className={classes.progress}
-                            variant="determinate"
-                            value={fileProgress}
-                        />
+                    <div key={i} className={classes.fileContainer}>
+                        <div className={classes.fileInfoContainer}>
+                            <p> {fileName} </p>
+                            <LinearProgress
+                                className={classes.progress}
+                                variant="determinate"
+                                value={fileProgress}
+                            />
+                        </div>
+                        <div className={classes.statusContainer} >
+                            {fileState === "added" && renderCancelButton(false)}
+                            {fileState === "uploading" && renderCancelButton(true)}
+                            {fileState === "success" && renderDoneButton}
+                            {fileState === "error" && renderErrorButton}
+                        </div>
                     </div>
-                    <div className={classes.statusContainer} >
-                        {fileState === "added" && renderCancelButton(false)}
-                        {fileState === "uploading" && renderCancelButton(true)}
-                        {fileState === "success" && renderDoneButton}
-                        {fileState === "error" && renderErrorButton}
-                    </div>
-                </div>
                 );
             })
         );
@@ -185,74 +187,75 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                 onDrop={this.handleFileDrop}
                 noClick={true}
             >
-            {({getRootProps, getInputProps}) => {
-            return (
-            <section>
-                <div {...getRootProps({className: "dropzone"})}>
-                    <input {...getInputProps()} />
-                    <DialogContentText>
-                        Drag files here to upload!
+                {({ getRootProps, getInputProps }) => {
+                    return (
+                        <section>
+                            <div {...getRootProps({ className: "dropzone" })}>
+                                <input {...getInputProps()} />
+                                <DialogContentText>
+                                    Drag files here to upload!
                     </DialogContentText>
-                    <div className={classes.paper}>
-                        {renderUploadFiles}
-                    </div>
-                </div>
-            </section>
-            );}}
+                                <div className={classes.paper}>
+                                    {renderUploadFiles}
+                                </div>
+                            </div>
+                        </section>
+                    );
+                }}
             </Dropzone>
         );
 
         return (
-        <div>
-            <Dialog
-                open={dialogOpen}
-                onBackdropClick={this.closeFileUpload}
-                aria-labelledby="form-dialog-title"
-                fullWidth={true}
-            >
-                <DialogTitle id="form-dialog-title">Upload Files</DialogTitle>
-                <DialogContent className={classes.baseDrop}>
-                {renderDropzone}
-                </DialogContent>
-                <DialogActions>
-                <input
-                    style={{ display: "none" }}
-                    id="raised-button-file"
-                    multiple={true}
-                    type="file"
-                    onChange={handleAddEvent}
-                />
-                <label htmlFor="raised-button-file">
-                <Button
-                    component="span"
-                    variant="contained"
-                    color="primary"
-                    disabled={uploading}
+            <div>
+                <Dialog
+                    open={dialogOpen}
+                    onBackdropClick={this.closeFileUpload}
+                    aria-labelledby="form-dialog-title"
+                    fullWidth={true}
                 >
-                    Add
-                </Button>
-                </label>
-                <Button
-                    component="span"
-                    variant="contained"
-                    color="primary"
-                    onClick={this.closeFileUpload}
-                    disabled={uploading}
-                >
-                    Cancel
-                </Button>
-                <Button
-                    component="span"
-                    variant="contained"
-                    color="primary"
-                    onClick={this.uploadFiles}
-                    disabled={!toUpload}
-                >
-                    Upload
-                </Button>
-                </DialogActions>
-            </Dialog>
-        </div >
+                    <DialogTitle id="form-dialog-title">Upload Files</DialogTitle>
+                    <DialogContent className={classes.baseDrop}>
+                        {renderDropzone}
+                    </DialogContent>
+                    <DialogActions>
+                        <input
+                            style={{ display: "none" }}
+                            id="raised-button-file"
+                            multiple={true}
+                            type="file"
+                            onChange={handleAddEvent}
+                        />
+                        <label htmlFor="raised-button-file">
+                            <Button
+                                component="span"
+                                variant="contained"
+                                color="primary"
+                                disabled={uploading}
+                            >
+                                Add
+                            </Button>
+                        </label>
+                        <Button
+                            component="span"
+                            variant="contained"
+                            color="primary"
+                            onClick={this.closeFileUpload}
+                            disabled={uploading}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            component="span"
+                            variant="contained"
+                            color="primary"
+                            onClick={this.uploadFiles}
+                            disabled={!toUpload}
+                        >
+                            Upload
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div >
         );
     }
 }
@@ -265,7 +268,7 @@ const mapStateToProps = (state: IAppReduxState): types.IUploadDialogStateProps =
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetUploadDialogOpenAction>):
-types.IUploadDialogDispatchProps => {
+    types.IUploadDialogDispatchProps => {
     return {
         setDialogOpen: (shouldDisplay: boolean) => dispatch(setAppUploadDialogOpen(shouldDisplay)),
     };

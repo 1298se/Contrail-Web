@@ -11,7 +11,7 @@ const initialAppUiState: types.IAppUiState = {
     },
     dialogState: {
         uploadDialogOpen: false,
-        shareDialogOpen: true,
+        shareDialogOpen: false,
     },
 };
 

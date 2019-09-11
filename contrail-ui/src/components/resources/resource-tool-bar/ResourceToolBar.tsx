@@ -14,7 +14,10 @@ import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import RestoreIcon from "@material-ui/icons/Restore";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
 import * as filesController from "../../../firebase/controllers/filesController";
+import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
+import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
 import { IAppReduxState } from "../../../store/store.types";
 import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import { ResourcePages } from "../resourceFrame.types";
@@ -56,6 +59,10 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     this.props.setSnackbarDisplay("error", error);
                 });
         }
+    }
+
+    public handleShareClick = () => {
+        this.props.setDialogOpen(true);
     }
 
     public handleTrashClick = () => {
@@ -136,6 +143,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                 <IconButton
                     color="default"
                     disabled={!isItemSelected}
+                    onClick={this.handleShareClick}
                 >
                     <SharedIcon />
                 </IconButton>
@@ -203,4 +211,11 @@ const mapStateToProps = (state: IAppReduxState): types.IResourceToolBarStateProp
     };
 };
 
-export default connect(mapStateToProps)(withSnackbar(withStyles(styles)(ResourceToolBar)));
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetShareDialogOpenAction>):
+    types.IShareDialogDispatchProps => {
+    return {
+        setDialogOpen: (shouldDisplay: boolean) => dispatch(setAppShareDialogOpen(shouldDisplay)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withSnackbar(withStyles(styles)(ResourceToolBar)));

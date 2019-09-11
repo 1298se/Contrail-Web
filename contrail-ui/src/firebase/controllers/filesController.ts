@@ -120,7 +120,8 @@ export const restoreResourceFromTrash = (resourceIds: string[]): Promise<any> =>
             resourceIds,
         }).then((response) => {
             resolve(response.data);
-        }).catch((error) => {
+        })
+        .catch((error) => {
             reject(error.response.data);
         });
     });
