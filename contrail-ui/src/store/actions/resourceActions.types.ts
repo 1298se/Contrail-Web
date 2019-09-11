@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { IUserResourceModel, IUserResources } from "../../types/resource.types";
+import { IResourceModel, IUserResources } from "../../types/resource.types";
 import * as constants from "../constants";
 
 export interface IResourceFetchAllAction extends Action<constants.RESOURCE_FETCH_ALL> {
@@ -9,7 +9,7 @@ export interface IResourceFetchAllAction extends Action<constants.RESOURCE_FETCH
 
 export interface IResourceSetSelected extends Action<constants.RESOURCE_SET_SELECTED> {
     type: constants.RESOURCE_SET_SELECTED;
-    payload: IUserResourceModel[];
+    payload: IResourceModel[];
 }
 
 export type ResourceActions = IResourceFetchAllAction | IResourceSetSelected;

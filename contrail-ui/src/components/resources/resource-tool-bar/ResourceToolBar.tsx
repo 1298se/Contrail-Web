@@ -43,9 +43,15 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         const { selectedResources } = this.props;
 
         if (selectedResources.length === 1) {
-            filesController.downloadResource(selectedResources[0]);
+            filesController.downloadResource(selectedResources[0])
+            .catch((error) => {
+                this.props.setSnackbarDisplay("error", error);
+            });
         } else if (selectedResources.length > 1) {
-            filesController.downloadMultipleResources(selectedResources);
+            filesController.downloadMultipleResources(selectedResources)
+            .catch((error) => {
+                this.props.setSnackbarDisplay("error", error);
+            });
         }
     }
 

@@ -1,6 +1,6 @@
-import { IUserResourceModel, IUserResources } from "../../types/resource.types";
+import { IResourceModel, IUserResources } from "../../types/resource.types";
 
 export interface IResourceState {
     userResources: IUserResources;
-    selectedResources: IUserResourceModel[];
+    selectedResources: IResourceModel[];
 }

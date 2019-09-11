@@ -2,7 +2,7 @@
 import axios from "axios";
 import * as firebase from "firebase/app";
 import store from "../../store/store";
-import { IUserResourceModel } from "../../types/resource.types";
+import { IResourceModel } from "../../types/resource.types";
 import { dbRef, storageRef } from "../firebase";
 
 /**
@@ -30,7 +30,7 @@ export const uploadFiletoStorage = (file: File, userID: string): firebase.storag
 export const writeFileToDB =
     (upload: firebase.storage.UploadTask, user: firebase.User): Promise<any> => {
         return new Promise((resolve, reject) => {
-            const { name, size, timeCreated, generation, fullPath, updated } = upload.snapshot.metadata;
+            const { name, size, timeCreated, generation, updated } = upload.snapshot.metadata;
             const { uid, displayName, email } = user;
 
             const batch = dbRef.batch();
@@ -38,7 +38,6 @@ export const writeFileToDB =
             batch.set(documentsRef, {
                 id: generation,
                 name,
-                path: fullPath,
                 permissions: {
                     [uid]: "owner",
                 },
@@ -132,12 +131,12 @@ export const filterTrashResources = (resourceIds: string[]): string[] => {
     return resourceIds.filter((generation) => !trashResources.includes(generation));
 };
 
-export const mapIdsToResources = (resourceIds: string[]): IUserResourceModel[] => {
+export const mapIdsToResources = (resourceIds: string[]): IResourceModel[] => {
     const rootResources = store.getState().resourceState.userResources.root;
 
     const mappedResources = resourceIds.map((generation) =>
         rootResources.find((res) => res.generation === generation));
-    return mappedResources.filter((res): res is IUserResourceModel => !!res);
+    return mappedResources.filter((res): res is IResourceModel => !!res);
 };
 
 export const downloadBlob = (name: string, fileData: Blob) => {
@@ -146,15 +145,16 @@ export const downloadBlob = (name: string, fileData: Blob) => {
     link.href = url;
     link.download = name;
     document.body.appendChild(link);
+    link.click();
     window.URL.revokeObjectURL(url);
 };
 
-export const downloadResource = (resource: IUserResourceModel): Promise<any> => {
+export const downloadResource = (resource: IResourceModel): Promise<any> => {
     return new Promise((resolve, reject) => {
         axios.get(`/api/resources/${resource.generation}/contents`, {
             responseType: "blob",
         }).then((response) => {
-            downloadBlob(resource.name, new Blob(response.data));
+            downloadBlob(resource.name, new Blob([response.data]));
             resolve();
         }).catch((error) => {
             reject(error.response.data);
@@ -162,11 +162,20 @@ export const downloadResource = (resource: IUserResourceModel): Promise<any> => 
     });
 };
 
-export const downloadMultipleResources = async (resources: IUserResourceModel[]): Promise<any> => {
-    const zip = (await axios.post("/api/zip", {
-        resourceIds: resources.map((res) => res.generation),
-    })).data;
-    const zipUrl = await axios.get
-    const 
-
-}
+export const downloadMultipleResources = (resources: IResourceModel[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: "post",
+            url: "/api/zip",
+            data: {
+                resourceIds: resources.map((res) => res.generation),
+            },
+            responseType: "blob",
+        }).then((response) => {
+            downloadBlob("contrail.zip", new Blob([response.data]));
+            resolve();
+        }).catch((error) => {
+            reject(error.response.data);
+        });
+    });
+};

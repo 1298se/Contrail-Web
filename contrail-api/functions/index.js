@@ -19,7 +19,7 @@ app.put("/resources", authMiddleware, (req, res) => {
 });
 
 app.get("/resources/:resourceId/contents", authMiddleware, resourceController.downloadResource);
-
-app.get("/search", searchUsers);
+app.post("/zip", authMiddleware, resourceController.downloadResourceZip);
+app.get("/search", authMiddleware, searchUsers);
 
 exports.api = functions.https.onRequest(app);
