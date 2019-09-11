@@ -44,3 +44,22 @@ exports.searchUsers = (req, res) => {
             return res.status(500).send(error);
         })
 }
+
+exports.getUserInfo = async (userId) => {
+    const userRef = firestore().collection("users").doc(userId);
+    return userRef.get()
+    .then((doc) => {
+        if (doc.exists) {
+            const { uid, displayName, email } = doc.data();
+            return {
+                uid,
+                displayName,
+                email,
+            };
+        }
+        return {};
+    })
+    .catch(() => {
+        return {};
+    })
+}
