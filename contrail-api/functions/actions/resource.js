@@ -36,14 +36,20 @@ exports.removeFavourites = (req, res) => {
     });
 }
 
-exports.addTrash = (req, res) => {
+exports.addTrash = async (req, res) => {
     const userId = req.uid;
-    const resourceIds = req.body.resourceIds;
+    const { resources, shouldUnshare} = req.body;
 
-    if (!resourceIds || !userId) {
+    if (!resources || !userId) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
     const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
+    if (shouldUnshare) {
+        const unsharePromiseMap = [];
+        resources.map((resource) => unsharePromiseMap.push(unshareAllFromResource(resource, userId, false)));
+        const unshare = await Promise.all(unsharePromiseMap);
+    }
+    const resourceIds = resources.map((resource) => resource.generation);
     return ref.update({
         trash: firestore.FieldValue.arrayUnion(...resourceIds)
     }).then(() => {

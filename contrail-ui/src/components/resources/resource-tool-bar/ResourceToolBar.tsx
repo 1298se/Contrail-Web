@@ -21,6 +21,7 @@ import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateA
 import { IAppReduxState } from "../../../store/store.types";
 import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import { ResourcePages } from "../resourceFrame.types";
+import TrashDialog from "../trash-dialog/TrashDialog";
 import * as types from "./resourceToolBar.type";
 import styles from "./toolBarStyles";
 
@@ -28,6 +29,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
     public state = {
         anchorEl: null,
         mobileMoreAnchorEl: null,
+        displayUnshareTrashDialog: false,
     };
 
     public handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -66,15 +68,31 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
     }
 
     public handleTrashClick = () => {
-        const { selectedResources } = this.props;
+        const { selectedResources, userResources } = this.props;
         this.handleMobileMenuClose();
 
-        filesController.addResourcesToTrash(selectedResources.map((res) => res.generation))
-            .then(() => {
-                this.props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
-            }).catch((error) => {
-                this.props.setSnackbarDisplay("error", error);
+        const isSomeShared = selectedResources.some((res) => userResources.sharedBy.includes(res.generation));
+
+        if (isSomeShared) {
+            this.setState({
+                ...this.state,
+                displayUnshareTrashDialog: true,
             });
+        } else {
+            filesController.addResourcesToTrash(selectedResources, false)
+                .then(() => {
+                    this.props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
+                }).catch((error) => {
+                    this.props.setSnackbarDisplay("error", error);
+                });
+        }
+    }
+
+    public handleDialogClose = () => {
+        this.setState({
+            ...this.state,
+            displayUnshareTrashDialog: false,
+        });
     }
 
     public handleRestoreClick = () => {
@@ -179,6 +197,12 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
 
         return (
             <div className={classes.grow}>
+                <TrashDialog
+                    shouldDisplayDialog={this.state.displayUnshareTrashDialog}
+                    handleDialogClose={this.handleDialogClose}
+                    setSnackbarDisplay={this.props.setSnackbarDisplay}
+                    selectedResources={this.props.selectedResources}
+                />
                 <AppBar position="static" color="secondary">
                     <Toolbar>
                         <Typography className={classes.title} variant="h6" noWrap={true}>

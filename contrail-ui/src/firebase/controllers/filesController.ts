@@ -100,11 +100,12 @@ export const removeResourcesFromFavourites = (resourceIds: string[]): Promise<an
     });
 };
 
-export const addResourcesToTrash = (resourceIds: string[]): Promise<any> => {
+export const addResourcesToTrash = (resources: IResourceModel[], shouldUnshare: boolean): Promise<any> => {
     return new Promise((resolve, reject) => {
         axios.put("/api/resources", {
             type: "addTrash",
-            resourceIds,
+            resources,
+            shouldUnshare,
         }).then((response) => {
             resolve(response.data);
         }).catch((error) => {

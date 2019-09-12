@@ -14,3 +14,10 @@ exports.UNSHARE_SUCCESS = {
     code: "unshareSuccess",
     message: "File(s) have been successfully unshared."
 }
+
+exports.createCustomStatus = (code, message) => {
+    return {
+     code,
+     message,
+     }
+ }

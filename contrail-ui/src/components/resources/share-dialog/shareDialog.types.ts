@@ -5,18 +5,18 @@ import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbar
 import styles from "./shareDialogStyles";
 
 export interface IShareDialogState {
-    search: ISearchModel;
-    sharedResources: IShareModel[];
+    search: ISearchState;
+    sharedResources: IShareState[];
 }
 
-export interface ISearchModel {
+export interface ISearchState {
     input: string;
     timeout: NodeJS.Timeout | null;
     suggestions: IUserModel[];
     selected: IUserModel[];
 }
 
-export interface IShareModel {
+export interface IShareState {
     name: string;
     collaborators: firebase.User[];
     generation: string;
