@@ -21,6 +21,7 @@ export interface IResourceToolBarStateProps {
 
 export interface IShareDialogDispatchProps {
     setDialogOpen: (shouldDisplay: boolean) => void;
+    setSelected: (resources: IResourceModel[]) => void;
 }
 
 export type ResourceToolBarProps = IResourceToolBarOwnProps & IResourceToolBarStateProps & IShareDialogDispatchProps;

@@ -45,8 +45,7 @@ exports.addTrash = async (req, res) => {
     }
     const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
     if (shouldUnshare) {
-        const unsharePromiseMap = [];
-        resources.map((resource) => unsharePromiseMap.push(unshareAllFromResource(resource, userId, false)));
+        const unsharePromiseMap = resources.map((resource) => unshareAllFromResource(resource, userId, false));
         const unshare = await Promise.all(unsharePromiseMap);
     }
     const resourceIds = resources.map((resource) => resource.generation);
@@ -104,11 +103,9 @@ exports.share = (req, res) => {
     if (!resources || !collaborators) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
-    let promiseShareList = [];
-    resources.forEach(resource => promiseShareList.push(shareResource(resource, collaborators, userId)));
+    const promiseShareList = resources.map(resource => shareResource(resource, collaborators, userId));
     return Promise.all(promiseShareList)
         .then(() => {
-            console.log(1)
             return res.status(200).send(httpStatus.createCustomStatus("shareSuccess", `${resources.length} file(s) have been successfully shared to ${collaborators.length} users.`));
         })
         .catch((error) => {
@@ -191,8 +188,7 @@ exports.unshare = (req, res) => {
     if (!shares) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
-    let promiseUnshareList = [];
-    shares.map(share => promiseUnshareList.push(unshareResource(share.resource, share.userIds, userId)));
+    const promiseUnshareList = shares.map(share => unshareResource(share.resource, share.userIds, userId));
     return Promise.all(promiseUnshareList)
         .then(() => {
             return res.status(200).send(httpStatus.createCustomStatus("unshareSuccess", `${shares.length} file(s) have been successfully unshared.`));
@@ -210,8 +206,7 @@ getCollaboratorsForResource = (userId, resource) => {
             if (doc.exists) {
                 const { permissions, id, name } = doc.data();
                 const ids = Object.keys(permissions).filter(id => id !== userId);
-                let promiseList = [];
-                ids.map(id => promiseList.push(getUserInfo(id)));
+                const promiseList = ids.map(id => getUserInfo(id));
                 const collaborators = await Promise.all(promiseList);
                 return {
                     generation: id,

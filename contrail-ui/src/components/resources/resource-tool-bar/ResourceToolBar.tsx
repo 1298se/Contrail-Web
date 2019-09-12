@@ -18,7 +18,10 @@ import { ThunkDispatch } from "redux-thunk";
 import * as filesController from "../../../firebase/controllers/filesController";
 import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
 import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
+import { setSelectedResources } from "../../../store/actions/resourceActions";
+import { IResourceSetSelected } from "../../../store/actions/resourceActions.types";
 import { IAppReduxState } from "../../../store/store.types";
+import { IResourceModel } from "../../../types/resource.types";
 import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import { ResourcePages } from "../resourceFrame.types";
 import TrashDialog from "../trash-dialog/TrashDialog";
@@ -88,11 +91,12 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         }
     }
 
-    public handleDialogClose = () => {
+    public handleTrashDialogClose = () => {
         this.setState({
             ...this.state,
             displayUnshareTrashDialog: false,
         });
+        this.props.setSelected([]);
     }
 
     public handleRestoreClick = () => {
@@ -199,7 +203,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
             <div className={classes.grow}>
                 <TrashDialog
                     shouldDisplayDialog={this.state.displayUnshareTrashDialog}
-                    handleDialogClose={this.handleDialogClose}
+                    handleDialogClose={this.handleTrashDialogClose}
                     setSnackbarDisplay={this.props.setSnackbarDisplay}
                     selectedResources={this.props.selectedResources}
                 />
@@ -235,10 +239,11 @@ const mapStateToProps = (state: IAppReduxState): types.IResourceToolBarStateProp
     };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetShareDialogOpenAction>):
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetShareDialogOpenAction | IResourceSetSelected>):
     types.IShareDialogDispatchProps => {
     return {
         setDialogOpen: (shouldDisplay: boolean) => dispatch(setAppShareDialogOpen(shouldDisplay)),
+        setSelected: (resources: IResourceModel[]) => dispatch(setSelectedResources(resources)),
     };
 };
 
