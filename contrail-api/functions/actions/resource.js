@@ -263,12 +263,12 @@ exports.downloadResource = async (req, res) => {
     const userId = req.uid;
     const resourceId = req.params.resourceId;
 
-    if (resourceId && userId) {
+    if (!resourceId || !userId) {
         const doc = await firestore().collection("documents").doc(resourceId).get();
         if (doc.exists) {
             if (Object.keys(doc.data().permissions).includes(userId)) {
                 const fileOptions = {
-                    prefix: `${userId}/${doc.data().name}`
+                    prefix: `${doc.data().owner}/${doc.data().name}`
                 };
                 bucket.getFiles(fileOptions, (error, files) => {
                     files[0].download((error, contents) => {

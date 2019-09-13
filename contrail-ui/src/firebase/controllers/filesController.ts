@@ -43,7 +43,7 @@ export const writeFileToDB =
                 permissions: {
                     [uid]: "owner",
                 },
-                createdBy: uid,
+                owner: uid,
                 size,
                 timeCreated,
                 updated,
