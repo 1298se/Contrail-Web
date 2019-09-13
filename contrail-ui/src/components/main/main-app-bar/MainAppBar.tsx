@@ -76,7 +76,6 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
                 open={Boolean(this.state.anchorEl)}
                 onClose={this.handleMenuClose}
             >
-                <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
                 <MenuItem onClick={this.handleLogoutClick}>Logout</MenuItem>
             </Menu>
         );

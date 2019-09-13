@@ -5,7 +5,11 @@ export interface ISnackbarInjectProps {
 }
 
 export interface IWithSnackbarState {
+    shouldDisplaySnackbar: boolean;
+    currentMessage: ISnackbarMessage | null;
+}
+
+export interface ISnackbarMessage {
     snackbarVariant: keyof typeof snackbarVariant;
     snackbarMessage: string | null;
-    shouldDisplaySnackbar: boolean;
 }

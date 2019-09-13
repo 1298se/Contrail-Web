@@ -37,9 +37,9 @@ class ResourceFrame extends Component<types.ResourceFrameProps, types.IResourceF
     }
 
     public render() {
+
         const { classes } = this.props;
         const { match } = this.props;
-
         const renderRootResources = () => {
             return renderResourcesWrapper(types.ResourcePages.FILES);
         };

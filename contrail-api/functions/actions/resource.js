@@ -1,6 +1,6 @@
-const { firestore } = require("../utils/firebaseUtils");
-const { getUserInfo } = require("./user");
-const httpStatus = require("../../http/httpStatus");
+const { firestore, getUserDocRef, getResourceDocRef } = require('../utils/firebaseUtils');
+const { getUserInfo } = require('./user');
+const httpStatus = require('../../http/httpStatus');
 
 exports.createFavourites = (req, res) => {
     const userId = req.uid;
@@ -9,11 +9,12 @@ exports.createFavourites = (req, res) => {
     if (!resourceIds || !userId) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
-    const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
+
+    const ref = getUserDocRef(userId);
     return ref.update({
         favourites: firestore.FieldValue.arrayUnion(...resourceIds)
     }).then(() => {
-        return res.status(200).send();
+        return res.status(200).send(httpStatus.FAVOURITE_SUCCESSFUL(resourceIds.length));
     }).catch((error) => {
         return res.status(500).send(error);
     });
@@ -26,33 +27,38 @@ exports.removeFavourites = (req, res) => {
     if (!resourceIds || !userId) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
-    const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
+
+    const ref = getUserDocRef(userId);
     return ref.update({
         favourites: firestore.FieldValue.arrayRemove(...resourceIds)
     }).then(() => {
-        return res.status(200).send();
+        return res.status(200).send(httpStatus.UNFAVOURITE_SUCCESSFUL(resourceIds.length));
     }).catch((error) => {
         return res.status(500).send(error);
     });
 }
 
-exports.addTrash = async (req, res) => {
+exports.addTrash = (req, res) => {
     const userId = req.uid;
-    const { resources, shouldUnshare} = req.body;
+    const { resources, shouldUnshare } = req.body;
 
     if (!resources || !userId) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
-    const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
+
+    const ref = getUserDocRef(userId);
     if (shouldUnshare) {
-        const unsharePromiseMap = resources.map((resource) => unshareAllFromResource(resource, userId, false));
-        const unshare = await Promise.all(unsharePromiseMap);
+        const unsharePromiseList = resources.map((resource) => unshareAllFromResource(resource, userId, false));
+        Promise.all(unsharePromiseList)
+        .catch((error) => {
+            return res.status(500).send(error);
+        });
     }
     const resourceIds = resources.map((resource) => resource.generation);
     return ref.update({
         trash: firestore.FieldValue.arrayUnion(...resourceIds)
     }).then(() => {
-        return res.status(200).send();
+        return res.status(200).send(httpStatus.TRASH_SUCCESSFUL(resources.length));
     }).catch((error) => {
         return res.status(500).send(error);
     });
@@ -65,32 +71,33 @@ exports.restoreTrash = (req, res) => {
     if (!resourceIds || !userId) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
-    const ref = firestore().collection("users").doc(userId).collection("root").doc("resources");
+
+    const ref = getUserDocRef(userId);
     return ref.update({
         trash: firestore.FieldValue.arrayRemove(...resourceIds)
     }).then(() => {
-        return res.status(200).send();
+        return res.status(200).send(httpStatus.RESTORE_SUCCESSFUL(resourceIds.length));
     }).catch((error) => {
         return res.status(500).send(error);
     });
 }
 
-shareResource = (resource, collaborators, ownerId) => {
+shareResource = (resource, collaboratorIds, ownerId) => {
     const batch = firestore().batch();
-    const docRef = firestore().collection("documents").doc(resource.generation);
-    const ownerRef = firestore().collection("users").doc(ownerId).collection("root").doc("resources");
+    const docRef = getResourceDocRef(resource.generation)
+    const ownerRef = getUserDocRef(ownerId);
 
     batch.update(ownerRef, {
         sharedBy: firestore.FieldValue.arrayUnion(resource.generation),
     });
-    collaborators.forEach(collaborator => {
-        const collaboratorRef = firestore().collection("users").doc(collaborator).collection("root").doc("resources");
+    collaboratorIds.forEach(collaboratorId => {
+        const collaboratorRef = getUserDocRef(collaboratorId);
         batch.update(collaboratorRef, {
             root: firestore.FieldValue.arrayUnion(resource),
             sharedTo: firestore.FieldValue.arrayUnion(resource.generation),
         });
         batch.update(docRef, {
-            [`permissions.${collaborator}`]: "editor",
+            [`permissions.${collaboratorId}`]: "editor",
         });
     });
     return batch.commit();
@@ -98,28 +105,29 @@ shareResource = (resource, collaborators, ownerId) => {
 
 exports.share = (req, res) => {
     const userId = req.uid;
-    const { resources, collaborators } = req.body;
+    const { resources, collaboratorIds } = req.body;
 
-    if (!resources || !collaborators) {
+    if (!resources || !collaboratorIds) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
-    const promiseShareList = resources.map(resource => shareResource(resource, collaborators, userId));
+
+    const promiseShareList = resources.map(resource => shareResource(resource, collaboratorIds, userId));
     return Promise.all(promiseShareList)
         .then(() => {
-            return res.status(200).send(httpStatus.createCustomStatus("shareSuccess", `${resources.length} file(s) have been successfully shared to ${collaborators.length} users.`));
+            return res.status(200).send(httpStatus.SHARE_SUCCESSFUL(resources.length, collaboratorIds.length));
         })
         .catch((error) => {
             return res.status(500).send(error);
-        })
+        });
 }
 
-unshareResource = (resource, collaborators, ownerId) => {
+unshareResource = (resource, collaboratorIds, ownerId) => {
     const batch = firestore().batch();
-    const docRef = firestore().collection("documents").doc(resource.generation);
-    const ownerRef = firestore().collection("users").doc(ownerId).collection("root").doc("resources");
+    const docRef = getResourceDocRef(resource.generation);
+    const ownerRef = getUserDocRef(ownerId);
 
-    collaborators.forEach(collaborator => {
-        const collaboratorRef = firestore().collection("users").doc(collaborator).collection("root").doc("resources");
+    collaboratorIds.forEach(collaboratorId => {
+        const collaboratorRef = getUserDocRef(collaboratorId)
         batch.update(collaboratorRef, {
             root: firestore.FieldValue.arrayRemove(resource),
             favourites: firestore.FieldValue.arrayRemove(resource.generation),
@@ -128,7 +136,7 @@ unshareResource = (resource, collaborators, ownerId) => {
             sharedTo: firestore.FieldValue.arrayRemove(resource.generation)
         });
         batch.update(docRef, {
-            [`permissions.${collaborator}`]: firestore.FieldValue.delete(),
+            [`permissions.${collaboratorId}`]: firestore.FieldValue.delete(),
         });
     });
     return docRef.get()
@@ -136,7 +144,7 @@ unshareResource = (resource, collaborators, ownerId) => {
             if (doc.exists) {
                 const { permissions } = doc.data()
                 const permissionIds = Object.keys(permissions).filter(id => id !== ownerId);
-                if (permissionIds.every(id => collaborators.includes(id))) {
+                if (permissionIds.every(id => collaboratorIds.includes(id))) {
                     batch.update(ownerRef, {
                         sharedBy: firestore.FieldValue.arrayRemove(resource.generation)
                     });
@@ -150,7 +158,7 @@ unshareResource = (resource, collaborators, ownerId) => {
 }
 
 unshareAllFromResource = (resource, ownerId, includeOwner) => {
-    const docRef = firestore().collection("documents").doc(resource.generation);
+    const docRef = getResourceDocRef(resource.generation);
 
     return docRef.get()
         .then((doc) => {
@@ -159,7 +167,7 @@ unshareAllFromResource = (resource, ownerId, includeOwner) => {
                 const { permissions } = doc.data();
                 const userIds = includeOwner ? Object.keys(permissions) : Object.keys(permissions).filter(id => id !== ownerId);
                 userIds.forEach((userId) => {
-                    const userRef = firestore().collection("users").doc(userId).collection("root").doc("resources");
+                    const userRef = getUserDocRef(userId);
                     batch.update(userRef, {
                         root: firestore.FieldValue.arrayRemove(resource),
                         favourites: firestore.FieldValue.arrayRemove(resource.generation),
@@ -188,18 +196,19 @@ exports.unshare = (req, res) => {
     if (!shares) {
         return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
+
     const promiseUnshareList = shares.map(share => unshareResource(share.resource, share.userIds, userId));
     return Promise.all(promiseUnshareList)
         .then(() => {
-            return res.status(200).send(httpStatus.createCustomStatus("unshareSuccess", `${shares.length} file(s) have been successfully unshared.`));
+            return res.status(200).send(httpStatus.UNSHARE_SUCCESSFUL(shares.length));
         })
         .catch((error) => {
             return res.status(500).send(error);
         });
 }
 
-getCollaboratorsForResource = (userId, resource) => {
-    const docRef = firestore().collection("documents").doc(resource);
+getCollaboratorsForResource = (userId, resourceId) => {
+    const docRef = getResourceDocRef(resourceId);
 
     return docRef.get()
         .then(async (doc) => {
@@ -224,15 +233,20 @@ getCollaboratorsForResource = (userId, resource) => {
 
 exports.getCollaborators = async (req, res) => {
     const userId = req.uid;
-    const resources = req.query.ids;
+    const resourceIds = req.query.ids;
 
-    return Promise.all(resources.map(async resource => {
-        return await getCollaboratorsForResource(userId, resource)
+    if (!userId || !resourceIds) {
+        return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
+    }
+
+    return Promise.all(resourceIds.map(async resourceId => {
+        return await getCollaboratorsForResource(userId, resourceId)
     }))
         .then((values) => {
-            return res.status(200).send(values)
+            return res.status(200).send(values);
         })
         .catch((error) => {
-            return res.status(500).send(error)
+            console.log(error);
+            return res.status(500).send(error);
         });
 }

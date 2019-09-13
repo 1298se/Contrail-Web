@@ -3,7 +3,8 @@ const app = require('express')();
 const { authMiddleware } = require('./utils/validation/authValidation');
 const userActions = require('./actions/user');
 const resourceActions = require('./actions/resource');
-const httpStatus = require("../http/httpStatus");
+const searchActions = require('./actions/search');
+const httpStatus = require('../http/httpStatus');
 
 app.get("/resources", authMiddleware, userActions.getUserFiles);
 
@@ -18,8 +19,8 @@ app.put("/resources", authMiddleware, (req, res) => {
     return res.status(500).send(httpStatus.INVALID_REQUEST_BODY);
 });
 
-app.get("/search", authMiddleware, userActions.searchUsers);
+app.get("/resources/collaborators", authMiddleware, resourceActions.getCollaborators);
 
-app.get("/shares", authMiddleware, resourceActions.getCollaborators);
+app.get("/search", authMiddleware, searchActions.searchUsers);
 
 exports.api = functions.https.onRequest(app);

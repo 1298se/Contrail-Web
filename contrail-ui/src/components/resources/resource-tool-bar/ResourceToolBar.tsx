@@ -47,23 +47,26 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         });
     }
 
-    public handleFavouriteClick = () => {
+    public handleFavouriteClick = async () => {
         const { selectedResources, userResources } = this.props;
         this.handleMobileMenuClose();
 
         const isAllFavourited = !(selectedResources.some((selectRes) =>
             !userResources.favourites.includes(selectRes.generation)));
-        if (isAllFavourited) {
-            filesController.removeResourcesFromFavourites(selectedResources.map((res) => res.generation));
-        } else {
-            filesController.addResourcesToFavourites(selectedResources.map((res) => res.generation))
-                .then(() => {
-                    this.props.setSnackbarDisplay("success", "File(s) have been successfully favourited.");
-                })
-                .catch((error) => {
-                    this.props.setSnackbarDisplay("error", error);
-                });
+        let response;
+        try {
+            if (isAllFavourited) {
+                response =
+                    await filesController.removeResourcesFromFavourites(selectedResources.map((res) => res.generation));
+            } else {
+                response =
+                    await filesController.addResourcesToFavourites(selectedResources.map((res) => res.generation));
+            }
+            this.props.setSnackbarDisplay("success", response);
+        } catch (error) {
+            this.props.setSnackbarDisplay("error", error);
         }
+
     }
 
     public handleShareClick = () => {
@@ -74,17 +77,18 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         const { selectedResources, userResources } = this.props;
         this.handleMobileMenuClose();
 
-        const isSomeShared = selectedResources.some((res) => userResources.sharedBy.includes(res.generation));
+        const isSharedResource = selectedResources.some((res) => userResources.sharedBy.includes(res.generation));
 
-        if (isSomeShared) {
+        if (isSharedResource) {
             this.setState({
                 ...this.state,
                 displayUnshareTrashDialog: true,
             });
         } else {
             filesController.addResourcesToTrash(selectedResources, false)
-                .then(() => {
-                    this.props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
+                .then((response) => {
+                    this.props.setSnackbarDisplay("success", response);
+                    this.props.setSelected([]);
                 }).catch((error) => {
                     this.props.setSnackbarDisplay("error", error);
                 });
@@ -103,7 +107,14 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         const { selectedResources } = this.props;
         this.handleMobileMenuClose();
 
-        filesController.restoreResourceFromTrash(selectedResources.map((res) => res.generation));
+        filesController.restoreResourceFromTrash(selectedResources.map((res) => res.generation))
+            .then((response) => {
+                this.props.setSnackbarDisplay("success", response);
+                this.props.setSelected([]);
+            })
+            .catch((error) => {
+                this.props.setSnackbarDisplay("error", error);
+            });
     }
 
     public render() {

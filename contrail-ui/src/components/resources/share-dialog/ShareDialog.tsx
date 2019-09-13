@@ -25,6 +25,7 @@ import Downshift from "downshift";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
+import * as filesController from "../../../firebase/controllers/filesController";
 import { searchUsers } from "../../../firebase/controllers/searchController";
 import * as shareController from "../../../firebase/controllers/shareController";
 import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
@@ -96,7 +97,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
 
     public handleShare = () => {
         const selectedUsers = this.state.search.selected;
-        return shareController.shareResources(this.props.selectedResources, selectedUsers)
+        return filesController.shareResources(this.props.selectedResources, selectedUsers)
             .then((res) => {
                 this.updateCollaborators();
                 this.setState({
@@ -142,7 +143,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 }
             });
         }
-        return shareController.unshareResources(unshareMap)
+        return filesController.unshareResources(unshareMap)
             .then((res) => {
                 this.updateCollaborators();
                 this.props.setSnackbarDisplay("success", res);

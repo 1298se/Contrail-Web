@@ -96,7 +96,7 @@ function EnhancedTable(props: types.ResourceListProps) {
     })());
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, displayResources.length - page * rowsPerPage);
-    const rowHeight = 53;
+    const rowHeight = 50.67;
 
     const isFavourited = (generation: string): boolean =>
         props.userResources.favourites.includes(generation);
@@ -142,8 +142,13 @@ function EnhancedTable(props: types.ResourceListProps) {
                             align="left"
                             className={classes.name}
                         >
-                            <Grid container={true} direction="row" alignItems="center">
-                                <Grid item={true}>
+                            <Grid
+                                container={true}
+                                direction="row"
+                                alignItems="center"
+                                wrap="nowrap"
+                            >
+                                <Grid item={true} zeroMinWidth={true}>
                                     <Typography noWrap={true}>
                                         {res.name}
                                     </Typography>

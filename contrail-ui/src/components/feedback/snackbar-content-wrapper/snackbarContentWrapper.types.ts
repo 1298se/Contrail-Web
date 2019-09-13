@@ -10,15 +10,9 @@ export const snackbarVariant = {
     info: InfoIcon,
 };
 
-export interface ISnackbarDisplay {
-    snackbarVariant: keyof typeof snackbarVariant;
-    snackbarMessage: string | null;
-    shouldDisplaySnackbar: boolean;
-}
-
 export interface ISnackbarOwnProps {
     className?: string;
-    message: string | null;
+    message: string | undefined;
     onClose?: () => void;
     variant: keyof typeof snackbarVariant;
 }
