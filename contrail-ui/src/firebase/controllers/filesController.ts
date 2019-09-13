@@ -123,9 +123,9 @@ export const restoreResourceFromTrash = (resourceIds: string[]): Promise<any> =>
         }).then((response) => {
             resolve(response.data.message);
         })
-        .catch((error) => {
-            reject(error.response.data.message);
-        });
+            .catch((error) => {
+                reject(error.response.data.message);
+            });
     });
 };
 
@@ -181,6 +181,9 @@ export const downloadMultipleResources = (resources: IResourceModel[]): Promise<
         }).catch((error) => {
             reject(error.response.data);
         });
+    });
+};
+
 export const shareResources = (resources: IResourceModel[], users: IUserModel[]): Promise<any> => {
     const collaboratorIds = users.map((user) => user.uid);
     return new Promise((resolve, reject) => {
