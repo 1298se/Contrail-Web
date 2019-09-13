@@ -6,7 +6,7 @@ import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
-import * as ROUTES from "../../../routes";
+import { Routes } from "../../../routes";
 import { IAppReduxState } from "../../../store/store.types";
 import styles from "../authStyles";
 import LoginForm from "../login-form/LoginForm";
@@ -20,13 +20,13 @@ class Auth extends Component<types.AuthProps, {}> {
 
         if (authUser && authToken && authUser.emailVerified) {
             return (
-                <Redirect to={ROUTES.MAIN} />
+                <Redirect to={Routes.MAIN} />
             );
         }
 
         const renderLoginForm = () => <LoginForm />;
         const renderRegisterForm = () => <RegisterForm />;
-        const redirectLogin = () => <Redirect to={ROUTES.LOGIN} />;
+        const redirectLogin = () => <Redirect to={Routes.LOGIN} />;
 
         return (
                 <Grid container={true} component="main" className={classes.root}>
@@ -39,9 +39,9 @@ class Auth extends Component<types.AuthProps, {}> {
                     </Grid>
                     <Grid item={true} xs={12} sm={7} md={5} className={classes.formContainer}>
                         <Switch>
-                            <Route path={ROUTES.LOGIN} exact={true} render={renderLoginForm} />
-                            <Route path={ROUTES.REGISTER} exact={true} render={renderRegisterForm} />
-                            <Route path={ROUTES.ROOT} exact={true} render={redirectLogin} />
+                            <Route path={Routes.LOGIN} exact={true} render={renderLoginForm} />
+                            <Route path={Routes.REGISTER} exact={true} render={renderRegisterForm} />
+                            <Route path={Routes.ROOT} exact={true} render={redirectLogin} />
                         </Switch>
                     </Grid>
                 </Grid>

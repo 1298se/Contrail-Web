@@ -6,7 +6,15 @@ admin.initializeApp({
     storageBucket: "contrail-fbase.appspot.com",
 });
 
-const firestore = admin.firestore;
-const auth = admin.auth();
-const bucket = admin.storage().bucket();
-module.exports = { auth, firestore, bucket }
+exports.getUserDocRef = (userId) => {
+    return admin.firestore().collection("users").doc(userId).collection("root").doc("resources");
+}
+
+exports.getResourceDocRef = (resourceId) => {
+    return admin.firestore().collection("documents").doc(resourceId);
+}
+
+exports.firestore = admin.firestore;
+exports.auth = admin.auth();
+exports.bucket = admin.storage().bucket();
+

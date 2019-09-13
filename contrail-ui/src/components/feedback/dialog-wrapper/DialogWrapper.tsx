@@ -14,7 +14,7 @@ import useStyles from "./dialogWrapperStyles";
  */
 function SimpleDialog(props: DialogWrapperProps) {
     const classes = useStyles();
-    const { contentText, title, isOpen, shouldDisplayLoading, actionPrimary, actionSecondary } = props;
+    const { contentText, title, isOpen, shouldDisplayLoading, actionPrimary, actionSecondary, actionTertiary } = props;
     const renderContentText = contentText ?
         (
         <DialogContentText className={classes.contentText}>
@@ -31,6 +31,7 @@ function SimpleDialog(props: DialogWrapperProps) {
             <DialogActions>
                 {actionPrimary}
                 {actionSecondary}
+                {actionTertiary}
             </DialogActions>
         </Dialog>
     );

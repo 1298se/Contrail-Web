@@ -8,6 +8,7 @@ export interface IDialogWrapperOwnProps {
     shouldDisplayLoading?: boolean;
     actionPrimary?: React.ReactNode;
     actionSecondary?: React.ReactNode;
+    actionTertiary?: React.ReactNode;
 }
 
 export type DialogWrapperProps = IDialogWrapperOwnProps;

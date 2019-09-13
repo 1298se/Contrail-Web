@@ -73,13 +73,22 @@ export function registerUser(displayName: string, email: string, password: strin
 
 export function addUserToDb(user: firebase.User): Promise<any> {
     return new Promise((resolve, reject) => {
-        dbRef.collection("users").doc(user.uid).collection("root").doc("resources").set({
+        const batch = dbRef.batch();
+        const userRef = dbRef.collection("users").doc(user.uid);
+        const resourceRef = dbRef.collection("users").doc(user.uid).collection("root").doc("resources");
+        batch.set(userRef, {
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+        });
+        batch.set(resourceRef, {
             root: [],
             favourites: [],
             trash: [],
             sharedTo: [],
             sharedBy: [],
-        })
+        });
+        return batch.commit()
         .then(() => {
             resolve();
         })

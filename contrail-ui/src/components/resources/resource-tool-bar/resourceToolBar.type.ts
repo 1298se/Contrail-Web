@@ -6,6 +6,7 @@ import styles from "./toolBarStyles";
 export interface IResourceToolBarState {
     anchorEl: HTMLElement | null;
     mobileMoreAnchorEl: HTMLElement | null;
+    displayUnshareTrashDialog: boolean;
 }
 
 export interface IResourceToolBarOwnProps extends WithStyles<typeof styles>,
@@ -18,4 +19,9 @@ export interface IResourceToolBarStateProps {
     userResources: IUserResources;
 }
 
-export type ResourceToolBarProps = IResourceToolBarOwnProps & IResourceToolBarStateProps;
+export interface IShareDialogDispatchProps {
+    setDialogOpen: (shouldDisplay: boolean) => void;
+    setSelected: (resources: IResourceModel[]) => void;
+}
+
+export type ResourceToolBarProps = IResourceToolBarOwnProps & IResourceToolBarStateProps & IShareDialogDispatchProps;
