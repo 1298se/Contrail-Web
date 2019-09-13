@@ -58,7 +58,6 @@ function withSnackbar<T extends types.ISnackbarInjectProps>(Component: React.Com
         }
 
         public render() {
-            console.log(this.queue.current);
             const currentSnackbarMessage =
                 this.state.currentMessage ? String(this.state.currentMessage.snackbarMessage) : undefined;
 
