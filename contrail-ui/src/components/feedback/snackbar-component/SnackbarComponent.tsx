@@ -7,7 +7,7 @@ import * as types from "./snackbarComponent.types";
 
 function withSnackbar<T extends types.ISnackbarInjectProps>(Component: React.ComponentType<T>) {
     return class extends React.Component<Subtract<T, types.ISnackbarInjectProps>> {
-        public queue: types.ISnackbarMessage[] = [];
+        public queue = React.createRef<types.ISnackbarMessage[]>();
 
         public state: types.IWithSnackbarState = {
             shouldDisplaySnackbar: false,
@@ -15,19 +15,21 @@ function withSnackbar<T extends types.ISnackbarInjectProps>(Component: React.Com
         };
 
         public processQueue = () => {
-            if (this.queue.length > 0) {
+            if (this.queue.current && this.queue.current.length > 0) {
                 this.setState({
-                    currentMessage: this.queue.shift(),
+                    currentMessage: this.queue.current.shift(),
                     shouldDisplaySnackbar: true,
                 });
             }
         }
 
         public setSnackbarDisplay = (variant: keyof typeof snackbarVariant, message: any) => {
-            this.queue.push({
-                snackbarVariant: variant,
-                snackbarMessage: message,
-            });
+            if (this.queue.current) {
+                this.queue.current.push({
+                    snackbarVariant: variant,
+                    snackbarMessage: message,
+                });
+            }
 
             if (this.state.shouldDisplaySnackbar) {
                 this.setState({
@@ -56,7 +58,7 @@ function withSnackbar<T extends types.ISnackbarInjectProps>(Component: React.Com
         }
 
         public render() {
-            console.log(this.queue, this.state);
+            console.log(this.queue.current);
             const currentSnackbarMessage =
                 this.state.currentMessage ? String(this.state.currentMessage.snackbarMessage) : undefined;
 
