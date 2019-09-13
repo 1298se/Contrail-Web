@@ -4,13 +4,53 @@ exports.INVALID_REQUEST_BODY = {
     message: "The request body is invalid."
 }
 
-// success statuses
-exports.SHARE_SUCCESS = {
-    code: "shareSuccess",
-    message: "File(s) have been successfully shared."
+exports.FAVOURITE_SUCCESSFUL = (resourceCount) => {
+    return {
+        code: "favouriteSuccess",
+        message: `Successfully favourited ${resourceCount} file(s).`,
+    }
 }
 
-exports.UNSHARE_SUCCESS = {
-    code: "unshareSuccess",
-    message: "File(s) have been successfully unshared."
+exports.UNFAVOURITE_SUCCESSFUL = (resourceCount) => {
+    return {
+        code: "unfavouriteSuccess",
+        message: `Successfully unfavourited ${resourceCount} file(s).`,
+    }
+}
+
+exports.TRASH_SUCCESSFUL = (resourceCount) => {
+    return {
+        code: "trashSuccess",
+        message: `Successfully trashed ${resourceCount} file(s).`,
+    }
+}
+
+exports.RESTORE_SUCCESSFUL = (resourceCount) => {
+    return {
+        code: "restoreSuccess",
+        message: `Successfully restored ${resourceCount} file(s).`,
+    }
+}
+
+
+exports.SHARE_SUCCESSFUL = (resourceCount, userCount) => {
+    return {
+        code: "shareSuccess",
+        message: `Successfully shared ${resourceCount} file(s) to ${userCount} users.`,
+    }
+}
+
+exports.UNSHARE_SUCCESSFUL = (resourceCount) => {
+    return {
+        code: "shareSuccess",
+        message: `Successfully unshared ${resourceCount} file(s).`,
+    }
+}
+
+// statuses
+exports.createCustomStatus = (code, message) => {
+    return {
+     code,
+     message,
+    }
 }

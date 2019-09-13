@@ -2,6 +2,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorIcon from "@material-ui/icons/Error";
 import InfoIcon from "@material-ui/icons/Info";
 import WarningIcon from "@material-ui/icons/Warning";
+import { SyntheticEvent } from "react";
 
 export const snackbarVariant = {
     success: CheckCircleIcon,
@@ -10,16 +11,9 @@ export const snackbarVariant = {
     info: InfoIcon,
 };
 
-export interface ISnackbarDisplay {
-    snackbarVariant: keyof typeof snackbarVariant;
-    snackbarMessage: string | null;
-    shouldDisplaySnackbar: boolean;
-}
-
 export interface ISnackbarOwnProps {
     className?: string;
-    message: string | null;
-    onClose?: () => void;
+    message: string | undefined;
     variant: keyof typeof snackbarVariant;
 }
 

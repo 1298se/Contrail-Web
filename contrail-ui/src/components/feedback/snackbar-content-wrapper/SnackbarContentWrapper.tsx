@@ -1,4 +1,3 @@
-import Button from "@material-ui/core/Button";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import React from "react";
 import * as types from "./snackbarContentWrapper.types";
@@ -9,20 +8,14 @@ import useStyles from "./snackbarContentWrapperStyles";
  */
 function SnackbarContentWrapper(props: types.SnackbarProps) {
     const classes = useStyles();
-    const { message, onClose, variant } = props;
+    const { message, variant } = props;
     const Icon = types.snackbarVariant[variant];
 
     const renderMessage = (
         <div className={classes.message}>
-        <Icon className={classes.icon} />
+            <Icon className={classes.icon} />
             {message}
         </div>
-    );
-
-    const renderActionClose = (
-        <Button key="close" color="secondary" onClick={onClose} size="small">
-            Dismiss
-        </Button>
     );
 
     return (
@@ -30,7 +23,6 @@ function SnackbarContentWrapper(props: types.SnackbarProps) {
             <SnackbarContent
                 className={classes[variant]}
                 message={renderMessage}
-                action={[renderActionClose]}
             />
         </div>
     );

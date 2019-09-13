@@ -25,6 +25,7 @@ import Downshift from "downshift";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
+import * as filesController from "../../../firebase/controllers/filesController";
 import { searchUsers } from "../../../firebase/controllers/searchController";
 import * as shareController from "../../../firebase/controllers/shareController";
 import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
@@ -44,14 +45,14 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
             suggestions: [] as IUserModel[],
             selected: [] as IUserModel[],
         },
-        sharedResources: [] as types.IShareModel[],
+        sharedResources: [] as types.IShareState[],
     };
 
     public updateCollaborators = () => {
         return shareController.getCollaborators(this.props.selectedResources)
             .then((res) => {
-                res = res.filter((resource: types.IShareModel) => resource.collaborators.length > 0);
-                res.map((resource: types.IShareModel) => {
+                res = res.filter((resource: types.IShareState) => resource.collaborators.length > 0);
+                res.map((resource: types.IShareState) => {
                     resource.open = false;
                     resource.checkedCollaborators = [];
                 });
@@ -59,6 +60,9 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                     ...this.state,
                     sharedResources: res.length > 0 ? res : [],
                 });
+            })
+            .catch((error) => {
+                this.props.setSnackbarDisplay("error", error);
             });
     }
 
@@ -93,7 +97,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
 
     public handleShare = () => {
         const selectedUsers = this.state.search.selected;
-        return shareController.shareResources(this.props.selectedResources, selectedUsers)
+        return filesController.shareResources(this.props.selectedResources, selectedUsers)
             .then((res) => {
                 this.updateCollaborators();
                 this.setState({
@@ -105,7 +109,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                         selected: [] as IUserModel[],
                     },
                 });
-                this.props.setSnackbarDisplay("success", res.message);
+                this.props.setSnackbarDisplay("success", res);
             })
             .catch((err) => {
                 this.props.setSnackbarDisplay("error", err);
@@ -139,10 +143,10 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 }
             });
         }
-        return shareController.unshareResources(unshareMap)
+        return filesController.unshareResources(unshareMap)
             .then((res) => {
                 this.updateCollaborators();
-                this.props.setSnackbarDisplay("success", res.message);
+                this.props.setSnackbarDisplay("success", res);
             })
             .catch((err) => {
                 this.props.setSnackbarDisplay("error", err);
@@ -186,7 +190,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         });
     }
 
-    public handleDelete = (item: IUserModel) => () => {
+    public handleRemoveInvite = (item: IUserModel) => () => {
         const selectedItems = [...this.state.search.selected];
         selectedItems.splice(selectedItems.indexOf(item), 1);
         this.setState({
@@ -213,7 +217,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         this.props.setDialogOpen(false);
     }
 
-    public handleOpen = (i: number) => {
+    public handleOpenShareList = (i: number) => {
         this.setState((prevState) => {
             prevState.sharedResources[i].open = !prevState.sharedResources[i].open;
             return {
@@ -324,7 +328,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                                             color="primary"
                                             key={index}
                                             label={item.email}
-                                            onDelete={this.handleDelete(item)}
+                                            onDelete={this.handleRemoveInvite(item)}
                                         />
                                     )),
                                     onBlur,
@@ -350,9 +354,9 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         );
 
         const renderCollaborators = (
-            shareResources && shareResources.map((resource: types.IShareModel, i) => {
+            shareResources && shareResources.map((resource: types.IShareState, i) => {
                 const handleOpenClick = (event: React.MouseEvent<unknown>) => {
-                    this.handleOpen(i);
+                    this.handleOpenShareList(i);
                 };
                 const renderShares = (
                     resource.collaborators.map((collab, index) => {

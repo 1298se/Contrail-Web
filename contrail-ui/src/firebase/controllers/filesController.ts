@@ -3,6 +3,8 @@ import axios from "axios";
 import * as firebase from "firebase/app";
 import store from "../../store/store";
 import { IResourceModel } from "../../types/resource.types";
+import { IUnshareModel } from "../../types/shares.types";
+import { IUserModel } from "../../types/user.types";
 import { dbRef, storageRef } from "../firebase";
 
 /**
@@ -30,7 +32,7 @@ export const uploadFiletoStorage = (file: File, userID: string): firebase.storag
 export const writeFileToDB =
     (upload: firebase.storage.UploadTask, user: firebase.User): Promise<any> => {
         return new Promise((resolve, reject) => {
-            const { name, size, timeCreated, generation, fullPath, updated } = upload.snapshot.metadata;
+            const { name, size, timeCreated, generation, updated } = upload.snapshot.metadata;
             const { uid, displayName, email } = user;
 
             const batch = dbRef.batch();
@@ -38,11 +40,10 @@ export const writeFileToDB =
             batch.set(documentsRef, {
                 id: generation,
                 name,
-                path: fullPath,
                 permissions: {
                     [uid]: "owner",
                 },
-                createdBy: displayName,
+                createdBy: uid,
                 size,
                 timeCreated,
                 updated,
@@ -80,9 +81,9 @@ export const addResourcesToFavourites = (resourceIds: string[]): Promise<any> =>
             type: "createFavourites",
             resourceIds,
         }).then((response) => {
-            resolve(response.data);
+            resolve(response.data.message);
         }).catch((error) => {
-            reject(error.response.data);
+            reject(error.response.data.message);
         });
     });
 };
@@ -93,22 +94,23 @@ export const removeResourcesFromFavourites = (resourceIds: string[]): Promise<an
             type: "removeFavourites",
             resourceIds,
         }).then((response) => {
-            resolve(response.data);
+            resolve(response.data.message);
         }).catch((error) => {
-            reject(error.response.data);
+            reject(error.response.data.message);
         });
     });
 };
 
-export const addResourcesToTrash = (resourceIds: string[]): Promise<any> => {
+export const addResourcesToTrash = (resources: IResourceModel[], shouldUnshare: boolean): Promise<any> => {
     return new Promise((resolve, reject) => {
         axios.put("/api/resources", {
             type: "addTrash",
-            resourceIds,
+            resources,
+            shouldUnshare,
         }).then((response) => {
-            resolve(response.data);
+            resolve(response.data.message);
         }).catch((error) => {
-            reject(error.response.data);
+            reject(error.response.data.message);
         });
     });
 };
@@ -119,10 +121,10 @@ export const restoreResourceFromTrash = (resourceIds: string[]): Promise<any> =>
             type: "restoreTrash",
             resourceIds,
         }).then((response) => {
-            resolve(response.data);
+            resolve(response.data.message);
         })
         .catch((error) => {
-            reject(error.response.data);
+            reject(error.response.data.message);
         });
     });
 };
@@ -139,4 +141,36 @@ export const mapIdsToResources = (resourceIds: string[]): IResourceModel[] => {
     const mappedResources = resourceIds.map((generation) =>
         rootResources.find((res) => res.generation === generation));
     return mappedResources.filter((res): res is IResourceModel => !!res);
+};
+
+export const shareResources = (resources: IResourceModel[], users: IUserModel[]): Promise<any> => {
+    const collaboratorIds = users.map((user) => user.uid);
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "share",
+            resources,
+            collaboratorIds,
+        })
+            .then((response) => {
+                resolve(response.data.message);
+            })
+            .catch((error) => {
+                reject(error.response.data.message);
+            });
+    });
+};
+
+export const unshareResources = (shares: IUnshareModel[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "unshare",
+            shares,
+        })
+            .then((response) => {
+                resolve(response.data.message);
+            })
+            .catch((error) => {
+                reject(error.response.data.message);
+            });
+    });
 };

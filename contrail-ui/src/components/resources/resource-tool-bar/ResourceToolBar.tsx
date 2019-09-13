@@ -18,9 +18,13 @@ import { ThunkDispatch } from "redux-thunk";
 import * as filesController from "../../../firebase/controllers/filesController";
 import { setAppShareDialogOpen } from "../../../store/actions/appUiStateActions";
 import { IAppSetShareDialogOpenAction } from "../../../store/actions/appUiStateActions.types";
+import { setSelectedResources } from "../../../store/actions/resourceActions";
+import { IResourceSetSelected } from "../../../store/actions/resourceActions.types";
 import { IAppReduxState } from "../../../store/store.types";
+import { IResourceModel } from "../../../types/resource.types";
 import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import { ResourcePages } from "../resourceFrame.types";
+import TrashDialog from "../trash-dialog/TrashDialog";
 import * as types from "./resourceToolBar.type";
 import styles from "./toolBarStyles";
 
@@ -28,6 +32,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
     public state = {
         anchorEl: null,
         mobileMoreAnchorEl: null,
+        displayUnshareTrashDialog: false,
     };
 
     public handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -42,23 +47,26 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         });
     }
 
-    public handleFavouriteClick = () => {
+    public handleFavouriteClick = async () => {
         const { selectedResources, userResources } = this.props;
         this.handleMobileMenuClose();
 
         const isAllFavourited = !(selectedResources.some((selectRes) =>
             !userResources.favourites.includes(selectRes.generation)));
-        if (isAllFavourited) {
-            filesController.removeResourcesFromFavourites(selectedResources.map((res) => res.generation));
-        } else {
-            filesController.addResourcesToFavourites(selectedResources.map((res) => res.generation))
-                .then(() => {
-                    this.props.setSnackbarDisplay("success", "File(s) have been successfully favourited.");
-                })
-                .catch((error) => {
-                    this.props.setSnackbarDisplay("error", error);
-                });
+        let response;
+        try {
+            if (isAllFavourited) {
+                response =
+                    await filesController.removeResourcesFromFavourites(selectedResources.map((res) => res.generation));
+            } else {
+                response =
+                    await filesController.addResourcesToFavourites(selectedResources.map((res) => res.generation));
+            }
+            this.props.setSnackbarDisplay("success", response);
+        } catch (error) {
+            this.props.setSnackbarDisplay("error", error);
         }
+
     }
 
     public handleShareClick = () => {
@@ -66,22 +74,47 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
     }
 
     public handleTrashClick = () => {
-        const { selectedResources } = this.props;
+        const { selectedResources, userResources } = this.props;
         this.handleMobileMenuClose();
 
-        filesController.addResourcesToTrash(selectedResources.map((res) => res.generation))
-            .then(() => {
-                this.props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
-            }).catch((error) => {
-                this.props.setSnackbarDisplay("error", error);
+        const isSharedResource = selectedResources.some((res) => userResources.sharedBy.includes(res.generation));
+
+        if (isSharedResource) {
+            this.setState({
+                ...this.state,
+                displayUnshareTrashDialog: true,
             });
+        } else {
+            filesController.addResourcesToTrash(selectedResources, false)
+                .then((response) => {
+                    this.props.setSnackbarDisplay("success", response);
+                    this.props.setSelected([]);
+                }).catch((error) => {
+                    this.props.setSnackbarDisplay("error", error);
+                });
+        }
+    }
+
+    public handleTrashDialogClose = () => {
+        this.setState({
+            ...this.state,
+            displayUnshareTrashDialog: false,
+        });
+        this.props.setSelected([]);
     }
 
     public handleRestoreClick = () => {
         const { selectedResources } = this.props;
         this.handleMobileMenuClose();
 
-        filesController.restoreResourceFromTrash(selectedResources.map((res) => res.generation));
+        filesController.restoreResourceFromTrash(selectedResources.map((res) => res.generation))
+            .then((response) => {
+                this.props.setSnackbarDisplay("success", response);
+                this.props.setSelected([]);
+            })
+            .catch((error) => {
+                this.props.setSnackbarDisplay("error", error);
+            });
     }
 
     public render() {
@@ -179,6 +212,12 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
 
         return (
             <div className={classes.grow}>
+                <TrashDialog
+                    shouldDisplayDialog={this.state.displayUnshareTrashDialog}
+                    handleDialogClose={this.handleTrashDialogClose}
+                    setSnackbarDisplay={this.props.setSnackbarDisplay}
+                    selectedResources={this.props.selectedResources}
+                />
                 <AppBar position="static" color="secondary">
                     <Toolbar>
                         <Typography className={classes.title} variant="h6" noWrap={true}>
@@ -211,10 +250,11 @@ const mapStateToProps = (state: IAppReduxState): types.IResourceToolBarStateProp
     };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetShareDialogOpenAction>):
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, IAppSetShareDialogOpenAction | IResourceSetSelected>):
     types.IShareDialogDispatchProps => {
     return {
         setDialogOpen: (shouldDisplay: boolean) => dispatch(setAppShareDialogOpen(shouldDisplay)),
+        setSelected: (resources: IResourceModel[]) => dispatch(setSelectedResources(resources)),
     };
 };
 

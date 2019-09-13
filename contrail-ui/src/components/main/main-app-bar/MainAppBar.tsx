@@ -11,6 +11,7 @@ import { withStyles } from "@material-ui/styles";
 import clsx from "clsx";
 import React, { Component } from "react";
 import * as auth from "../../../firebase/controllers/authController";
+import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "./appBarStyles";
 import * as types from "./mainAppBar.type";
@@ -18,8 +19,6 @@ import * as types from "./mainAppBar.type";
 class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState> {
     public state = {
         anchorEl: null,
-        logoutRequestError: null,
-        shouldDisplayError: false,
     };
 
     public handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -38,28 +37,8 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
         this.handleMenuClose();
         auth.logoutUser()
             .catch((error) => {
-                this.setState({
-                    logoutRequestError: error,
-                    shouldDisplayError: true,
-                });
+                this.props.setSnackbarDisplay("error", error);
             });
-    }
-
-    // This function is to handle a bug where the error message of the snackbar
-    // changes during exit transition. This function handles closing the snackbar
-    public handleErrorClose = () => {
-        this.setState({
-            shouldDisplayError: false,
-        });
-    }
-
-    // This function is to handle a bug where the error message of the snackbar
-    // changes during exit transition. This function resets the logoutRequestError to null
-    // after the transition has been completed.
-    public clearLogoutRequestError = () => {
-        this.setState({
-            logoutRequestError: null,
-        });
     }
 
     public render() {
@@ -76,25 +55,12 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
                 open={Boolean(this.state.anchorEl)}
                 onClose={this.handleMenuClose}
             >
-                <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
                 <MenuItem onClick={this.handleLogoutClick}>Logout</MenuItem>
             </Menu>
         );
 
         return (
             <React.Fragment>
-                <Snackbar
-                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={this.state.shouldDisplayError}
-                    onClose={this.handleErrorClose}
-                    onExited={this.clearLogoutRequestError}
-                >
-                    <SnackbarContentWrapper
-                        message={String(this.state.logoutRequestError)}
-                        variant="error"
-                        onClose={this.handleErrorClose}
-                    />
-                </Snackbar>
                 <AppBar
                     position="fixed"
                     className={clsx(classes.appBar, {[classes.appBarShift]: open})}
@@ -122,4 +88,4 @@ class MainAppBar extends Component<types.MainAppBarProps, types.IMainAppBarState
     }
 }
 
-export default withStyles(styles)(MainAppBar);
+export default withSnackbar(withStyles(styles)(MainAppBar));

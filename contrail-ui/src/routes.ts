@@ -1,8 +1,10 @@
-export const ROOT = "/";
-export const LOGIN = "/login";
-export const REGISTER = "/register";
-export const MAIN = "/app";
-export const FILES = "/app/files";
-export const FAVOURITES = "/app/favourites";
-export const SHARED = "/app/shared";
-export const TRASH = "/app/trash";
+export enum Routes {
+    ROOT = "/",
+    LOGIN = "/login",
+    REGISTER = "/register",
+    MAIN = "/app",
+    FILES = "/app/files",
+    FAVOURITES = "/app/favourites",
+    SHARED = "/app/shared",
+    TRASH = "/app/trash",
+}
