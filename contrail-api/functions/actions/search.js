@@ -1,6 +1,6 @@
 const { auth } = require('../utils/firebaseUtils');
 
-listAllUsers = () => {
+const listAllUsers = () => {
     return new Promise((resolve, reject) => {
         const allUsers = [];
         return auth.listUsers()

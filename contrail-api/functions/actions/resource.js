@@ -82,7 +82,7 @@ exports.restoreTrash = (req, res) => {
     });
 }
 
-shareResource = (resource, collaboratorIds, ownerId) => {
+const shareResource = (resource, collaboratorIds, ownerId) => {
     const batch = firestore().batch();
     const docRef = getResourceDocRef(resource.generation)
     const ownerRef = getUserDocRef(ownerId);
@@ -121,7 +121,7 @@ exports.share = (req, res) => {
         });
 }
 
-unshareResource = (resource, collaboratorIds, ownerId) => {
+const unshareResource = (resource, collaboratorIds, ownerId) => {
     const batch = firestore().batch();
     const docRef = getResourceDocRef(resource.generation);
     const ownerRef = getUserDocRef(ownerId);
@@ -157,7 +157,7 @@ unshareResource = (resource, collaboratorIds, ownerId) => {
         });
 }
 
-unshareAllFromResource = (resource, ownerId, includeOwner) => {
+const unshareAllFromResource = (resource, ownerId, includeOwner) => {
     const docRef = getResourceDocRef(resource.generation);
 
     return docRef.get()
@@ -178,6 +178,11 @@ unshareAllFromResource = (resource, ownerId, includeOwner) => {
                     batch.update(docRef, {
                         [`permissions.${userId}`]: firestore.FieldValue.delete(),
                     });
+                });
+
+                const ownerRef = getUserDocRef(ownerId);
+                batch.update(ownerRef, {
+                    sharedBy: firestore.FieldValue.arrayRemove(resource.generation),
                 });
                 return batch.commit();
             } else {
@@ -207,7 +212,7 @@ exports.unshare = (req, res) => {
         });
 }
 
-getCollaboratorsForResource = (userId, resourceId) => {
+const getCollaboratorsForResource = (userId, resourceId) => {
     const docRef = getResourceDocRef(resourceId);
 
     return docRef.get()

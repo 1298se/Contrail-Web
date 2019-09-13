@@ -14,20 +14,20 @@ const TrashDialog = (props: TrashDialogProps) => {
     };
 
     const handleUnshareClick = () => {
+        props.handleDialogClose();
         return addResourcesToTrash(props.selectedResources, true)
             .then(() => {
                 props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
-                props.handleDialogClose();
             }).catch((error) => {
                 props.setSnackbarDisplay("error", error);
             });
     };
 
     const handleTrashClick = () => {
+        props.handleDialogClose();
         return addResourcesToTrash(props.selectedResources, false)
             .then(() => {
                 props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
-                props.handleDialogClose();
             }).catch((error) => {
                 props.setSnackbarDisplay("error", error);
             });
