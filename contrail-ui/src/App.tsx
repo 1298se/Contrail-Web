@@ -8,7 +8,7 @@ import Auth from "./components/auth/auth-page/Auth";
 import AuthorizedRoute from "./components/auth/authorized-route/AuthorizedRoute";
 import InitLoadingPage from "./components/feedback/init-loading-page/InitLoadingPage";
 import MainFrame from "./components/main/MainFrame";
-import * as ROUTES from "./routes";
+import { Routes } from "./routes";
 import { setAuthListener } from "./store/actions/authActions";
 import { IAuthFetchUserAction } from "./store/actions/authActions.types";
 import { setNetworkState } from "./store/actions/networkActions";
@@ -43,10 +43,10 @@ class App extends Component<AppProps, {}> {
         }
         return (
             <BrowserRouter>
-                <Route path={ROUTES.ROOT} exact={true} component={Auth} />
-                <Route path={ROUTES.LOGIN} exact={true} component={Auth} />
-                <Route path={ROUTES.REGISTER} exact={true} component={Auth} />
-                <AuthorizedRoute path={ROUTES.MAIN} component={MainFrame} />
+                <Route path={Routes.ROOT} exact={true} component={Auth} />
+                <Route path={Routes.LOGIN} exact={true} component={Auth} />
+                <Route path={Routes.REGISTER} exact={true} component={Auth} />
+                <AuthorizedRoute path={Routes.MAIN} component={MainFrame} />
             </BrowserRouter>
         );
     }

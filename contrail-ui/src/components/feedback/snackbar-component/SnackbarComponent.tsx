@@ -1,5 +1,5 @@
 import Snackbar from "@material-ui/core/Snackbar";
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import { Subtract } from "utility-types";
 import SnackbarContentWrapper from "../snackbar-content-wrapper/SnackbarContentWrapper";
 import { snackbarVariant } from "../snackbar-content-wrapper/snackbarContentWrapper.types";
@@ -39,7 +39,11 @@ function withSnackbar<T extends types.ISnackbarInjectProps>(Component: React.Com
         }
 
         // For closing an opened Snackbar. Must be executed first before clearing the snackbar message.
-        public handleSnackbarClose = () => {
+        public handleSnackbarClose = (event: SyntheticEvent | MouseEvent, reason?: string) => {
+            if (reason === "clickaway") {
+                return;
+            }
+
             this.setState({
                 ...this.state,
                 shouldDisplaySnackbar: false,
@@ -52,6 +56,7 @@ function withSnackbar<T extends types.ISnackbarInjectProps>(Component: React.Com
         }
 
         public render() {
+            console.log(this.queue, this.state);
             const currentSnackbarMessage =
                 this.state.currentMessage ? String(this.state.currentMessage.snackbarMessage) : undefined;
 
@@ -62,11 +67,11 @@ function withSnackbar<T extends types.ISnackbarInjectProps>(Component: React.Com
                         open={this.state.shouldDisplaySnackbar}
                         onClose={this.handleSnackbarClose}
                         onExited={this.handleExited}
+                        autoHideDuration={5000}
                     >
                         <SnackbarContentWrapper
                             message={currentSnackbarMessage}
                             variant={this.state.currentMessage ? this.state.currentMessage.snackbarVariant : "info"}
-                            onClose={this.handleSnackbarClose}
                         />
                     </Snackbar>
                     <Component {...this.props as T} setSnackbarDisplay={this.setSnackbarDisplay} />
