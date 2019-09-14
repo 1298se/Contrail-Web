@@ -16,7 +16,8 @@ app.put("/resources", authMiddleware, (req, res) => {
     if (type === "unshare") return resourceActions.unshare(req, res);
     if (type === "addTrash") return resourceActions.addTrash(req, res);
     if (type === "restoreTrash") return resourceActions.restoreTrash(req, res);
-    return res.status(500).send(httpStatus.INVALID_REQUEST_BODY);
+    if (type === "delete") return resourceActions.deletePermanent(req, res);
+    return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
 });
 
 app.get("/resources/collaborators", authMiddleware, resourceActions.getCollaborators);

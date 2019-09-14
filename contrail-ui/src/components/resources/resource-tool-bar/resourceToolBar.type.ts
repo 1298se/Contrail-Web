@@ -6,7 +6,8 @@ import styles from "./toolBarStyles";
 export interface IResourceToolBarState {
     anchorEl: HTMLElement | null;
     mobileMoreAnchorEl: HTMLElement | null;
-    displayUnshareTrashDialog: boolean;
+    shouldDisplayUnshareTrashDialog: boolean;
+    shouldDisplayPermanentDeleteDialog: boolean;
 }
 
 export interface IResourceToolBarOwnProps extends WithStyles<typeof styles>,

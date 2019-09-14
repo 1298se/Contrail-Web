@@ -42,11 +42,17 @@ exports.RESTORE_SUCCESSFUL = (resourceCount) => {
     }
 }
 
+exports.DELETE_SUCCESSFUL = (resourceCount) => {
+    return {
+        code: "deleteSuccess",
+        message: `Successfully deleted ${resourceCount} file(s).`,
+    }
+}
 
 exports.SHARE_SUCCESSFUL = (resourceCount, userCount) => {
     return {
         code: "shareSuccess",
-        message: `Successfully shared ${resourceCount} file(s) to ${userCount} users.`,
+        message: `Successfully shared ${resourceCount} file(s) to ${userCount} user(s).`,
     }
 }
 

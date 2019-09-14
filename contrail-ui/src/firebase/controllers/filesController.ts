@@ -261,6 +261,23 @@ export const unshareResources = (shares: IUnshareModel[]): Promise<any> => {
     });
 };
 
+export const permanentDeleteResource = (resources: IResourceModel[]) => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "delete",
+            resources,
+        }).then((response) => {
+            resolve(response.data.message);
+        }).catch((error) => {
+            if (error.response && error.response.data && error.response.data.message) {
+                reject(error.response.data.message);
+            } else {
+                reject(HttpResponse.ERROR_GENERIC);
+            }
+        });
+    });
+};
+
 export const filterTrashResources = (resourceIds: string[]): string[] => {
     const trashResources = store.getState().resourceState.userResources.trash;
 

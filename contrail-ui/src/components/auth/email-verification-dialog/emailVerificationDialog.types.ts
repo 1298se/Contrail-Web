@@ -1,8 +1,8 @@
+import { ISnackbarInjectProps } from "../../feedback/snackbar-component/snackbarComponent.types";
 import { snackbarVariant } from "../../feedback/snackbar-content-wrapper/snackbarContentWrapper.types";
 
-export interface IEmailVerificationDialogOwnProps {
+export interface IEmailVerificationDialogOwnProps extends ISnackbarInjectProps {
     shouldDisplayDialog: boolean;
-    setSnackbarDisplay: (variant: keyof typeof snackbarVariant, message: any) => void;
     handleDialogClose: () => void;
 }
 
