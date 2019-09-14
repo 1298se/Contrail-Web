@@ -1,9 +1,9 @@
-const { firestore, getUserDocRef, getResourceDocRef } = require('../utils/firebaseUtils');
+const { firestore, bucket, getUserDocRef, getResourceDocRef } = require('../utils/firebaseUtils');
 const { getUserInfo } = require('./user');
 const httpStatus = require('../../http/httpStatus');
 const fs = require("fs");
-const path = require("path");
 const archiver = require("archiver");
+const path = require("path");
 
 exports.createFavourites = (req, res) => {
     const userId = req.uid;
@@ -53,9 +53,9 @@ exports.addTrash = (req, res) => {
     if (shouldUnshare) {
         const unsharePromiseList = resources.map((resource) => unshareAllFromResource(resource, userId, false));
         Promise.all(unsharePromiseList)
-        .catch((error) => {
-            return res.status(500).send(error);
-        });
+            .catch((error) => {
+                return res.status(500).send(error);
+            });
     }
     const resourceIds = resources.map((resource) => resource.generation);
     return ref.update({
@@ -189,7 +189,7 @@ const unshareAllFromResource = (resource, ownerId, includeOwner) => {
                 });
                 return batch.commit();
             } else {
-                return reject(new Error("document not found"));
+                return reject(httpStatus.DOCUMENT_NOT_EXIST);
             }
         })
         .catch((error) => {
@@ -231,7 +231,7 @@ const getCollaboratorsForResource = (userId, resourceId) => {
                     collaborators,
                 };
             } else {
-                return reject(new Error("Document does not exist"));
+                return reject(httpStatus.DOCUMENT_NOT_EXIST);
             }
         })
         .catch((error) => {
@@ -254,9 +254,21 @@ exports.getCollaborators = async (req, res) => {
             return res.status(200).send(values);
         })
         .catch((error) => {
-            console.log(error);
             return res.status(500).send(error);
         });
+}
+
+checkUserPermissionsForResource = async (userId, resourceId) => {
+    const doc = await getResourceDocRef(resourceId).get();
+    if (doc.exists) {
+        if (Object.keys(doc.data().permissions).includes(userId)) {
+            return Promise.resolve(doc.data());
+        } else {
+            return Promise.reject(httpStatus.PERMISSION_DENIED);
+        }
+    } else {
+        return Promise.reject(httpStatus.DOCUMENT_NOT_EXIST);
+    }
 }
 
 exports.downloadResource = async (req, res) => {
@@ -264,61 +276,92 @@ exports.downloadResource = async (req, res) => {
     const resourceId = req.params.resourceId;
 
     if (!resourceId || !userId) {
-        const doc = await firestore().collection("documents").doc(resourceId).get();
-        if (doc.exists) {
-            if (Object.keys(doc.data().permissions).includes(userId)) {
-                const fileOptions = {
-                    prefix: `${doc.data().owner}/${doc.data().name}`
-                };
-                bucket.getFiles(fileOptions, (error, files) => {
-                    files[0].download((error, contents) => {
-                        res.setHeader('Content-Disposition', 'attachment; filename=' + doc.data().name);
-                        res.end(contents, "binary");
-                    });
-                });
-            }
-        } else {
-            res.status(400).send();
-        }
-    } else {
-        res.status(500).send();
+        return res.status(400).send(httpStatus.INVALID_REQUEST_BODY);
     }
+
+    return checkUserPermissionsForResource(userId, resourceId)
+        .then((docData) => {
+            const fileOptions = {
+                prefix: `${docData.owner}/${docData.name}`,
+            };
+
+            return bucket.getFiles(fileOptions, (error, files) => {
+                files[0].download((error, contents) => {
+                    res.setHeader('Content-Disposition', 'attachment; filename=' + docData.name);
+                    res.end(contents, "binary");
+                });
+            });
+        }).catch((error) => {
+            if (error.code === httpStatus.PERMISSION_DENIED.code) {
+                return res.status(401).send(error);
+            } else {
+                return res.status(500).send(error);
+            }
+        });
 }
 
-exports.downloadResourceZip = async (req, res) => {
+
+exports.downloadResourceZip = (req, res) => {
     const userId = req.uid;
     const resourceIds = req.body.resourceIds;
 
-    console.log(resourceIds);
+    const time = new Date().getTime();
 
+    const zipFilePath = path.join(__dirname, "..", "zip", `contrail-${userId}${time}.zip`);
+    console.log(zipFilePath);
+
+    let counter = 0;
     const archive = archiver('zip', {
         zlib: { level: 9 }
     });
 
-    const output = fs.createWriteStream(`${__dirname}/example.zip`);
+    const output = fs.createWriteStream(zipFilePath);
     output.on('close', () => {
-        res.download(`${__dirname}/example.zip`);
+        return res.download(zipFilePath, ((error) => {
+            if (error) {
+                return res.status(500).send(error);
+            }
+
+            return fs.unlinkSync(zipFilePath);
+        }));
     });
 
-    resourceIds.forEach((resourceId) => {
-        const doc = firestore().collection("documents").doc(resourceId).get();
-        if (doc.exists) {
-            console.log("doc exists");
-            if (Object.keys(doc.data().permissions).includes(userId)) {
+    archive.pipe(output);
+
+    const permissionCheckList = resourceIds.map((resourceId) => checkUserPermissionsForResource(userId, resourceId));
+    Promise.all(permissionCheckList)
+        .then((docDataList) => {
+            return docDataList.forEach((docData) => {
                 const fileOptions = {
-                    prefix: `${userId}/${doc.data().name}`
+                    prefix: `${docData.owner}/${docData.name}`
                 };
 
-                bucket.getFiles(fileOptions, (error, files) => {
-                    files[0].download((error, contents) => {
-                        archive.append(contents, { name: `${doc.data().name}` })
+                return bucket.getFiles(fileOptions, (error, files) => {
+                    if (error) {
+                        return res.status(500).send(error);
+                    }
+
+                    // eslint-disable-next-line consistent-return
+                    return files[0].download((error, contents) => {
+                        if (error) {
+                            return res.status(500).send(error);
+                        }
+                        archive.append(contents, { name: `${docData.name}` });
+                        counter++;
+
+                        if (counter === resourceIds.length) {
+                            return archive.finalize();
+                        }
                     })
-                })
+                });
+            });
+        })
+        .catch((error) => {
+            fs.unlinkSync(zipFilePath);
+            if (error.code === httpStatus.PERMISSION_DENIED.code) {
+                return res.status(401).send(error);
+            } else {
+                return res.status(500).send(error);
             }
-        }
-
-        console.log("doc does not exist");
-    });
-
-    archive.finalize();
+        });
 }

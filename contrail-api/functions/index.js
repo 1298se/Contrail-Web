@@ -20,8 +20,8 @@ app.put("/resources", authMiddleware, (req, res) => {
 });
 
 app.get("/resources/collaborators", authMiddleware, resourceActions.getCollaborators);
-app.get("/resources/:resourceId/contents", authMiddleware, resourceController.downloadResource);
-app.post("/zip", authMiddleware, resourceController.downloadResourceZip);
+app.get("/resources/:resourceId/contents", authMiddleware, resourceActions.downloadResource);
+app.post("/zip", authMiddleware, resourceActions.downloadResourceZip);
 
 app.get("/search", authMiddleware, searchActions.searchUsers);
 

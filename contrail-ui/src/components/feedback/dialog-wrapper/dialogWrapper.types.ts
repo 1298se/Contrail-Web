@@ -1,6 +1,3 @@
-import { WithStyles } from "@material-ui/core";
-import styles from "./dialogWrapperStyles";
-
 export interface IDialogWrapperOwnProps {
     title: string | null;
     isOpen: boolean;

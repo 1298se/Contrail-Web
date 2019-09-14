@@ -4,6 +4,16 @@ exports.INVALID_REQUEST_BODY = {
     message: "The request body is invalid."
 }
 
+exports.DOCUMENT_NOT_EXIST = {
+    code: "documentNotExist",
+    message: "The data document does not exist."
+}
+
+exports.PERMISSION_DENIED = {
+    code: "permissionDenied",
+    message: "User does not have permission to access this resource."
+}
+
 exports.FAVOURITE_SUCCESSFUL = (resourceCount) => {
     return {
         code: "favouriteSuccess",

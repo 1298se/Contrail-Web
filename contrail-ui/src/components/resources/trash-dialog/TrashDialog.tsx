@@ -6,8 +6,8 @@ import { TrashDialogProps } from "./trashDialog.types";
 
 const TrashDialog = (props: TrashDialogProps) => {
 
-    const unshareMessage = "You have shares associated with selected file(s).\
-                        Do you want to unshare before you trash?";
+    const unshareMessage = "Your selected file(s) contain shares to other users.\
+                        Do you want to unshare before removing them?";
 
     const handleCancelClick = () => {
         props.handleDialogClose();
@@ -39,7 +39,7 @@ const TrashDialog = (props: TrashDialogProps) => {
                 onClick={handleUnshareClick}
                 color="primary"
             >
-                Unshare and Trash
+                Unshare and Remove
             </Button>
         );
 
@@ -49,7 +49,7 @@ const TrashDialog = (props: TrashDialogProps) => {
                 onClick={handleTrashClick}
                 color="primary"
             >
-                Trash only
+                Remove
             </Button>
         );
 
@@ -64,7 +64,7 @@ const TrashDialog = (props: TrashDialogProps) => {
 
     return (
         <DialogWrapper
-            title={"Trash"}
+            title={"File(s) contain shares to other users."}
             contentText={unshareMessage}
             isOpen={props.shouldDisplayDialog}
             actionPrimary={dismissAction}
