@@ -2,7 +2,8 @@ const admin = require('firebase-admin');
 const serviceKey = require("../config/serviceKey.json");
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceKey)
+    credential: admin.credential.cert(serviceKey),
+    storageBucket: "contrail-fbase.appspot.com",
 });
 
 exports.getUserDocRef = (userId) => {
@@ -15,3 +16,5 @@ exports.getResourceDocRef = (resourceId) => {
 
 exports.firestore = admin.firestore;
 exports.auth = admin.auth();
+exports.bucket = admin.storage().bucket();
+

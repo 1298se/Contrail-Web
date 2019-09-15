@@ -1,10 +1,12 @@
 
 import axios from "axios";
 import * as firebase from "firebase/app";
+import { HttpResponse } from "../../http/response";
 import store from "../../store/store";
 import { IResourceModel } from "../../types/resource.types";
 import { IUnshareModel } from "../../types/shares.types";
 import { IUserModel } from "../../types/user.types";
+import fileReader from "../../utils/fileReader";
 import { dbRef, storageRef } from "../firebase";
 
 /**
@@ -43,7 +45,7 @@ export const writeFileToDB =
                 permissions: {
                     [uid]: "owner",
                 },
-                createdBy: uid,
+                owner: uid,
                 size,
                 timeCreated,
                 updated,
@@ -83,7 +85,11 @@ export const addResourcesToFavourites = (resourceIds: string[]): Promise<any> =>
         }).then((response) => {
             resolve(response.data.message);
         }).catch((error) => {
-            reject(error.response.data.message);
+            if (error.response && error.response.data && error.response.data.message) {
+                reject(error.response.data.message);
+            } else {
+                reject(HttpResponse.ERROR_GENERIC);
+            }
         });
     });
 };
@@ -96,7 +102,11 @@ export const removeResourcesFromFavourites = (resourceIds: string[]): Promise<an
         }).then((response) => {
             resolve(response.data.message);
         }).catch((error) => {
-            reject(error.response.data.message);
+            if (error.response && error.response.data && error.response.data.message) {
+                reject(error.response.data.message);
+            } else {
+                reject(HttpResponse.ERROR_GENERIC);
+            }
         });
     });
 };
@@ -110,7 +120,11 @@ export const addResourcesToTrash = (resources: IResourceModel[], shouldUnshare: 
         }).then((response) => {
             resolve(response.data.message);
         }).catch((error) => {
-            reject(error.response.data.message);
+            if (error.response && error.response.data && error.response.data.message) {
+                reject(error.response.data.message);
+            } else {
+                reject(HttpResponse.ERROR_GENERIC);
+            }
         });
     });
 };
@@ -122,10 +136,128 @@ export const restoreResourceFromTrash = (resourceIds: string[]): Promise<any> =>
             resourceIds,
         }).then((response) => {
             resolve(response.data.message);
-        })
-        .catch((error) => {
-            reject(error.response.data.message);
+        }).catch((error) => {
+            if (error.response && error.response.data && error.response.data.message) {
+                reject(error.response.data.message);
+            } else {
+                reject(HttpResponse.ERROR_GENERIC);
+            }
         });
+    });
+};
+
+export const downloadBlob = (name: string, fileData: Blob) => {
+    const url = window.URL.createObjectURL(fileData);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    window.URL.revokeObjectURL(url);
+};
+
+export const downloadResource = async (resource: IResourceModel): Promise<any> => {
+    try {
+        const response = await axios.get(`/api/resources/${resource.generation}/contents`, {
+            responseType: "blob",
+        });
+
+        const contentHeaders = response.headers["content-disposition"];
+        const fileName = contentHeaders.substring(contentHeaders.indexOf("=") + 1).replace(/['"]+/g, "");
+        downloadBlob(fileName, new Blob([response.data]));
+        return Promise.resolve();
+    } catch (error) {
+        if (error.response) {
+            try {
+                const { data } = error.response;
+                const file = await fileReader(data);
+                const { message } = JSON.parse(String(file));
+                if (message) {
+                    return Promise.reject(message);
+                } else {
+                    return Promise.reject(HttpResponse.ERROR_GENERIC);
+                }
+            } catch (error) {
+                return Promise.reject(HttpResponse.ERROR_GENERIC);
+            }
+        } else {
+            return Promise.reject(HttpResponse.ERROR_GENERIC);
+        }
+    }
+};
+
+export const downloadMultipleResources = async (resources: IResourceModel[]): Promise<any> => {
+    try {
+        const response = await axios({
+            method: "post",
+            url: "/api/zip",
+            data: {
+                resourceIds: resources.map((res) => res.generation),
+            },
+            responseType: "blob",
+        });
+        const contentHeaders = response.headers["content-disposition"];
+        const fileName = contentHeaders.substring(contentHeaders.indexOf("=") + 1).replace(/['"]+/g, "");
+        downloadBlob(fileName, new Blob([response.data]));
+        return Promise.resolve();
+    } catch (error) {
+        if (error.response) {
+            try {
+                const { data } = error.response;
+                const file = await fileReader(data);
+                const { message } = JSON.parse(String(file));
+                if (message) {
+                    return Promise.reject(message);
+                } else {
+                    return Promise.reject(HttpResponse.ERROR_GENERIC);
+                }
+            } catch (error) {
+                return Promise.reject(HttpResponse.ERROR_GENERIC);
+            }
+        } else {
+            return Promise.reject(HttpResponse.ERROR_GENERIC);
+        }
+
+    }
+};
+
+export const shareResources = (resources: IResourceModel[], users: IUserModel[]): Promise<any> => {
+    const collaboratorIds = users.map((user) => user.uid);
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "share",
+            resources,
+            collaboratorIds,
+        })
+            .then((response) => {
+                resolve(response.data.message);
+            })
+            .catch((error) => {
+                if (error.response && error.response.data && error.response.data.message) {
+                    reject(error.response.data.message);
+                } else {
+                    reject(HttpResponse.ERROR_GENERIC);
+                }
+            });
+    });
+};
+
+export const unshareResources = (shares: IUnshareModel[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        axios.put("/api/resources", {
+            type: "unshare",
+            shares,
+        })
+            .then((response) => {
+                resolve(response.data.message);
+            })
+            .catch((error) => {
+                if (error.response && error.response.data && error.response.data.message) {
+                    reject(error.response.data.message);
+                } else {
+                    reject(HttpResponse.ERROR_GENERIC);
+                }
+            });
     });
 };
 
@@ -141,36 +273,4 @@ export const mapIdsToResources = (resourceIds: string[]): IResourceModel[] => {
     const mappedResources = resourceIds.map((generation) =>
         rootResources.find((res) => res.generation === generation));
     return mappedResources.filter((res): res is IResourceModel => !!res);
-};
-
-export const shareResources = (resources: IResourceModel[], users: IUserModel[]): Promise<any> => {
-    const collaboratorIds = users.map((user) => user.uid);
-    return new Promise((resolve, reject) => {
-        axios.put("/api/resources", {
-            type: "share",
-            resources,
-            collaboratorIds,
-        })
-            .then((response) => {
-                resolve(response.data.message);
-            })
-            .catch((error) => {
-                reject(error.response.data.message);
-            });
-    });
-};
-
-export const unshareResources = (shares: IUnshareModel[]): Promise<any> => {
-    return new Promise((resolve, reject) => {
-        axios.put("/api/resources", {
-            type: "unshare",
-            shares,
-        })
-            .then((response) => {
-                resolve(response.data.message);
-            })
-            .catch((error) => {
-                reject(error.response.data.message);
-            });
-    });
 };

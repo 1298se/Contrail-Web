@@ -6,25 +6,23 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import React from "react";
 import { DialogWrapperProps } from "./dialogWrapper.types";
-import useStyles from "./dialogWrapperStyles";
 
 /**
  * A wrapper for creating a simple dialog with a message.
  * *NOTE*: For success and error messages, use the SnackbarContentWrapper instead.
  */
 function SimpleDialog(props: DialogWrapperProps) {
-    const classes = useStyles();
     const { contentText, title, isOpen, shouldDisplayLoading, actionPrimary, actionSecondary, actionTertiary } = props;
     const renderContentText = contentText ?
         (
-        <DialogContentText className={classes.contentText}>
+        <DialogContentText>
             {contentText}
         </DialogContentText>
         ) : null;
     return (
         <Dialog open={isOpen}>
             <DialogTitle id="simple-dialog-title">{title}</DialogTitle>
-            <DialogContent className={classes.content}>
+            <DialogContent>
                 {renderContentText}
                 {shouldDisplayLoading ? <CircularProgress /> : null}
             </DialogContent>

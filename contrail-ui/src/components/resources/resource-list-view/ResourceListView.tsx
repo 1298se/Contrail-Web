@@ -9,7 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
-import FavoriteIcon from "@material-ui/icons/FavoriteBorderOutlined";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";

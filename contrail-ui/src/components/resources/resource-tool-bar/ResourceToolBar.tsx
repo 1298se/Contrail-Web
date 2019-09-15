@@ -5,12 +5,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import SharedIcon from "@material-ui/icons/FolderShared";
 import MoreIcon from "@material-ui/icons/MoreVert";
-import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import RestoreIcon from "@material-ui/icons/Restore";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -47,6 +47,21 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         });
     }
 
+    public handleDownloadClick = async () => {
+        this.handleMobileMenuClose();
+
+        const { selectedResources } = this.props;
+        try {
+            if (selectedResources.length === 1) {
+                await filesController.downloadResource(selectedResources[0]);
+            } else if (selectedResources.length > 1) {
+                await filesController.downloadMultipleResources(selectedResources);
+            }
+        } catch (error) {
+            this.props.setSnackbarDisplay("error", error);
+        }
+    }
+
     public handleFavouriteClick = async () => {
         const { selectedResources, userResources } = this.props;
         this.handleMobileMenuClose();
@@ -70,6 +85,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
     }
 
     public handleShareClick = () => {
+        this.handleMobileMenuClose();
         this.props.setDialogOpen(true);
     }
 
@@ -122,7 +138,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         const isMobileMenuOpen = Boolean(this.state.mobileMoreAnchorEl);
 
         const { classes } = this.props;
-        const mobileMenu = (
+        const resourceMobileMenu = (
             <Menu
                 anchorEl={this.state.mobileMoreAnchorEl}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -131,11 +147,11 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                 open={isMobileMenuOpen}
                 onClose={this.handleMobileMenuClose}
             >
-                <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
+                <MenuItem disabled={!isItemSelected} onClick={this.handleDownloadClick}>
                     <IconButton color="default">
-                        <RemoveRedEyeIcon />
+                        <CloudDownloadIcon />
                     </IconButton>
-                    <p>View</p>
+                    <p>Download</p>
                 </MenuItem>
                 <MenuItem disabled={!isItemSelected} onClick={this.handleFavouriteClick}>
                     <IconButton color="default">
@@ -143,17 +159,41 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     </IconButton>
                     <p>Favourite</p>
                 </MenuItem>
-                <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
+                <MenuItem disabled={!isItemSelected} onClick={this.handleShareClick}>
                     <IconButton color="default">
                         <SharedIcon />
                     </IconButton>
                     <p>Share</p>
                 </MenuItem>
-                <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
+                <MenuItem disabled={!isItemSelected} onClick={this.handleTrashClick}>
                     <IconButton color="default">
                         <DeleteIcon />
                     </IconButton>
                     <p>Trash</p>
+                </MenuItem>
+            </Menu>
+        );
+
+        const trashMobileMenu = (
+            <Menu
+                anchorEl={this.state.mobileMoreAnchorEl}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                keepMounted={true}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                open={isMobileMenuOpen}
+                onClose={this.handleMobileMenuClose}
+            >
+                <MenuItem disabled={!isItemSelected} onClick={this.handleRestoreClick}>
+                    <IconButton color="default">
+                        <RestoreIcon />
+                    </IconButton>
+                    <p>Restore</p>
+                </MenuItem>
+                <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
+                    <IconButton color="default">
+                        <DeleteForeverIcon />
+                    </IconButton>
+                    <p>Delete Forever</p>
                 </MenuItem>
             </Menu>
         );
@@ -163,8 +203,9 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                 <IconButton
                     color="default"
                     disabled={!isItemSelected}
+                    onClick={this.handleDownloadClick}
                 >
-                    <RemoveRedEyeIcon />
+                    <CloudDownloadIcon />
                 </IconButton>
                 <IconButton
                     color="default"
@@ -237,7 +278,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                         </div>
                     </Toolbar>
                 </AppBar>
-                {mobileMenu}
+                {this.props.titleText === ResourcePages.TRASH ? trashMobileMenu : resourceMobileMenu}
             </div>
         );
     }
