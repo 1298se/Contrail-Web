@@ -310,7 +310,6 @@ exports.downloadResourceZip = (req, res) => {
     const time = new Date().getTime();
 
     const zipFilePath = path.join(__dirname, "..", "zip", `contrail-${userId}${time}.zip`);
-    console.log(zipFilePath);
 
     let counter = 0;
     const archive = archiver('zip', {
@@ -364,10 +363,8 @@ const deleteResource = async (userId, resource) => {
         const doc = await getResourceDocRef(resource.generation).get();
         if (doc.exists) {
             if (doc.data().permissions[userId] === "editor") {
-                console.log("iseditor");
                 return unshareResource(resource, [userId], doc.data().owner);
             } else if (doc.data().permissions[userId] === "owner") {
-                console.log("isowner");
                 await unshareAllFromResource(resource, doc.data().owner, true);
                 await getResourceDocRef(resource.generation).delete();
                 return getFileFromBucket(doc.data().owner, doc.data().name).delete();
