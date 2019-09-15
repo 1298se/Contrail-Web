@@ -2,7 +2,6 @@ import { IconButton } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import Snackbar from "@material-ui/core/Snackbar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -12,7 +11,6 @@ import clsx from "clsx";
 import React, { Component } from "react";
 import * as auth from "../../../firebase/controllers/authController";
 import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
-import SnackbarContentWrapper from "../../feedback/snackbar-content-wrapper/SnackbarContentWrapper";
 import styles from "./appBarStyles";
 import * as types from "./mainAppBar.type";
 

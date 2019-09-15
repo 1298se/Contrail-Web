@@ -1,5 +1,4 @@
 import { createStyles, Theme } from "@material-ui/core";
-import { display } from "@material-ui/system";
 
 const styles = (theme: Theme) => createStyles({
   body: {
@@ -10,14 +9,14 @@ const styles = (theme: Theme) => createStyles({
     borderStyle: "dashed",
     margin: "10px 20px",
   },
-  paper: {
-    height: "300px",
-    overflowY: "auto",
-  },
   fileContainer : {
-    width: "100%",
     display: "flex",
-    alignItems: "center",
+  },
+  fileInfoContainer : {
+    justifyContent: "flex-start",
+    flexGrow: 1,
+    width: "80%",
+    margin: theme.spacing(1),
   },
   progress: {
     backgroundColor: "#b7d0f7",
@@ -28,20 +27,12 @@ const styles = (theme: Theme) => createStyles({
   },
   statusContainer : {
     alignContent: "flex-end",
-    justifyContent: "flex-end",
   },
-  fileInfoContainer : {
-    justifyContent: "flex-start",
-    flex: "0 0 50%",
-    flexGrow: 1,
-  },
-  name: {
-    width: "40%",
-    maxWidth: "40%",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
+  cancel: {
+    padding: 0,
   },
   baseDrop: {
+    minHeight: "300px",
     margin: "10px",
     borderColor: "#eeeeee",
     borderStyle: "dashed",

@@ -52,7 +52,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         return shareController.getCollaborators(this.props.selectedResources)
             .then((res) => {
                 res = res.filter((resource: types.IShareState) => resource.collaborators.length > 0);
-                res.map((resource: types.IShareState) => {
+                res.forEach((resource: types.IShareState) => {
                     resource.open = false;
                     resource.checkedCollaborators = [];
                 });
@@ -120,7 +120,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
         const unshareMap = [] as IUnshareModel[];
         const selectedNone = this.state.sharedResources.every((share) => share.checkedCollaborators.length === 0);
         if (selectedNone) {
-            this.state.sharedResources.map((resource) => {
+            this.state.sharedResources.forEach((resource) => {
                 const resModel = this.props.selectedResources.find((res) => res.generation === resource.generation);
                 const collaborators = resource.collaborators.map((res) => res.uid);
                 if (resModel) {
@@ -131,7 +131,7 @@ class ShareDialog extends Component<types.IShareDialogProps, types.IShareDialogS
                 }
             });
         } else {
-            this.state.sharedResources.map((resource) => {
+            this.state.sharedResources.forEach((resource) => {
                 if (resource.checkedCollaborators.length > 0) {
                     const resModel = this.props.selectedResources.find((res) => res.generation === resource.generation);
                     if (resModel) {

@@ -30,8 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function CircularIntegration() {
     const classes = useStyles();
-    const [loading, setLoading] = React.useState(false);
-    const [success, setSuccess] = React.useState(false);
 
     return (
         <div className={classes.root}>
