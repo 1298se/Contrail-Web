@@ -2,6 +2,7 @@ import Button from "@material-ui/core/Button";
 import React from "react";
 import * as auth from "../../../firebase/controllers/authController";
 import DialogWrapper from "../../feedback/dialog-wrapper/DialogWrapper";
+import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import { EmailVerificationDialogProps } from "./emailVerificationDialog.types";
 
 const EmailVerificationDialog = (props: EmailVerificationDialogProps) => {
@@ -55,10 +56,10 @@ const EmailVerificationDialog = (props: EmailVerificationDialogProps) => {
             title={"Email Verification Required"}
             contentText={notEmailVerifiedMessage}
             isOpen={props.shouldDisplayDialog}
-            actionPrimary={dismissAction}
-            actionSecondary={resendAction}
+            actionPrimary={resendAction}
+            actionSecondary={dismissAction}
         />
     );
 };
 
-export default EmailVerificationDialog;
+export default withSnackbar(EmailVerificationDialog);

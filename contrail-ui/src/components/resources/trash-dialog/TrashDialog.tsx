@@ -2,6 +2,7 @@ import Button from "@material-ui/core/Button";
 import React from "react";
 import { addResourcesToTrash } from "../../../firebase/controllers/filesController";
 import DialogWrapper from "../../feedback/dialog-wrapper/DialogWrapper";
+import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import { TrashDialogProps } from "./trashDialog.types";
 
 const TrashDialog = (props: TrashDialogProps) => {
@@ -10,11 +11,11 @@ const TrashDialog = (props: TrashDialogProps) => {
                         Do you want to unshare before removing them?";
 
     const handleCancelClick = () => {
-        props.handleDialogClose();
+        props.handleDialogClose(false);
     };
 
     const handleUnshareClick = () => {
-        props.handleDialogClose();
+        props.handleDialogClose(true);
         return addResourcesToTrash(props.selectedResources, true)
             .then(() => {
                 props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
@@ -24,7 +25,7 @@ const TrashDialog = (props: TrashDialogProps) => {
     };
 
     const handleTrashClick = () => {
-        props.handleDialogClose();
+        props.handleDialogClose(true);
         return addResourcesToTrash(props.selectedResources, false)
             .then(() => {
                 props.setSnackbarDisplay("success", "File(s) have been successfully trashed.");
@@ -67,11 +68,11 @@ const TrashDialog = (props: TrashDialogProps) => {
             title={"File(s) contain shares to other users."}
             contentText={unshareMessage}
             isOpen={props.shouldDisplayDialog}
-            actionPrimary={dismissAction}
+            actionPrimary={unshareTrashAction}
             actionSecondary={trashOnlyAction}
-            actionTertiary={unshareTrashAction}
+            actionTertiary={dismissAction}
         />
     );
 };
 
-export default TrashDialog;
+export default withSnackbar(TrashDialog);

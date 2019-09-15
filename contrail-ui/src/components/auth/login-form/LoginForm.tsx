@@ -132,7 +132,6 @@ class LoginForm extends Component<types.LoginFormProps, types.ILoginFormState> {
                 <EmailVerificationDialog
                     shouldDisplayDialog={this.state.shouldDisplayDialog}
                     handleDialogClose={this.handleDialogClose}
-                    setSnackbarDisplay={this.props.setSnackbarDisplay}
                 />
                 <Paper className={classes.paper}>
                     <Typography component="h1" variant="h5">

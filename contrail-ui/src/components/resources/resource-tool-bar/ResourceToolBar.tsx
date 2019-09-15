@@ -23,6 +23,7 @@ import { IResourceSetSelected } from "../../../store/actions/resourceActions.typ
 import { IAppReduxState } from "../../../store/store.types";
 import { IResourceModel } from "../../../types/resource.types";
 import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
+import PermanentDeleteDialog from "../permanent-delete-dialog/PermanentDeleteDialog";
 import { ResourcePages } from "../resourceFrame.types";
 import TrashDialog from "../trash-dialog/TrashDialog";
 import * as types from "./resourceToolBar.type";
@@ -32,7 +33,8 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
     public state = {
         anchorEl: null,
         mobileMoreAnchorEl: null,
-        displayUnshareTrashDialog: false,
+        shouldDisplayUnshareTrashDialog: false,
+        shouldDisplayPermanentDeleteDialog: false,
     };
 
     public handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -98,7 +100,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         if (isSharedResource) {
             this.setState({
                 ...this.state,
-                displayUnshareTrashDialog: true,
+                shouldDisplayUnshareTrashDialog: true,
             });
         } else {
             filesController.addResourcesToTrash(selectedResources, false)
@@ -111,12 +113,15 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         }
     }
 
-    public handleTrashDialogClose = () => {
+    public handleTrashDialogClose = (shouldClearSelected: boolean) => {
         this.setState({
             ...this.state,
-            displayUnshareTrashDialog: false,
+            shouldDisplayUnshareTrashDialog: false,
         });
-        this.props.setSelected([]);
+
+        if (shouldClearSelected) {
+            this.props.setSelected([]);
+        }
     }
 
     public handleRestoreClick = () => {
@@ -131,6 +136,24 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
             .catch((error) => {
                 this.props.setSnackbarDisplay("error", error);
             });
+    }
+
+    public handlePermanentDeleteClick = () => {
+        this.handleMobileMenuClose();
+
+        this.setState({
+            shouldDisplayPermanentDeleteDialog: true,
+        });
+    }
+
+    public handlePermanentDeleteDialogClose = (shouldClearSelected: boolean) => {
+        this.setState({
+            shouldDisplayPermanentDeleteDialog: false,
+        });
+
+        if (shouldClearSelected) {
+            this.props.setSelected([]);
+        }
     }
 
     public render() {
@@ -189,7 +212,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     </IconButton>
                     <p>Restore</p>
                 </MenuItem>
-                <MenuItem disabled={!isItemSelected} onClick={this.handleMobileMenuClose}>
+                <MenuItem disabled={!isItemSelected} onClick={this.handlePermanentDeleteClick}>
                     <IconButton color="default">
                         <DeleteForeverIcon />
                     </IconButton>
@@ -244,7 +267,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                 <IconButton
                     color="default"
                     disabled={!isItemSelected}
-                    onClick={this.handleFavouriteClick}
+                    onClick={this.handlePermanentDeleteClick}
                 >
                     <DeleteForeverIcon />
                 </IconButton>
@@ -253,11 +276,15 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
 
         return (
             <div className={classes.grow}>
-                <TrashDialog
-                    shouldDisplayDialog={this.state.displayUnshareTrashDialog}
-                    handleDialogClose={this.handleTrashDialogClose}
-                    setSnackbarDisplay={this.props.setSnackbarDisplay}
+                <PermanentDeleteDialog
                     selectedResources={this.props.selectedResources}
+                    shouldDisplayDialog={this.state.shouldDisplayPermanentDeleteDialog}
+                    handleDialogClose={this.handlePermanentDeleteDialogClose}
+                />
+                <TrashDialog
+                    selectedResources={this.props.selectedResources}
+                    shouldDisplayDialog={this.state.shouldDisplayUnshareTrashDialog}
+                    handleDialogClose={this.handleTrashDialogClose}
                 />
                 <AppBar position="static" color="secondary">
                     <Toolbar>

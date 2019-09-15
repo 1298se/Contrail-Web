@@ -27,9 +27,9 @@ function SimpleDialog(props: DialogWrapperProps) {
                 {shouldDisplayLoading ? <CircularProgress /> : null}
             </DialogContent>
             <DialogActions>
-                {actionPrimary}
-                {actionSecondary}
                 {actionTertiary}
+                {actionSecondary}
+                {actionPrimary}
             </DialogActions>
         </Dialog>
     );
