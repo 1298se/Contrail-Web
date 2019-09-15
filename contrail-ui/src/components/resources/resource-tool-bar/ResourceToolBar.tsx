@@ -266,7 +266,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
 
         const trashToolbarItems = (
             <React.Fragment>
-                <Tooltip title="Restore from trash">
+                <Tooltip title="Restore">
                     <IconButton
                         color="default"
                         disabled={!isItemSelected}
