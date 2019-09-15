@@ -5,6 +5,9 @@ const userActions = require('./actions/user');
 const resourceActions = require('./actions/resource');
 const searchActions = require('./actions/search');
 const httpStatus = require('./http/httpStatus');
+const cors = require('cors');
+
+app.use(cors());
 
 app.get("/resources", authMiddleware, userActions.getUserFiles);
 

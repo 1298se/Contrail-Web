@@ -14,6 +14,8 @@ import { IAuthFetchUserAction } from "./store/actions/authActions.types";
 import { setNetworkState } from "./store/actions/networkActions";
 import { IAppReduxState } from "./store/store.types";
 
+axios.defaults.baseURL = "https://us-central1-contrail-fbase.cloudfunctions.net";
+
 class App extends Component<AppProps, {}> {
     public componentDidMount() {
         this.props.setAuthListener();
