@@ -4,6 +4,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -223,54 +224,66 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
 
         const resourceToolbarItems = (
             <React.Fragment>
-                <IconButton
-                    color="default"
-                    disabled={!isItemSelected}
-                    onClick={this.handleDownloadClick}
-                >
-                    <CloudDownloadIcon />
-                </IconButton>
-                <IconButton
-                    color="default"
-                    disabled={!isItemSelected}
-                    onClick={this.handleFavouriteClick}
-                >
-                    <FavoriteIcon />
-                </IconButton>
-                <IconButton
-                    color="default"
-                    disabled={!isItemSelected}
-                    onClick={this.handleShareClick}
-                >
-                    <SharedIcon />
-                </IconButton>
-                <IconButton
-                    edge="end"
-                    color="default"
-                    disabled={!isItemSelected}
-                    onClick={this.handleTrashClick}
-                >
-                    <DeleteIcon />
-                </IconButton>
+                <Tooltip title="Download">
+                    <IconButton
+                        color="default"
+                        disabled={!isItemSelected}
+                        onClick={this.handleDownloadClick}
+                    >
+                        <CloudDownloadIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Favorite">
+                    <IconButton
+                        color="default"
+                        disabled={!isItemSelected}
+                        onClick={this.handleFavouriteClick}
+                    >
+                        <FavoriteIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Share">
+                    <IconButton
+                        color="default"
+                        disabled={!isItemSelected}
+                        onClick={this.handleShareClick}
+                    >
+                        <SharedIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                    <IconButton
+                        edge="end"
+                        color="default"
+                        disabled={!isItemSelected}
+                        onClick={this.handleTrashClick}
+                    >
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
             </React.Fragment>
         );
 
         const trashToolbarItems = (
             <React.Fragment>
-                <IconButton
-                    color="default"
-                    disabled={!isItemSelected}
-                    onClick={this.handleRestoreClick}
-                >
-                    <RestoreIcon />
-                </IconButton>
-                <IconButton
-                    color="default"
-                    disabled={!isItemSelected}
-                    onClick={this.handlePermanentDeleteClick}
-                >
-                    <DeleteForeverIcon />
-                </IconButton>
+                <Tooltip title="Restore">
+                    <IconButton
+                        color="default"
+                        disabled={!isItemSelected}
+                        onClick={this.handleRestoreClick}
+                    >
+                        <RestoreIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete forever">
+                    <IconButton
+                        color="default"
+                        disabled={!isItemSelected}
+                        onClick={this.handlePermanentDeleteClick}
+                    >
+                        <DeleteForeverIcon />
+                    </IconButton>
+                </Tooltip>
             </React.Fragment>
         );
 
