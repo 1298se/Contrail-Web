@@ -10,10 +10,6 @@ const styles = (theme: Theme) => createStyles({
     borderStyle: "dashed",
     margin: "10px 20px",
   },
-  paper: {
-    height: "300px",
-    overflowY: "auto",
-  },
   fileContainer : {
     display: "flex",
   },
@@ -37,6 +33,7 @@ const styles = (theme: Theme) => createStyles({
     padding: 0,
   },
   baseDrop: {
+    minHeight: "300px",
     margin: "10px",
     borderColor: "#eeeeee",
     borderStyle: "dashed",
