@@ -1,13 +1,16 @@
 import { withStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import { green } from "@material-ui/core/colors";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import IconButton from "@material-ui/core/IconButton";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import CancelIcon from "@material-ui/icons/Cancel";
-import CloudDoneIcon from "@material-ui/icons/CloudDone";
+import Typography from "@material-ui/core/Typography";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 import Error from "@material-ui/icons/Error";
 import * as firebase from "firebase/app";
 import React, { Component } from "react";
@@ -85,15 +88,19 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                     if (this.props.user) {
                         filesController.writeFileToDB(uploadTask, this.props.user)
                             .then(() => {
-                                this.setState((prevState: types.IUploadDialogState) => ({
-                                    uploadState: prevState.uploadState.set(filename, "success"),
-                                }));
+                                setTimeout(() => {
+                                    this.setState((prevState: types.IUploadDialogState) => ({
+                                        uploadState: prevState.uploadState.set(filename, "success"),
+                                    }));
+                                }, 1000);
                             })
                             .catch((error) => {
-                                this.setState((prevState: types.IUploadDialogState) => ({
-                                    uploadState: prevState.uploadState.set(filename, "error"),
-                                }));
-                                this.props.setSnackbarDisplay("error", error);
+                                setTimeout(() => {
+                                    this.setState((prevState: types.IUploadDialogState) => ({
+                                        uploadState: prevState.uploadState.set(filename, "error"),
+                                    }));
+                                    this.props.setSnackbarDisplay("error", error);
+                                }, 1000);
                             });
                     }
                 });
@@ -148,28 +155,35 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                 };
 
                 const renderCancelButton = (disabled: boolean) => (
-                    <Button disableFocusRipple={true} disabled={disabled} onClick={handleCancelClick}>
-                        <CancelIcon fontSize="large" />
-                    </Button>
+                    <IconButton
+                        className={classes.cancel}
+                        disableFocusRipple={true}
+                        disabled={disabled}
+                        onClick={handleCancelClick}
+                    >
+                        <CloseOutlinedIcon />
+                    </IconButton>
                 );
 
                 const renderDoneButton = (
-                    <CloudDoneIcon fontSize="large" color="primary" />
+                    <CheckCircleIcon style={{color: green[600]}} />
                 );
 
                 const renderErrorButton = (
-                    <Error fontSize="large" color="error" />
+                    <Error color="error" />
                 );
 
                 return (
                     <div key={i} className={classes.fileContainer}>
                         <div className={classes.fileInfoContainer}>
-                            <p> {fileName} </p>
-                            <LinearProgress
+                            <Typography noWrap={true}>
+                                {fileName}
+                            </Typography>
+                            {fileState === "uploading" && <LinearProgress
                                 className={classes.progress}
                                 variant="determinate"
                                 value={fileProgress}
-                            />
+                            />}
                         </div>
                         <div className={classes.statusContainer} >
                             {fileState === "added" && renderCancelButton(false)}
@@ -194,7 +208,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
                                 <input {...getInputProps()} />
                                 <DialogContentText>
                                     Drag files here to upload!
-                    </DialogContentText>
+                                </DialogContentText>
                                 <div className={classes.paper}>
                                     {renderUploadFiles}
                                 </div>
