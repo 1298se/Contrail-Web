@@ -187,6 +187,9 @@ const unshareAllFromResource = (resource, ownerId, includeOwner) => {
                 batch.update(ownerRef, {
                     sharedBy: firestore.FieldValue.arrayRemove(resource.generation),
                 });
+                if (includeOwner) {
+                    batch.delete(getResourceDocRef(resource.generation));
+                }
                 return batch.commit();
             } else {
                 return Promise.reject(httpStatus.DOCUMENT_NOT_EXIST);
@@ -366,7 +369,6 @@ const deleteResource = async (userId, resource) => {
                 return unshareResource(resource, [userId], doc.data().owner);
             } else if (doc.data().permissions[userId] === "owner") {
                 await unshareAllFromResource(resource, doc.data().owner, true);
-                await getResourceDocRef(resource.generation).delete();
                 return getFileFromBucket(doc.data().owner, doc.data().name).delete();
             } else {
                 return Promise.reject(httpStatus.PERMISSION_DENIED);
