@@ -7,7 +7,7 @@ export const searchUsers = (query: string): Promise<any> => {
         axios.get("/api" + searchUrl)
             .then((response) => {
                 const newOptions: IUserModel[] = [];
-                response.data.map((user: firebase.User) => {
+                response.data.forEach((user: firebase.User) => {
                     if (user.email && user.displayName) {
                         newOptions.push({
                             uid: user.uid,

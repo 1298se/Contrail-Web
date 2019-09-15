@@ -109,7 +109,7 @@ class UploadDialog extends Component<types.IUploadDialogProps, types.IUploadDial
     public uploadFiles = () => {
         if (this.props.user && this.state.files) {
             const { uid } = this.props.user;
-            this.state.files.map((file: File) => {
+            this.state.files.forEach((file: File) => {
                 const filename = file && file.name;
                 if (this.state.uploadProgress.get(filename) === 0) {
                     const uploadTask = filesController.uploadFiletoStorage(file, uid);

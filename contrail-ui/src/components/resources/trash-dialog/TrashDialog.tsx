@@ -7,8 +7,8 @@ import { TrashDialogProps } from "./trashDialog.types";
 
 const TrashDialog = (props: TrashDialogProps) => {
 
-    const unshareMessage = "Your selected file(s) contain shares to other users.\
-                        Do you want to unshare before removing them?";
+    const unshareMessage =
+    "Your selected file(s) contain shares to other users. Do you want to unshare before removing them?";
 
     const handleCancelClick = () => {
         props.handleDialogClose(false);
