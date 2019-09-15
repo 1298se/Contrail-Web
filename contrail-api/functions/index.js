@@ -4,7 +4,7 @@ const { authMiddleware } = require('./utils/validation/authValidation');
 const userActions = require('./actions/user');
 const resourceActions = require('./actions/resource');
 const searchActions = require('./actions/search');
-const httpStatus = require('../http/httpStatus');
+const httpStatus = require('./http/httpStatus');
 
 app.get("/resources", authMiddleware, userActions.getUserFiles);
 
