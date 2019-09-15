@@ -1,6 +1,6 @@
 const { firestore, bucket, getUserDocRef, getResourceDocRef } = require('../utils/firebaseUtils');
 const { getUserInfo } = require('./user');
-const httpStatus = require('../../http/httpStatus');
+const httpStatus = require('../http/httpStatus');
 const fs = require("fs");
 const archiver = require("archiver");
 const path = require("path");
