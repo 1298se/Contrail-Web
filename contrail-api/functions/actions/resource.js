@@ -312,7 +312,7 @@ exports.downloadResourceZip = (req, res) => {
 
     const time = new Date().getTime();
 
-    const zipFilePath = path.join(__dirname, "..", "zip", `contrail-${userId}${time}.zip`);
+    const zipFilePath = path.join("/tmp", `contrail-${userId}${time}.zip`);
 
     let counter = 0;
     const archive = archiver('zip', {
