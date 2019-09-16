@@ -225,6 +225,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         const resourceToolbarItems = (
             <React.Fragment>
                 <Tooltip title="Download">
+                    <div>
                     <IconButton
                         color="default"
                         disabled={!isItemSelected}
@@ -232,8 +233,10 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     >
                         <CloudDownloadIcon />
                     </IconButton>
+                    </div>
                 </Tooltip>
                 <Tooltip title="Favorite">
+                    <div>
                     <IconButton
                         color="default"
                         disabled={!isItemSelected}
@@ -241,8 +244,10 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     >
                         <FavoriteIcon />
                     </IconButton>
+                    </div>
                 </Tooltip>
                 <Tooltip title="Share">
+                    <div>
                     <IconButton
                         color="default"
                         disabled={!isItemSelected}
@@ -250,8 +255,10 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     >
                         <SharedIcon />
                     </IconButton>
+                    </div>
                 </Tooltip>
                 <Tooltip title="Delete">
+                    <div>
                     <IconButton
                         edge="end"
                         color="default"
@@ -260,6 +267,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     >
                         <DeleteIcon />
                     </IconButton>
+                    </div>
                 </Tooltip>
             </React.Fragment>
         );
@@ -267,6 +275,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
         const trashToolbarItems = (
             <React.Fragment>
                 <Tooltip title="Restore">
+                    <div>
                     <IconButton
                         color="default"
                         disabled={!isItemSelected}
@@ -274,8 +283,10 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     >
                         <RestoreIcon />
                     </IconButton>
+                    </div>
                 </Tooltip>
                 <Tooltip title="Delete forever">
+                    <div>
                     <IconButton
                         color="default"
                         disabled={!isItemSelected}
@@ -283,6 +294,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     >
                         <DeleteForeverIcon />
                     </IconButton>
+                    </div>
                 </Tooltip>
             </React.Fragment>
         );
