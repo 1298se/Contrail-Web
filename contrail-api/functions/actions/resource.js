@@ -293,7 +293,7 @@ exports.downloadResource = async (req, res) => {
                     return res.status(500).send(error);
                 }
 
-                res.setHeader('Content-Disposition', 'attachment; filename=' + docData.name);
+                res.setHeader('content-disposition', 'attachment; filename=' + docData.name);
                 return res.end(contents, "binary");
             });
         }).catch((error) => {

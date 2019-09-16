@@ -7,7 +7,7 @@ const searchActions = require('./actions/search');
 const httpStatus = require('./http/httpStatus');
 const cors = require('cors');
 
-app.use(cors());
+app.use(cors({ exposedHeaders: 'content-disposition' }));
 
 app.get("/resources", authMiddleware, userActions.getUserFiles);
 
