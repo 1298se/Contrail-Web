@@ -6,7 +6,7 @@ import withSnackbar from "../../feedback/snackbar-component/SnackbarComponent";
 import { PermanentDeleteDialogProps } from "./permanentDeleteDialog.types";
 
 const PermanentDeleteDialog = (props: PermanentDeleteDialogProps) => {
-    const message = "Are you sure you want to permanently delete this item?";
+    const message = "Are you sure you want to permanently delete the selected item(s)?";
 
     const handlePermanentDeleteClick = () => {
         props.handleDialogClose(true);
@@ -42,7 +42,7 @@ const PermanentDeleteDialog = (props: PermanentDeleteDialogProps) => {
 
     return (
         <DialogWrapper
-            title={"Permanently Delete Resource"}
+            title={"Permanently Delete"}
             contentText={message}
             isOpen={props.shouldDisplayDialog}
             actionPrimary={permanentDeleteAction}
