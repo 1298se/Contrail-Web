@@ -1,5 +1,6 @@
-# Contrail
+# Production
 
+[Contrail Alpha v1.0.1](https://contrail-fbase.web.app/app/files) is out!  
 Contrail is a file storage and sharing application.
 Created using
   - React
