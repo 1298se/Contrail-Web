@@ -1,6 +1,6 @@
 # Production
 
-[Contrail Alpha v1.0.1](https://contrail-fbase.web.app/app/files) is out! Please feel free to log any bugs/issues/suggestions.
+[Contrail Alpha v1.0.1](https://contrail-fbase.web.app) is out! Please feel free to log any bugs/issues/suggestions.
 
 Quickly and conveniently share files with coworkers, classmates, friends or family using our user-friendly interface!
 ### Securely upload files to Contrail
