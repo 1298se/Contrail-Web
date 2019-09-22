@@ -1,3 +1,5 @@
+Special thanks to https://github.com/virajg224(https://github.com/virajg224) for sticking with the project from start to finish!
+
 # Production
 
 [Contrail Alpha v1.0.1](https://contrail-fbase.web.app) is out! Please feel free to log any bugs/issues/suggestions.
