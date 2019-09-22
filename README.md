@@ -1,4 +1,4 @@
-Special thanks to https://github.com/virajg224(https://github.com/virajg224) for sticking with the project from start to finish!
+Special thanks to [https://github.com/virajg224](https://github.com/virajg224) for sticking with the project from start to finish!
 
 # Production
 
