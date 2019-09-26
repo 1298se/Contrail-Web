@@ -47,11 +47,11 @@ class MainDrawer extends Component<MainDrawerProps, {}> {
                         </ListItemIcon>
                         <ListItemText primary="Files" />
                     </ListItem>
-                    <ListItem button={true} key="Favorites" component={Link} to={Routes.FAVOURITES}>
+                    <ListItem button={true} key="Favourites" component={Link} to={Routes.FAVOURITES}>
                         <ListItemIcon>
                             <FavoriteIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Favorites" />
+                        <ListItemText primary="Favourites" />
                     </ListItem>
                     <ListItem button={true} key="Shared" component={Link} to={Routes.SHARED}>
                         <ListItemIcon>

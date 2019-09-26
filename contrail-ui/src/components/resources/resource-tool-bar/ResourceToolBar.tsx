@@ -235,7 +235,7 @@ class ResourceToolBar extends Component<types.ResourceToolBarProps, types.IResou
                     </IconButton>
                     </div>
                 </Tooltip>
-                <Tooltip title="Favorite">
+                <Tooltip title="Favourite">
                     <div>
                     <IconButton
                         color="default"
