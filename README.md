@@ -23,12 +23,6 @@ Quickly and conveniently share files with coworkers, classmates, friends or fami
 ### Delete them if uneeded
 ![alt_text](https://github.com/1298se/Contrail-Web/blob/master/demo/permanent_delete.png)
  
- # Upcoming features
-Although the direction of the project is flexible, the development team has planned for the website to mainly function as a learning tool to help students edit and share notes with their peers. Future features will include:
-  - Upload hand-written notes and convert them into editable .docx files
-  - In-app editing
-  - Search capabilities
-  - User profiles
   
 # Development
 
